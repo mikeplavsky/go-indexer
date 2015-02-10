@@ -20,7 +20,10 @@ func main() {
 
 	log.Println(q)
 
-	res, err := q.ReceiveMessage(1)
+	ps := map[string]string{
+		"WaitTimeSeconds": "10"}
+
+	res, err := q.ReceiveMessageWithParameters(ps)
 
 	if err != nil {
 		log.Println(err)
