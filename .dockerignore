@@ -1,3 +1,4 @@
-*
-!go-convert
-!go-indexer
+.git
+go-indexer
+go-convert
+repeater

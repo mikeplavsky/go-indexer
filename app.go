@@ -78,6 +78,7 @@ func main() {
 	}
 
 	exec("unzip -p  " + f.Name() + " | ./go-convert")
+	exec("curl -S -XPOST localhost:$ES_PORT/$ES_INDEX/_bulk --data-binary @/tmp/mage.json > /dev/null" )
 
 	q.DeleteMessage(&res.Messages[0])
 
