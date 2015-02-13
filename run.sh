@@ -7,5 +7,4 @@ do
 done
 
 curl -XPUT localhost:$ES_PORT/$ES_INDEX --data-binary @index.json
-
 ./go-indexer
