@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"os"
 	"os/exec"
 
 	"github.com/goamz/goamz/aws"
@@ -64,22 +65,22 @@ func main() {
 	f.Write(data)
 	f.Sync()
 
-	log.Println(f.Name())
+	os.Setenv("ES_FILE", f.Name())
 
 	exec := func(cmd string) {
 
 		cvrt := exec.Command("bash", "-c", cmd)
+		out, err := cvrt.Output()
 
-		_, err = cvrt.Output()
 		if err != nil {
 			log.Println()
 		}
 
+		log.Println(string(out))
+
 	}
 
-	exec("unzip -p  " + f.Name() + " | ./go-convert")
-	exec("curl -S -XPOST localhost:$ES_PORT/$ES_INDEX/_bulk --data-binary @/tmp/mage.json > /dev/null" )
-
+	exec(os.Getenv("ES_INDEXER"))
 	q.DeleteMessage(&res.Messages[0])
 
 }
