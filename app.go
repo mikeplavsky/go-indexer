@@ -13,6 +13,11 @@ import (
 	"github.com/goamz/goamz/sqs"
 )
 
+var (
+	ES_QUEUE,
+	ES_INDEXER string
+)
+
 func index(q *sqs.Queue, s3 *s3.S3) error {
 
 	ps := map[string]string{
@@ -63,7 +68,7 @@ func index(q *sqs.Queue, s3 *s3.S3) error {
 
 	os.Setenv("ES_FILE", f.Name())
 
-	cvrt := exec.Command(os.Getenv("ES_INDEXER"))
+	cvrt := exec.Command(ES_INDEXER)
 	out, err := cvrt.CombinedOutput()
 
 	log.Println(string(out))
@@ -81,10 +86,13 @@ func index(q *sqs.Queue, s3 *s3.S3) error {
 
 func main() {
 
+	ES_QUEUE = os.Getenv("ES_QUEUE")
+	ES_INDEXER = os.Getenv("ES_INDEXER")
+
 	auth, _ := aws.EnvAuth()
 	sqs := sqs.New(auth, aws.USEast)
 
-	q, err := sqs.GetQueue("lm-test")
+	q, err := sqs.GetQueue(ES_QUEUE)
 
 	if err != nil {
 		log.Println(err)
