@@ -1,4 +1,3 @@
-
 docker run \
 -d \
 -v /data/data0:/data \

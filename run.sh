@@ -1,10 +1,8 @@
 #!/bin/sh
 
-while ! nc -w 1 localhost $ES_PORT
+while ! curl -XPUT localhost:$ES_PORT/$ES_INDEX --data-binary @index.json 
 do
-   echo -n .
-   sleep 1	
+	sleep 1
 done
 
-curl -XPUT localhost:$ES_PORT/$ES_INDEX --data-binary @index.json
 ./go-indexer
