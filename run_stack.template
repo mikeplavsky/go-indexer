@@ -4,6 +4,6 @@ docker run \
 -v /data/data{{.}}:/data \
 -p {{add . 8080}}:9200 \
 -e ES_CLUSTER_NAME=es{{.}} \
--e ES_HEAP_SIZE=1g \
+-e ES_HEAP_SIZE=4g \
 --name=es{{.}} --restart=always mikeplavsky/elasticsearch
 {{end}}

@@ -1,7 +1,6 @@
 {{range .}}
 docker run \
 -d \
--v $(pwd):/app \
 -e ES_INDEX=test{{.}} \
 -e ES_PORT={{add . 8080}} \
 -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
