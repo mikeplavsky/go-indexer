@@ -5,4 +5,4 @@ do
 	sleep 1
 done
 
-./go-indexer
+go-indexer
