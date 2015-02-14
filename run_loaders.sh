@@ -1,6 +1,6 @@
 
 docker run \
--d \
+-ti --rm \
 -v $(pwd):/app \
 -e ES_INDEX=test0 \
 -e ES_PORT=8080 \
@@ -8,5 +8,5 @@ docker run \
 -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
 -e ES_QUEUE=lm-test \
 -e ES_INDEXER=./indexer.sh \
---net=host --name=loader0 go_indexer
+--net=host --name=loader0 go_indexer bash
 
