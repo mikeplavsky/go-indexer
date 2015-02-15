@@ -269,3 +269,93 @@ docker create \
 -e ES_INDEXER=./indexer.sh \
 --net=host --name=loader29 go_indexer 
 
+docker create \
+-e ES_INDEX=test30 \
+-e ES_PORT=8110 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader30 go_indexer 
+
+docker create \
+-e ES_INDEX=test31 \
+-e ES_PORT=8111 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader31 go_indexer 
+
+docker create \
+-e ES_INDEX=test32 \
+-e ES_PORT=8112 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader32 go_indexer 
+
+docker create \
+-e ES_INDEX=test33 \
+-e ES_PORT=8113 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader33 go_indexer 
+
+docker create \
+-e ES_INDEX=test34 \
+-e ES_PORT=8114 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader34 go_indexer 
+
+docker create \
+-e ES_INDEX=test35 \
+-e ES_PORT=8115 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader35 go_indexer 
+
+docker create \
+-e ES_INDEX=test36 \
+-e ES_PORT=8116 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader36 go_indexer 
+
+docker create \
+-e ES_INDEX=test37 \
+-e ES_PORT=8117 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader37 go_indexer 
+
+docker create \
+-e ES_INDEX=test38 \
+-e ES_PORT=8118 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader38 go_indexer 
+
+docker create \
+-e ES_INDEX=test39 \
+-e ES_PORT=8119 \
+-e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+-e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e ES_QUEUE=lm-test \
+-e ES_INDEXER=./indexer.sh \
+--net=host --name=loader39 go_indexer 
+

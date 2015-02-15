@@ -269,3 +269,93 @@ docker run \
 -e ES_HEAP_SIZE=15g \
 --name=es29 --restart=always mikeplavsky/elasticsearch
 
+docker run \
+-d \
+-m 16g \
+-v /data/data30:/data \
+-p 8110:9200 \
+-e ES_CLUSTER_NAME=es30 \
+-e ES_HEAP_SIZE=15g \
+--name=es30 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data31:/data \
+-p 8111:9200 \
+-e ES_CLUSTER_NAME=es31 \
+-e ES_HEAP_SIZE=15g \
+--name=es31 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data32:/data \
+-p 8112:9200 \
+-e ES_CLUSTER_NAME=es32 \
+-e ES_HEAP_SIZE=15g \
+--name=es32 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data33:/data \
+-p 8113:9200 \
+-e ES_CLUSTER_NAME=es33 \
+-e ES_HEAP_SIZE=15g \
+--name=es33 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data34:/data \
+-p 8114:9200 \
+-e ES_CLUSTER_NAME=es34 \
+-e ES_HEAP_SIZE=15g \
+--name=es34 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data35:/data \
+-p 8115:9200 \
+-e ES_CLUSTER_NAME=es35 \
+-e ES_HEAP_SIZE=15g \
+--name=es35 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data36:/data \
+-p 8116:9200 \
+-e ES_CLUSTER_NAME=es36 \
+-e ES_HEAP_SIZE=15g \
+--name=es36 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data37:/data \
+-p 8117:9200 \
+-e ES_CLUSTER_NAME=es37 \
+-e ES_HEAP_SIZE=15g \
+--name=es37 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data38:/data \
+-p 8118:9200 \
+-e ES_CLUSTER_NAME=es38 \
+-e ES_HEAP_SIZE=15g \
+--name=es38 --restart=always mikeplavsky/elasticsearch
+
+docker run \
+-d \
+-m 16g \
+-v /data/data39:/data \
+-p 8119:9200 \
+-e ES_CLUSTER_NAME=es39 \
+-e ES_HEAP_SIZE=15g \
+--name=es39 --restart=always mikeplavsky/elasticsearch
+
