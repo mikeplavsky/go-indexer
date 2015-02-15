@@ -17,10 +17,16 @@ RUN git clone git@bitbucket.org:maplpro/go-convert.git src/go-convert && \
     git clone git@bitbucket.org:maplpro/go-indexer.git src/go-indexer && \
     git clone git@bitbucket.org:maplpro/go-s3.git src/go-s3 && \
     git clone git@bitbucket.org:maplpro/go-send.git src/go-send && \
+    git clone git@bitbucket.org:maplpro/esspeed.git src/esspeed && \
+    git clone git@bitbucket.org:maplpro/repeater.git src/repeater && \
     go get -d go-indexer && \
     go get -d go-s3 && \
     go get -d go-send && \
+    go get -d esspeed && \
+    go get -d repeater && \
     go install go-s3 && \	
+    go install repeater && \	
+    go install esspeed && \	
     go install go-send && \	
     go install go-indexer && \	
     go install go-convert	
