@@ -1,6 +1,5 @@
 {{range .}}
-docker run \
--d \
+docker create \
 -m 16g \
 -v /data/data{{.}}:/data \
 -p {{add . 8080}}:9200 \
