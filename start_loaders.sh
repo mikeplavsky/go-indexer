@@ -63,19 +63,3 @@ docker start loader30
 
 docker start loader31
 
-docker start loader32
-
-docker start loader33
-
-docker start loader34
-
-docker start loader35
-
-docker start loader36
-
-docker start loader37
-
-docker start loader38
-
-docker start loader39
-

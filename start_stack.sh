@@ -63,19 +63,3 @@ docker start es30
 
 docker start es31
 
-docker start es32
-
-docker start es33
-
-docker start es34
-
-docker start es35
-
-docker start es36
-
-docker start es37
-
-docker start es38
-
-docker start es39
-
