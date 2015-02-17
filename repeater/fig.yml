@@ -1,0 +1,18 @@
+{{range .}}
+ls{{.}}:
+    image: mikeplavsky/docker-logtash
+    links: 
+        - es{{.}}
+es{{.}}:
+    image: mikeplavsky/elasticsearch
+    ports: 
+        - "9200:9200"    
+
+kibana{{.}}:
+    image: mikeplavsky/kibana
+    links:
+        - es{{.}}
+    ports:
+        - "{{add . 8080}}:5601"
+{{end}}
+    
