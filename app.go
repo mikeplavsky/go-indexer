@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -14,6 +15,7 @@ import (
 )
 
 var (
+	S3_PATH,
 	ES_QUEUE,
 	ES_INDEXER string
 )
@@ -52,6 +54,13 @@ func index(q *sqs.Queue, s3 *s3.S3) error {
 	if err != nil {
 		return err
 	}
+
+	S3_PATH = fmt.Sprintf(
+		"https://s3.amazonaws.com/%v/%v",
+		bucket,
+		path)
+
+	os.Setenv("S3_PATH", S3_PATH)
 
 	f, err := ioutil.TempFile(
 		"",
