@@ -18,8 +18,7 @@
 
 		  "@timestamp" : {
 		    "type" : "date",
-		    "format" : "dateOptionalTime",
-                    "store" : true 
+		    "format" : "dateOptionalTime"
 		  },
 		  "agent" : {
 		    "type" : "string"
@@ -35,10 +34,6 @@
 		  },
 		  "msg_type" : {
 		    "type" : "string"
-		  },
-		  "path" : {
-		    "type" : "string",
-                    "store" : "true"
 		  },
 		  "pid" : {
 		    "type" : "string"
