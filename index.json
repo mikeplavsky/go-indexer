@@ -6,12 +6,46 @@
     },
     "mappings": {
         "_default_" : {
+
            "_source": {
                "enabled": false
             },
            "_all": {
                "enabled": false
-            }
+            },
+
+	  "properties" : {
+
+		  "@timestamp" : {
+		    "type" : "date",
+		    "format" : "dateOptionalTime"
+		  },
+		  "path" : {
+		    "type" : "string",
+                    "store": true
+		  },
+		  "agent" : {
+		    "type" : "string"
+		  },
+		  "coll" : {
+		    "type" : "string"
+		  },
+		  "mbx" : {
+		    "type" : "string"
+		  },
+		  "msg" : {
+		    "type" : "string"
+		  },
+		  "msg_type" : {
+		    "type" : "string"
+		  },
+		  "pid" : {
+		    "type" : "string"
+		  },
+		  "tid" : {
+		    "type" : "string"
+		  }
+             }
         }
     }
 }

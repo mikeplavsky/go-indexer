@@ -11,7 +11,7 @@ RUN chmod 600 /root/.ssh/id_rsa && \
     apt-get install unzip -y && \
     apt-get install -y vim		
 
-ENV UPDATED=15.02.2015.0
+ENV UPDATED=17.02.2015.7
 
 RUN git clone git@bitbucket.org:maplpro/go-convert.git src/go-convert && \
     git clone git@bitbucket.org:maplpro/go-indexer.git src/go-indexer && \
