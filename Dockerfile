@@ -11,3 +11,6 @@ COPY go-send /go/src/go-indexer/go-send
 COPY repeater /go/src/go-indexer/repeater
 COPY esspeed /go/src/go-indexer/esspeed
 
+RUN go get ./... && \
+    go install ./...
+
