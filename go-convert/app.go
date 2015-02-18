@@ -7,14 +7,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
 	"time"
-
-	_ "net/http/pprof"
 )
 
 var S3_PATH string
@@ -111,13 +108,6 @@ func main() {
 	runtime.GOMAXPROCS(num)
 
 	log.Println("Num CPUs:", num)
-
-	go func() {
-		log.Println(
-			http.ListenAndServe(
-				"0.0.0.0:6060",
-				nil))
-	}()
 
 	in := make(chan event)
 
