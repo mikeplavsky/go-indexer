@@ -1,3 +1,0 @@
-{{range .}}
-docker start loader{{.}}
-{{end}}

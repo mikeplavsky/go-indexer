@@ -1,9 +1,0 @@
-{{range .}}
-docker create \
--m 15g \
--v /data/data{{.}}:/data \
--p {{add . 8080}}:9200 \
--e ES_CLUSTER_NAME=es \
--e ES_HEAP_SIZE=6g \
---name=es{{.}} --privileged --restart=always mikeplavsky/elasticsearch
-{{end}}

@@ -1,3 +1,0 @@
-{{range .}}
-docker start es{{.}}
-{{end}}
