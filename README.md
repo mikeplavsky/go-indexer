@@ -1,11 +1,14 @@
 # go-indexer
 Docker container for indexing of zipped log files from AWS S3
 
-Choose image: 
+### Choose instance type. 
+
+Criteria:
 
 * Number of events = Number of files * 70K
 * Time to index = Number of events / Speed
 * One log file ~ 70K events
+* Index Size ~ Unziped Logs Size / 3
 
 Resources needed:
 - Memory: 6.5GB per CPU 
