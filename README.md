@@ -40,6 +40,14 @@ Steps to run:
     - ./run_kibana.sh
     - Go to https://IP
     
+- To Reindex
+
+    - ./stop_loaders.sh
+    - ./stop_stack.sh
+    - sudo rm -rf /data
+    - Run Indexer
+ 
+    
     
     
 
