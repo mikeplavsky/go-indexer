@@ -24,8 +24,12 @@ Steps to run:
     - chmod 600 ~/.ssh/id_rsa
     
 - git clone git@github.com:GitQuest/go-indexer.git
+ 
 - cd go-indexer/
+
 - docker build -t go_indexer .
+
 - ./run_env.sh
+
 - go-s3 l dmp-log-analysis/D4755B98-A20C-42B1-A685-D42B5B326B52/folder/UnifiedMailSync_1 | go-send
 
