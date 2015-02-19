@@ -37,7 +37,14 @@ type folder struct {
 
 type T interface{}
 
-var auth aws.Auth
+var auth = make(chan aws.Auth)
+
+func authGen() {
+	for {
+		res, _ := aws.GetAuth("", "")
+		auth <- res
+	}
+}
 
 func retryCall(
 	f func() (T, error)) T {
@@ -82,7 +89,7 @@ func getFolder(name,
 	delim,
 	marker string) *s3.ListResp {
 
-	s := s3.New(auth, aws.USEast)
+	s := s3.New(<-auth, aws.USEast)
 	b := s.Bucket(name)
 
 	f := func() (T, error) {
@@ -164,11 +171,7 @@ func walkBucket(name,
 	parent string,
 	get getFolderFunc) chan s3.Key {
 
-	auth_func := func() (T, error) {
-		return aws.GetAuth("", "")
-	}
-
-	auth = retryCall(auth_func).(aws.Auth)
+	go authGen()
 
 	var wFdrs sync.WaitGroup
 	bucket := bucket{name, &wFdrs, get}
