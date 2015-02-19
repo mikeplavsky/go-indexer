@@ -47,10 +47,6 @@ Steps to run:
     - export AWS_SECRET_ACCESS_KEY=...
     - export ES_QUEUE=...
     - export ES_STACK_NUM=...
-    
-- Copy your GitHub Key to .ssh
-    - scp -i ~/.ssh/id_rsa ~/.ssh/id_rsa ubuntu@54.159.121.204:/home/ubuntu/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
 
 - Run Indexer
     
@@ -77,9 +73,3 @@ Steps to run:
     - ./stop_stack.sh
     - sudo rm -rf /data
     - Run Indexer
- 
-    
-    
-    
-
-
