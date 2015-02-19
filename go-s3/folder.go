@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/golang/glog"
 	"github.com/mitchellh/goamz/aws"
 	"github.com/mitchellh/goamz/s3"
 )
@@ -36,6 +37,8 @@ type folder struct {
 
 type T interface{}
 
+var auth aws.Auth
+
 func retryCall(
 	f func() (T, error)) T {
 
@@ -62,8 +65,12 @@ func retryCall(
 				return r.t
 			}
 
+			glog.Info(r.err)
+
 		case <-time.After(time.Second * 30):
-			break
+
+			glog.Info("Timeout, retrying...")
+
 		}
 
 	}
@@ -74,8 +81,6 @@ func getFolder(name,
 	folder,
 	delim,
 	marker string) *s3.ListResp {
-
-	auth, _ := aws.EnvAuth()
 
 	s := s3.New(auth, aws.USEast)
 	b := s.Bucket(name)
@@ -158,6 +163,12 @@ func listFolders(b bucket,
 func walkBucket(name,
 	parent string,
 	get getFolderFunc) chan s3.Key {
+
+	auth_func := func() (T, error) {
+		return aws.GetAuth("", "")
+	}
+
+	auth = retryCall(auth_func).(aws.Auth)
 
 	var wFdrs sync.WaitGroup
 	bucket := bucket{name, &wFdrs, get}
