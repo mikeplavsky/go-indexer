@@ -33,6 +33,8 @@ Steps to run:
     - ./create_stack.sh 
     - ./create_loaders.sh 
     - ./start_stack.sh
+    - Check stack:
+      - curl localhost:8080/_cat/nodes?v there should be $ES_STACK_NUM nodes
     - ./start_loaders.sh
 
 - Rub Kibana 
