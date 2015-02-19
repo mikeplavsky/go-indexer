@@ -41,7 +41,7 @@ func send(s3path string, q *sqs.Queue) {
 
 func main() {
 
-	auth, _ := aws.EnvAuth()
+	auth, _ := aws.GetAuth("", "", "", time.Time{})
 	sqs := sqs.New(auth, aws.USEast)
 
 	q, err := sqs.GetQueue(os.Getenv("ES_QUEUE"))
