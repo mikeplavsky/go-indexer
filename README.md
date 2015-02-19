@@ -22,14 +22,25 @@ Steps to run:
 - Copy your GitHub Key to .ssh
     - scp -i ~/.ssh/id_rsa ~/.ssh/id_rsa ubuntu@54.159.121.204:/home/ubuntu/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
+
+- Run Indexer
     
-- git clone git@github.com:GitQuest/go-indexer.git
- 
-- cd go-indexer/
+    - git clone git@github.com:GitQuest/go-indexer.git
+    - cd go-indexer/
+    - docker build -t go_indexer .
+    - ./run_env.sh
+    - go-s3 l dmp-log-analysis/D4755B98-A20C-42B1-A685-D42B5B326B52/folder/UnifiedMailSync_1 | go-send
+    - ./create_stack.sh 
+    - ./create_loaders.sh 
+    - ./start_stack.sh
+    - ./start_loaders.sh
 
-- docker build -t go_indexer .
+- Rub Kibana 
 
-- ./run_env.sh
+    - ./run_kibana.sh
+    - Go to https://IP
+    
+    
+    
 
-- go-s3 l dmp-log-analysis/D4755B98-A20C-42B1-A685-D42B5B326B52/folder/UnifiedMailSync_1 | go-send
 
