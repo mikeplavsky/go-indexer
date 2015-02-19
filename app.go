@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
@@ -20,7 +21,26 @@ var (
 	ES_INDEXER string
 )
 
-func index(q *sqs.Queue, s3 *s3.S3) error {
+func index() error {
+
+	auth, err := aws.GetAuth("", "", "", time.Time{})
+
+	if err != nil {
+		return err
+	}
+
+	sqs := sqs.New(auth, aws.USEast)
+	q, err := sqs.GetQueue(ES_QUEUE)
+
+	if err != nil {
+		return err
+	}
+
+	s3 := s3.New(auth, aws.USEast)
+
+	if err != nil {
+		return err
+	}
 
 	ps := map[string]string{
 		"WaitTimeSeconds":     "10",
@@ -98,25 +118,8 @@ func main() {
 	ES_QUEUE = os.Getenv("ES_QUEUE")
 	ES_INDEXER = os.Getenv("ES_INDEXER")
 
-	auth, _ := aws.EnvAuth()
-	sqs := sqs.New(auth, aws.USEast)
-
-	q, err := sqs.GetQueue(ES_QUEUE)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	log.Println(q)
-
-	s3 := s3.New(auth, aws.USEast)
-
-	if err != nil {
-		log.Println(err)
-	}
-
 	for {
-		if err := index(q, s3); err != nil {
+		if err := index(); err != nil {
 			log.Println(err)
 		}
 	}
