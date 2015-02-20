@@ -41,7 +41,7 @@ Steps to run:
       - sudo service docker restart
       - newgrp docker
 
-- Set Environment Variables 
+- Set Environment Variables, if IAM role is used - AWS_... variables are not needed
 
     - export AWS_ACCESS_KEY_ID=...
     - export AWS_SECRET_ACCESS_KEY=...
