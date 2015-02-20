@@ -4,7 +4,7 @@ RUN apt-get update -y && \
     apt-get install unzip -y && \
     apt-get install -y vim	 
 
-ENV UPDATED=18.02.2015.0
+ENV UPDATED 20.02.2015.0
 
 COPY . /go/src/go-indexer/
 
