@@ -2,9 +2,6 @@ package convert
 
 import (
 	"bufio"
-	"encoding/json"
-	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -12,49 +9,21 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
-	"time"
 )
-
-var FILE_PATH string
 
 type event struct {
 	line string
 	num  int
 }
 
-func parse(path string,
-	i string,
-	num int) (string, error) {
-
-	ts := strings.SplitN(i, "\t", 9)
-
-	if len(ts) != 9 {
-		return i, errors.New("can't parse")
-	}
-
-	d := ts[0] + "\t" + ts[1]
-	t, _ := time.Parse("2006-01-02\t15:04:05.0000", d)
-
-	obj := map[string]interface{}{}
-
-	obj["@timestamp"] = t
-	obj["path"] = path + fmt.Sprintf("#%v", num)
-	obj["pid"] = ts[2]
-	obj["tid"] = ts[3]
-	obj["agent"] = ts[4]
-	obj["coll"] = ts[5]
-	obj["mbx"] = ts[6]
-	obj["msg_type"] = ts[7]
-	obj["msg"] = ts[8]
-
-	res, _ := json.Marshal(obj)
-
-	return string(res), nil
-
-}
+type Parse func(
+	path,
+	line string,
+	num int) (res string, err error)
 
 func worker(
 	path string,
+	parse Parse,
 	in <-chan event,
 	quit <-chan bool,
 	done chan<- string) {
@@ -96,7 +65,10 @@ func worker(
 
 }
 
-func Convert(r io.Reader, path string) {
+func Convert(
+	path string,
+	r io.Reader,
+	parse Parse) {
 
 	num := runtime.GOMAXPROCS(-1)
 
@@ -110,6 +82,7 @@ func Convert(r io.Reader, path string) {
 	for i := 0; i < num; i++ {
 		go worker(
 			path,
+			parse,
 			in,
 			quit,
 			done)
