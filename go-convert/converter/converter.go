@@ -50,6 +50,7 @@ func worker(
 			if err != nil {
 				continue
 			}
+
 			f.WriteString(
 				`{"index": {"_type": "log"}}` + "\n")
 			f.WriteString(string(res) + "\n")

@@ -103,7 +103,7 @@ func TestNextIndex(t *testing.T) {
 		}
 
 		if idx["index"]["_type"] != "log" {
-			t.Error(line, "wrong index type")
+			t.Error(line, "wrong index")
 		}
 	}
 
