@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestParseTimestamp(t *testing.T) {
+func TestParseTime(t *testing.T) {
 
 	cases := []struct {
 		uri, expectedTimestamp string
@@ -18,13 +19,13 @@ func TestParseTimestamp(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		timestamp, err := ParseTimestamp(testCase.uri)
+		timestamp, err := parseTime(testCase.uri)
 		assert.Equal(t, testCase.expectedTimestamp, timestamp, fmt.Sprintf("they should be equal. Error: %s", err))
 	}
 }
 
 func TestParseLine(t *testing.T) {
-	res, err := ParseLine("1010760	buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip")
+	res, err := parseLine("1010760	buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip")
 	assert.Equal(t, nil, err, fmt.Sprintf("they should be equal. Error: %s", err))
 	assert.Equal(t, "1010760", res["size"])
 	assert.Equal(t, "C-UST-OM-ER", res["customer"])
