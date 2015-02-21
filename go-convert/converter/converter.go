@@ -25,7 +25,6 @@ func worker(
 	path string,
 	parse Parse,
 	in <-chan event,
-	quit <-chan bool,
 	done chan<- string) {
 
 	f, err := ioutil.TempFile(
@@ -40,7 +39,12 @@ func worker(
 
 	for {
 		select {
-		case e := <-in:
+		case e, ok := <-in:
+
+			if !ok {
+				done <- f.Name()
+				return
+			}
 
 			res, err := parse(
 				path,
@@ -55,10 +59,6 @@ func worker(
 				`{"index": {"_type": "log"}}` + "\n")
 			f.WriteString(string(res) + "\n")
 
-		case <-quit:
-
-			done <- f.Name()
-			return
 		}
 	}
 
@@ -73,8 +73,6 @@ func Convert(
 	num := runtime.GOMAXPROCS(-1)
 
 	in := make(chan event)
-
-	quit := make(chan bool)
 	done := make(chan string)
 
 	for i := 0; i < num; i++ {
@@ -82,7 +80,6 @@ func Convert(
 			path,
 			parse,
 			in,
-			quit,
 			done)
 	}
 
@@ -101,7 +98,7 @@ func Convert(
 
 	}
 
-	close(quit)
+	close(in)
 
 	res := []string{}
 
