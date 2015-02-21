@@ -48,10 +48,6 @@ func worker(
 				e.num)
 
 			if err != nil {
-				log.Printf(
-					"%v\t%v",
-					err,
-					e.line)
 				continue
 			}
 
@@ -61,9 +57,7 @@ func worker(
 
 		case <-quit:
 
-			log.Println(f.Name())
 			done <- f.Name()
-
 			return
 		}
 	}
@@ -76,8 +70,6 @@ func Convert(
 	parse Parse) {
 
 	num := runtime.GOMAXPROCS(-1)
-
-	log.Println("Num CPUs:", num)
 
 	in := make(chan event)
 
