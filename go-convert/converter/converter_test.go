@@ -21,13 +21,13 @@ func TestValue(t *testing.T) {
 		path,
 		line string,
 		num int) ([]byte, error) {
-		
+
 		res := map[string]interface{}{}
-		
+
 		res["path"] = path
 		res["line"] = line
 		res["num"] = num
-		
+
 		return json.Marshal(res)
 
 	}
@@ -39,14 +39,25 @@ func TestValue(t *testing.T) {
 	f, _ := ioutil.ReadFile("/tmp/mage.json")
 	res := strings.Split(string(f), "\n")
 
-	var idx map[string]interface{}
+	var val map[string]interface{}
 
-	err := json.Unmarshal([]byte(res[1]), &idx)
+	err := json.Unmarshal([]byte(res[1]), &val)
 
 	if err != nil {
 		t.Error(res[1], err)
 	}
 
+	if val["path"] != "path" {
+		t.Error(val, "Wrong parsing")
+	}
+
+	if val["line"] != "one" {
+		t.Error(val, "Wrong parsing")
+	}
+
+	if val["num"].(float64) != 0 {
+		t.Error(val, "Wrong parsing")
+	}
 }
 
 func TestIndex(t *testing.T) {
