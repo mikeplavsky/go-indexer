@@ -3,18 +3,9 @@ package converter
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
-	"os"
 	"strings"
 	"testing"
 )
-
-func TestMain(m *testing.M) {
-
-	os.Remove("/tmp/mage.json")
-	os.Exit(m.Run())
-
-}
 
 func TestValue(t *testing.T) {
 
@@ -35,10 +26,13 @@ func TestValue(t *testing.T) {
 
 	r := strings.NewReader("one\ntwo\nthree")
 
-	Convert("path", r, parse)
+	out := make(chan string)
+	go Convert("path", r, parse, out)
 
-	f, _ := ioutil.ReadFile("/tmp/mage.json")
-	res := strings.Split(string(f), "\n")
+	res := []string{}
+	for v := range out {
+		res = append(res, v)
+	}
 
 	lines := []int{
 		1,
@@ -99,10 +93,13 @@ func TestNextIndex(t *testing.T) {
 
 	r := strings.NewReader("one\ntwo\nthree")
 
-	Convert("path", r, parse)
+	out := make(chan string)
+	go Convert("path", r, parse, out)
 
-	f, _ := ioutil.ReadFile("/tmp/mage.json")
-	res := strings.Split(string(f), "\n")
+	res := []string{}
+	for v := range out {
+		res = append(res, v)
+	}
 
 	for _, v := range []int{0, 2, 4} {
 
@@ -118,26 +115,6 @@ func TestNextIndex(t *testing.T) {
 		if idx["index"]["_type"] != "log" {
 			t.Error(line, "wrong index")
 		}
-	}
-
-}
-
-func TestOutput(t *testing.T) {
-
-	var parse = func(
-		path,
-		line string,
-		num int) ([]byte, error) {
-		return []byte(""), nil
-	}
-
-	r := strings.NewReader("one")
-
-	Convert("path", r, parse)
-	_, err := ioutil.ReadFile("/tmp/mage.json")
-
-	if err != nil {
-		t.Error(err)
 	}
 
 }
@@ -170,17 +147,16 @@ func TestParsingError(t *testing.T) {
 
 	r := strings.NewReader("one\ntwo\nthree")
 
-	Convert("path", r, parse)
-	res, err := ioutil.ReadFile("/tmp/mage.json")
+	out := make(chan string)
+	go Convert("path", r, parse, out)
 
-	if err != nil {
-		t.Error(err)
+	res := []string{}
+	for v := range out {
+		res = append(res, v)
 	}
 
-	ls := strings.Split(string(res), "\n")
-
-	if len(ls) != 5 {
-		t.Error("Wrong length", len(ls), ls)
+	if len(res) != 4 {
+		t.Error("Wrong length", len(res), res)
 	}
 
 }

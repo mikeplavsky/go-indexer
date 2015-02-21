@@ -67,7 +67,8 @@ func worker(
 func Convert(
 	path string,
 	r io.Reader,
-	parse Parse) {
+	parse Parse,
+	out chan<- string) {
 
 	num := runtime.GOMAXPROCS(-1)
 
@@ -109,13 +110,25 @@ func Convert(
 		res = append(res, f)
 	}
 
-	cmd := "cat " + strings.Join(res, " ") + "> /tmp/mage.json"
+	cmd := "cat " + strings.Join(res, " ")
 	cat := exec.Command("bash", "-c", cmd)
 
-	_, err := cat.Output()
+	catout, err := cat.StdoutPipe()
+
 	if err != nil {
 		log.Println(err)
 	}
+
+	if err := cat.Start(); err != nil {
+		log.Println(err)
+	}
+
+	ret := bufio.NewScanner(catout)
+
+	for ret.Scan() {
+		out <- ret.Text()
+	}
+	defer close(out)
 
 	for _, n := range res {
 		os.Remove(n)
