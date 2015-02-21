@@ -10,6 +10,11 @@ import (
 
 func TestError(t *testing.T) {
 
+	_, err := parse("", "", 0)
+	if err == nil {
+		t.Error("parsing does not return error")
+	}
+
 }
 
 func TestParse(t *testing.T) {
