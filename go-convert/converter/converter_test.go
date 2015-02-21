@@ -1,4 +1,4 @@
-package convert
+package converter
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ func TestMain(m *testing.M) {
 
 }
 
-func TestNextValue(t *testing.T) {
+func TestValue(t *testing.T) {
 
 	var parse = func(
 		path,
@@ -39,100 +39,40 @@ func TestNextValue(t *testing.T) {
 	f, _ := ioutil.ReadFile("/tmp/mage.json")
 	res := strings.Split(string(f), "\n")
 
-	var val map[string]interface{}
-
-	err := json.Unmarshal([]byte(res[3]), &val)
-
-	if err != nil {
-		t.Error(res[1], err)
+	table := []struct {
+		idx  int
+		line string
+		num  float64
+	}{
+		{1, "one", 0},
+		{3, "two", 1},
+		{5, "three", 2},
 	}
 
-	if val["path"] != "path" {
-		t.Error(val, "Wrong parsing")
-	}
+	for _, v := range table {
 
-	if val["line"] != "two" {
-		t.Error(val, "Wrong parsing")
-	}
+		line := res[v.idx]
 
-	if val["num"].(float64) != 1 {
-		t.Error(val, "Wrong parsing")
-	}
-}
+		var val map[string]interface{}
+		err := json.Unmarshal([]byte(line), &val)
 
-func TestValue(t *testing.T) {
+		if err != nil {
+			t.Error(line, err)
+		}
 
-	var parse = func(
-		path,
-		line string,
-		num int) ([]byte, error) {
+		if val["path"] != "path" {
+			t.Error(v.idx, v, val, "Wrong parsing")
+		}
 
-		res := map[string]interface{}{}
+		if val["line"] != v.line {
+			t.Error(v.idx, v, val, "Wrong parsing")
+		}
 
-		res["path"] = path
-		res["line"] = line
-		res["num"] = num
-
-		return json.Marshal(res)
+		if val["num"].(float64) != v.num {
+			t.Error(v.idx, v, val, "Wrong parsing")
+		}
 
 	}
-
-	r := strings.NewReader("one")
-
-	Convert("path", r, parse)
-
-	f, _ := ioutil.ReadFile("/tmp/mage.json")
-	res := strings.Split(string(f), "\n")
-
-	var val map[string]interface{}
-
-	err := json.Unmarshal([]byte(res[1]), &val)
-
-	if err != nil {
-		t.Error(res[1], err)
-	}
-
-	if val["path"] != "path" {
-		t.Error(val, "Wrong parsing")
-	}
-
-	if val["line"] != "one" {
-		t.Error(val, "Wrong parsing")
-	}
-
-	if val["num"].(float64) != 0 {
-		t.Error(val, "Wrong parsing")
-	}
-}
-
-func TestIndex(t *testing.T) {
-
-	var parse = func(
-		path,
-		line string,
-		num int) ([]byte, error) {
-		return []byte(""), nil
-	}
-
-	r := strings.NewReader("one")
-
-	Convert("path", r, parse)
-
-	f, _ := ioutil.ReadFile("/tmp/mage.json")
-	res := strings.Split(string(f), "\n")
-
-	var idx map[string]map[string]string
-
-	err := json.Unmarshal([]byte(res[0]), &idx)
-
-	if err != nil {
-		t.Error(res[0], err)
-	}
-
-	if idx["index"]["_type"] != "log" {
-		t.Error(res[0], "wrong index type")
-	}
-
 }
 
 func TestNextIndex(t *testing.T) {
@@ -144,23 +84,27 @@ func TestNextIndex(t *testing.T) {
 		return []byte(""), nil
 	}
 
-	r := strings.NewReader("one\ntwo")
+	r := strings.NewReader("one\ntwo\nthree")
 
 	Convert("path", r, parse)
 
 	f, _ := ioutil.ReadFile("/tmp/mage.json")
 	res := strings.Split(string(f), "\n")
 
-	var idx map[string]map[string]string
+	for _, v := range []int{0, 2, 4} {
 
-	err := json.Unmarshal([]byte(res[2]), &idx)
+		line := res[v]
 
-	if err != nil {
-		t.Error(res[2], err)
-	}
+		var idx map[string]map[string]string
+		err := json.Unmarshal([]byte(line), &idx)
 
-	if idx["index"]["_type"] != "log" {
-		t.Error(res[2], "wrong index type")
+		if err != nil {
+			t.Error(line, err)
+		}
+
+		if idx["index"]["_type"] != "log" {
+			t.Error(line, "wrong index type")
+		}
 	}
 
 }
