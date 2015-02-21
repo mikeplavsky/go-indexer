@@ -15,6 +15,51 @@ func TestMain(m *testing.M) {
 
 }
 
+func TestNextValue(t *testing.T) {
+
+	var parse = func(
+		path,
+		line string,
+		num int) ([]byte, error) {
+
+		res := map[string]interface{}{}
+
+		res["path"] = path
+		res["line"] = line
+		res["num"] = num
+
+		return json.Marshal(res)
+
+	}
+
+	r := strings.NewReader("one\ntwo\nthree")
+
+	Convert("path", r, parse)
+
+	f, _ := ioutil.ReadFile("/tmp/mage.json")
+	res := strings.Split(string(f), "\n")
+
+	var val map[string]interface{}
+
+	err := json.Unmarshal([]byte(res[3]), &val)
+
+	if err != nil {
+		t.Error(res[1], err)
+	}
+
+	if val["path"] != "path" {
+		t.Error(val, "Wrong parsing")
+	}
+
+	if val["line"] != "two" {
+		t.Error(val, "Wrong parsing")
+	}
+
+	if val["num"].(float64) != 1 {
+		t.Error(val, "Wrong parsing")
+	}
+}
+
 func TestValue(t *testing.T) {
 
 	var parse = func(
@@ -86,6 +131,36 @@ func TestIndex(t *testing.T) {
 
 	if idx["index"]["_type"] != "log" {
 		t.Error(res[0], "wrong index type")
+	}
+
+}
+
+func TestNextIndex(t *testing.T) {
+
+	var parse = func(
+		path,
+		line string,
+		num int) ([]byte, error) {
+		return []byte(""), nil
+	}
+
+	r := strings.NewReader("one\ntwo")
+
+	Convert("path", r, parse)
+
+	f, _ := ioutil.ReadFile("/tmp/mage.json")
+	res := strings.Split(string(f), "\n")
+
+	var idx map[string]map[string]string
+
+	err := json.Unmarshal([]byte(res[2]), &idx)
+
+	if err != nil {
+		t.Error(res[2], err)
+	}
+
+	if idx["index"]["_type"] != "log" {
+		t.Error(res[2], "wrong index type")
 	}
 
 }
