@@ -48,6 +48,10 @@ func worker(
 				e.num)
 
 			if err != nil {
+				log.Printf(
+					"%v\t%v",
+					err,
+					e.line)
 				continue
 			}
 
