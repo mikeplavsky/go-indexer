@@ -8,6 +8,10 @@ import (
 	"testing"
 )
 
+func TestError(t *testing.T) {
+
+}
+
 func TestParse(t *testing.T) {
 
 	in := []string{
@@ -24,7 +28,7 @@ func TestParse(t *testing.T) {
 	r := strings.NewReader(strings.Join(in, "\t"))
 
 	converter.Convert(
-		"tesing",
+		"testing",
 		r,
 		parse)
 
@@ -46,6 +50,12 @@ func TestParse(t *testing.T) {
 
 	if !strings.Contains(w, "2014") {
 		t.Error("wrong year")
+	}
+
+	p := val["path"].(string)
+
+	if p != "testing#0" {
+		t.Error("wrong path")
 	}
 
 	fs := []struct {
