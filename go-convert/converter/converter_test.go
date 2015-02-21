@@ -2,6 +2,7 @@ package converter
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -125,6 +126,49 @@ func TestOutput(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
+	}
+
+}
+
+func TestParsingError(t *testing.T) {
+
+	table := []struct {
+		line string
+		err  error
+	}{
+		{"a", nil},
+		{"b", errors.New("")},
+		{"c", nil},
+	}
+
+	i := 0
+
+	var parse = func(
+		path,
+		line string,
+		num int) (res []byte, err error) {
+
+		res = []byte(table[i].line)
+		err = table[i].err
+
+		i = i + 1
+		return
+
+	}
+
+	r := strings.NewReader("one\ntwo\nthree")
+
+	Convert("path", r, parse)
+	res, err := ioutil.ReadFile("/tmp/mage.json")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	ls := strings.Split(string(res), "\n") 
+	
+	if len(ls) != 5 {
+		t.Error("Wrong length", len(ls), ls)
 	}
 
 }
