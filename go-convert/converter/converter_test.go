@@ -165,8 +165,8 @@ func TestParsingError(t *testing.T) {
 		t.Error(err)
 	}
 
-	ls := strings.Split(string(res), "\n") 
-	
+	ls := strings.Split(string(res), "\n")
+
 	if len(ls) != 5 {
 		t.Error("Wrong length", len(ls), ls)
 	}

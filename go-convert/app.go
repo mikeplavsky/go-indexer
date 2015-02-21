@@ -1,34 +1,29 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"runtime"
 	"strings"
 	"time"
+
+	"go-indexer/go-convert/converter"
 )
 
 var S3_PATH string
 
-type event struct {
-	line string
-	num  int
-}
-
-func parse(path string,
+func parse(
+	path,
 	i string,
-	num int) (string, error) {
+	num int) ([]byte, error) {
 
 	ts := strings.SplitN(i, "\t", 9)
 
 	if len(ts) != 9 {
-		return i, errors.New("can't parse")
+		return []byte(i), errors.New("can't parse")
 	}
 
 	d := ts[0] + "\t" + ts[1]
@@ -48,50 +43,7 @@ func parse(path string,
 
 	res, _ := json.Marshal(obj)
 
-	return string(res), nil
-
-}
-
-func worker(
-	path string,
-	in <-chan event,
-	quit <-chan bool,
-	done chan<- string) {
-
-	f, err := ioutil.TempFile(
-		"",
-		"json")
-
-	if err != nil {
-		panic(err)
-	}
-
-	defer f.Close()
-
-	for {
-		select {
-		case e := <-in:
-
-			res, err := parse(
-				path,
-				e.line,
-				e.num)
-
-			if err != nil {
-				continue
-			}
-			f.WriteString(
-				`{"index": {"_type": "log"}}` + "\n")
-			f.WriteString(res + "\n")
-
-		case <-quit:
-
-			log.Println(f.Name())
-			done <- f.Name()
-
-			return
-		}
-	}
+	return res, nil
 
 }
 
@@ -109,53 +61,9 @@ func main() {
 
 	log.Println("Num CPUs:", num)
 
-	in := make(chan event)
-
-	quit := make(chan bool)
-	done := make(chan string)
-
-	for i := 0; i < num; i++ {
-		go worker(
-			S3_PATH,
-			in,
-			quit,
-			done)
-	}
-
-	scanner := bufio.NewScanner(os.Stdin)
-
-	l := 0
-
-	for scanner.Scan() {
-
-		in <- event{
-			scanner.Text(),
-			l,
-		}
-
-		l += 1
-
-	}
-
-	close(quit)
-
-	res := []string{}
-
-	for i := 0; i < num; i++ {
-		f := <-done
-		res = append(res, f)
-	}
-
-	cmd := "cat " + strings.Join(res, " ") + "> /tmp/mage.json"
-	cat := exec.Command("bash", "-c", cmd)
-
-	_, err := cat.Output()
-	if err != nil {
-		log.Println(err)
-	}
-
-	for _, n := range res {
-		os.Remove(n)
-	}
+	converter.Convert(
+		S3_PATH,
+		os.Stdin,
+		parse)
 
 }
