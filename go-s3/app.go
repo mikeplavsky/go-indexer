@@ -22,6 +22,34 @@ type bucketSize struct {
 	count, size int64
 }
 
+func sizeBucket(name,
+	parent string,
+	res chan bucketSize,
+	get getFolderFunc) {
+
+	items := walkBucket(name, parent, get)
+
+	for {
+
+		select {
+
+		case k, ok := <-items:
+
+			if !ok {
+				close(res)
+				return
+			}
+
+			fmt.Printf(
+				"%v\t%v/%v\n",
+				k.Size,
+				name,
+				k.Key)
+		}
+
+	}
+}
+
 func listBucket(name,
 	parent string,
 	res chan bucketSize,
@@ -142,6 +170,14 @@ func main() {
 			Usage:     "lists folder items",
 			Action: func(c *cli.Context) {
 				cmdBucket(c, listBucket)
+			},
+		},
+		{
+			Name:      "size",
+			ShortName: "s",
+			Usage:     "lists folder items and size",
+			Action: func(c *cli.Context) {
+				cmdBucket(c, sizeBucket)
 			},
 		},
 	}
