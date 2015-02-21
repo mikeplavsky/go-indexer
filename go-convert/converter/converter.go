@@ -19,7 +19,7 @@ type event struct {
 type Parse func(
 	path,
 	line string,
-	num int) (res string, err error)
+	num int) (res []byte, err error)
 
 func worker(
 	path string,
@@ -52,7 +52,7 @@ func worker(
 			}
 			f.WriteString(
 				`{"index": {"_type": "log"}}` + "\n")
-			f.WriteString(res + "\n")
+			f.WriteString(string(res) + "\n")
 
 		case <-quit:
 
