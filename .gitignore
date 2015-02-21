@@ -1,14 +1,1 @@
-*
-!.gitignore
-!*.go
-!.dockerignore
-!Dockerfile
-!*.json
-!*.sh
-!*.template
-!go-convert
-!go-send
-!esspeed
-!repeater
-!go-s3
-!s3-2-es
+*.swp
