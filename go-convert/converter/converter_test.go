@@ -40,19 +40,22 @@ func TestValue(t *testing.T) {
 	f, _ := ioutil.ReadFile("/tmp/mage.json")
 	res := strings.Split(string(f), "\n")
 
-	table := []struct {
-		idx  int
-		line string
-		num  float64
-	}{
-		{1, "one", 0},
-		{3, "two", 1},
-		{5, "three", 2},
+	lines := []int{
+		1,
+		3,
+		5}
+
+	table := map[float64]string{
+		0: "one",
+		1: "two",
+		2: "three",
 	}
 
-	for _, v := range table {
+	check := map[float64]bool{}
 
-		line := res[v.idx]
+	for _, v := range lines {
+
+		line := res[v]
 
 		var val map[string]interface{}
 		err := json.Unmarshal([]byte(line), &val)
@@ -62,18 +65,27 @@ func TestValue(t *testing.T) {
 		}
 
 		if val["path"] != "path" {
-			t.Error(v.idx, v, val, "Wrong parsing")
+			t.Error(v, v, val, "Wrong parsing")
 		}
 
-		if val["line"] != v.line {
-			t.Error(v.idx, v, val, "Wrong parsing")
+		n := val["num"].(float64)
+
+		if val["line"] != table[n] {
+			t.Error(v, v, val, "Wrong parsing")
 		}
 
-		if val["num"].(float64) != v.num {
-			t.Error(v.idx, v, val, "Wrong parsing")
-		}
+		check[n] = true
 
 	}
+
+	for _, i := range []float64{0, 1, 2} {
+		if !check[i] {
+			t.Errorf(
+				"Line %v has not been parsed",
+				i)
+		}
+	}
+
 }
 
 func TestNextIndex(t *testing.T) {
