@@ -17,7 +17,6 @@ func parseTime(uri string) (string, error) {
 
 		"20060102_150405": `.*_(\d+_\d+).*\.zip`,
 		"01.02.2006":      `.*\.(\d{2}\.\d{2}\.\d{4}).*\.zip`,
-
 	}
 
 	for format, pattern := range formats {
@@ -56,7 +55,6 @@ func parseLine(
 
 	customerID := regexp.MustCompile(
 		`[^\/]*\/([^\/]*).*`).ReplaceAllString(uri, "$1")
-
 
 	dataContract := map[string]string{
 		"uri":        uri,
