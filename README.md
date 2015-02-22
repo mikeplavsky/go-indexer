@@ -76,7 +76,7 @@ Steps to run:
     - ./create_loaders.sh 
     - ./start_loaders.sh
 
-- Analyze uploaded logs throw Kibana: test* indecies
+- Analyze uploaded logs throw Kibana: test* indices
 
 - To Reindex
 
