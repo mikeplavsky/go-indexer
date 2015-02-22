@@ -47,26 +47,35 @@ Steps to run:
     - export AWS_SECRET_ACCESS_KEY=...
     - export ES_QUEUE=...
     - export ES_STACK_NUM=...
-
-- Run Indexer
     
+- Prepare Image
+
     - git clone git@github.com:GitQuest/go-indexer.git
     - cd go-indexer/
     - docker build -t go_indexer .
-    - ./run_env.sh
-    - go-s3 l dmp-log-analysis/D4755B98-A20C-42B1-A685-D42B5B326B52/folder/UnifiedMailSync_1 | go-send
     - ./create_stack.sh 
-    - ./create_loaders.sh 
     - ./start_stack.sh
     - Check stack:
       - curl localhost:8080/_cat/nodes?v there should be $ES_STACK_NUM nodes
-    - ./start_loaders.sh
-
+    
+- Synchronize S3 to Elastic
+    
+    - ./run_s3.sh
+     
 - Rub Kibana 
 
     - ./run_kibana.sh
     - Go to https://IP
+
+- Analyze uploaded files throw Kibana
+
+- Run Indexer
     
+    - ./run_env.sh
+    - go-s3 l dmp-log-analysis/D4755B98-A20C-42B1-A685-D42B5B326B52/folder/UnifiedMailSync_1 | go-send
+    - ./create_loaders.sh 
+    - ./start_loaders.sh
+
 - To Reindex
 
     - ./stop_loaders.sh
