@@ -155,7 +155,7 @@ func TestParsingError(t *testing.T) {
 	}
 
 	r := strings.NewReader("one\ntwo\nthree")
-	res := callConvert(r,parse)
+	res := callConvert(r, parse)
 
 	if len(res) != 4 {
 		t.Error("Wrong length", len(res), res)

@@ -42,6 +42,6 @@ func TestParseLine(t *testing.T) {
 	assert.Equal(t, "1010760", res["size"])
 	assert.Equal(t, "C-UST-OM-ER", res["customer"])
 	assert.Equal(t, "2015-01-12T13:59:21Z", res["@timestamp"])
-	assert.Equal(t, "buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip", res["uri"])
+	assert.Equal(t, "https://s3.amazonaws.com/buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip", res["uri"])
 
 }

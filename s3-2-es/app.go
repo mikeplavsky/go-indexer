@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var formats = map[string] *regexp.Regexp{
+var formats = map[string]*regexp.Regexp{
 
 	"20060102_150405": regexp.MustCompile(`.*_(\d+_\d+).*\.zip`),
 	"01.02.2006":      regexp.MustCompile(`.*\.(\d{2}\.\d{2}\.\d{4}).*\.zip`),
@@ -47,14 +47,14 @@ func parseLine(
 
 	ps := strings.Split(uri, "/")
 
-	timestamp, err := parseTime(ps[len(ps) - 1])
+	timestamp, err := parseTime(ps[len(ps)-1])
 
 	if err != nil {
 		return nil, err
 	}
 
 	dataContract := map[string]string{
-		"uri":        uri,
+		"uri":        "https://s3.amazonaws.com/" + uri,
 		"size":       size,
 		"customer":   ps[1],
 		"@timestamp": timestamp,
