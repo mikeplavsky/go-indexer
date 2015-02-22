@@ -9,8 +9,9 @@ ENV UPDATED 22.02.2015.4
 COPY . /go/src/go-indexer/
 WORKDIR /go/src/go-indexer
 
-RUN go get ./... && \
-    go install ./...
+RUN go get -t ./... && \
+    go install ./... && \
+    go test ./...	
 
 CMD ./run.sh 
 
