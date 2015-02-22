@@ -67,7 +67,7 @@ Steps to run:
     - ./run_kibana.sh
     - Go to https://IP
 
-- Analyze uploaded files throw Kibana
+- Analyze uploaded files throw Kibana: s3data index
 
 - Run Indexer
     
@@ -75,6 +75,8 @@ Steps to run:
     - go-s3 l dmp-log-analysis/D4755B98-A20C-42B1-A685-D42B5B326B52/folder/UnifiedMailSync_1 | go-send
     - ./create_loaders.sh 
     - ./start_loaders.sh
+
+- Analyze uploaded logs throw Kibana: test* indecies
 
 - To Reindex
 
