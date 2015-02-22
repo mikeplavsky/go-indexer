@@ -3,10 +3,6 @@ package converter
 import (
 	"bufio"
 	"io"
-	"io/ioutil"
-	"log"
-	"os"
-	"os/exec"
 	"runtime"
 	"strings"
 )
@@ -25,24 +21,15 @@ func worker(
 	path string,
 	parse Parse,
 	in <-chan event,
-	done chan<- string) {
-
-	f, err := ioutil.TempFile(
-		"",
-		"json")
-
-	if err != nil {
-		panic(err)
-	}
-
-	defer f.Close()
+	out chan<- string,
+	done chan<- bool) {
 
 	for {
 		select {
 		case e, ok := <-in:
 
 			if !ok {
-				done <- f.Name()
+				done <- true
 				return
 			}
 
@@ -55,9 +42,12 @@ func worker(
 				continue
 			}
 
-			f.WriteString(
-				`{"index": {"_type": "log"}}` + "\n")
-			f.WriteString(string(res) + "\n")
+			idx := [2]string{}
+
+			idx[0] = `{"index": {"_type": "log"}}`
+			idx[1] = string(res)
+
+			out <- strings.Join(idx[:2], "\n")
 
 		}
 	}
@@ -73,13 +63,14 @@ func Convert(
 	num := runtime.GOMAXPROCS(-1)
 
 	in := make(chan event)
-	done := make(chan string)
+	done := make(chan bool)
 
 	for i := 0; i < num; i++ {
 		go worker(
 			path,
 			parse,
 			in,
+			out,
 			done)
 	}
 
@@ -100,35 +91,10 @@ func Convert(
 
 	close(in)
 
-	res := []string{}
-
 	for i := 0; i < num; i++ {
-		f := <-done
-		res = append(res, f)
+		<-done
 	}
 
-	cmd := "cat " + strings.Join(res, " ")
-	cat := exec.Command("bash", "-c", cmd)
-
-	catout, err := cat.StdoutPipe()
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	if err := cat.Start(); err != nil {
-		log.Println(err)
-	}
-
-	ret := bufio.NewScanner(catout)
-
-	for ret.Scan() {
-		out <- ret.Text()
-	}
-	defer close(out)
-
-	for _, n := range res {
-		os.Remove(n)
-	}
+	close(out)
 
 }

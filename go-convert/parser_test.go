@@ -40,7 +40,12 @@ func TestParse(t *testing.T) {
 
 	res := []string{}
 	for v := range out {
-		res = append(res, v)
+
+		ls := strings.Split(v, "\n")
+
+		for _, l := range ls {
+			res = append(res, l)
+		}
 	}
 
 	line := res[1]

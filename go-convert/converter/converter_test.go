@@ -3,9 +3,32 @@ package converter
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"strings"
 	"testing"
 )
+
+func callConvert(
+	r io.Reader,
+	parse Parse) []string {
+
+	out := make(chan string)
+	go Convert("path", r, parse, out)
+
+	res := []string{}
+	for v := range out {
+
+		ls := strings.Split(v, "\n")
+
+		for _, l := range ls {
+			res = append(res, l)
+		}
+
+	}
+
+	return res
+
+}
 
 func TestValue(t *testing.T) {
 
@@ -25,14 +48,7 @@ func TestValue(t *testing.T) {
 	}
 
 	r := strings.NewReader("one\ntwo\nthree")
-
-	out := make(chan string)
-	go Convert("path", r, parse, out)
-
-	res := []string{}
-	for v := range out {
-		res = append(res, v)
-	}
+	res := callConvert(r, parse)
 
 	lines := []int{
 		1,
@@ -92,14 +108,7 @@ func TestNextIndex(t *testing.T) {
 	}
 
 	r := strings.NewReader("one\ntwo\nthree")
-
-	out := make(chan string)
-	go Convert("path", r, parse, out)
-
-	res := []string{}
-	for v := range out {
-		res = append(res, v)
-	}
+	res := callConvert(r, parse)
 
 	for _, v := range []int{0, 2, 4} {
 
@@ -146,14 +155,7 @@ func TestParsingError(t *testing.T) {
 	}
 
 	r := strings.NewReader("one\ntwo\nthree")
-
-	out := make(chan string)
-	go Convert("path", r, parse, out)
-
-	res := []string{}
-	for v := range out {
-		res = append(res, v)
-	}
+	res := callConvert(r,parse)
 
 	if len(res) != 4 {
 		t.Error("Wrong length", len(res), res)
