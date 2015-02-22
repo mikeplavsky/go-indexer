@@ -62,7 +62,7 @@ func main() {
 	log.Println("Num CPUs:", num)
 
 	out := make(chan string)
-	converter.Convert(
+	go converter.Convert(
 		S3_PATH,
 		os.Stdin,
 		parse,
