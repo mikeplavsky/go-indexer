@@ -86,9 +86,15 @@ func main() {
 	num := runtime.NumCPU()
 	runtime.GOMAXPROCS(num)
 
-	converter.Convert(
+	out := make(chan string)
+	go converter.Convert(
 		"",
 		os.Stdin,
-		parse)
+		parse,
+		out)
+
+	for v := range out {
+		fmt.Println(v)
+	}
 
 }
