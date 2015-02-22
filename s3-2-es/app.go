@@ -11,22 +11,20 @@ import (
 	"time"
 )
 
+var formats = map[string] *regexp.Regexp{
+
+	"20060102_150405": regexp.MustCompile(`.*_(\d+_\d+).*\.zip`),
+	"01.02.2006":      regexp.MustCompile(`.*\.(\d{2}\.\d{2}\.\d{4}).*\.zip`),
+}
+
 func parseTime(uri string) (string, error) {
 
-	formats := map[string]string{
+	for f, r := range formats {
 
-		"20060102_150405": `.*_(\d+_\d+).*\.zip`,
-		"01.02.2006":      `.*\.(\d{2}\.\d{2}\.\d{4}).*\.zip`,
-	}
+		if r.MatchString(uri) {
 
-	for format, pattern := range formats {
-
-		dateRegex := regexp.MustCompile(pattern)
-
-		if dateRegex.MatchString(uri) {
-
-			dateStr := dateRegex.ReplaceAllString(uri, "$1")
-			date, e := time.Parse(format, dateStr)
+			dateStr := r.ReplaceAllString(uri, "$1")
+			date, e := time.Parse(f, dateStr)
 
 			timestamp := date.Format("2006-01-02T15:04:05Z")
 
@@ -47,19 +45,18 @@ func parseLine(
 	size := fields[0]
 	uri := fields[1]
 
-	timestamp, err := parseTime(uri)
+	ps := strings.Split(uri, "/")
+
+	timestamp, err := parseTime(ps[len(ps) - 1])
 
 	if err != nil {
 		return nil, err
 	}
 
-	customerID := regexp.MustCompile(
-		`[^\/]*\/([^\/]*).*`).ReplaceAllString(uri, "$1")
-
 	dataContract := map[string]string{
 		"uri":        uri,
 		"size":       size,
-		"customer":   customerID,
+		"customer":   ps[1],
 		"@timestamp": timestamp,
 	}
 
