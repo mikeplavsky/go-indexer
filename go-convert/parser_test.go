@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"go-indexer/go-convert/converter"
-	"io/ioutil"
 	"strings"
 	"testing"
 )
@@ -32,13 +31,17 @@ func TestParse(t *testing.T) {
 
 	r := strings.NewReader(strings.Join(in, "\t"))
 
-	converter.Convert(
+	out := make(chan string)
+	go converter.Convert(
 		"testing",
 		r,
-		parse)
+		parse,
+		out)
 
-	f, _ := ioutil.ReadFile("/tmp/mage.json")
-	res := strings.Split(string(f), "\n")
+	res := []string{}
+	for v := range out {
+		res = append(res, v)
+	}
 
 	line := res[1]
 

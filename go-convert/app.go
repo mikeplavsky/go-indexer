@@ -61,9 +61,15 @@ func main() {
 
 	log.Println("Num CPUs:", num)
 
+	out := make(chan string)
 	converter.Convert(
 		S3_PATH,
 		os.Stdin,
-		parse)
+		parse,
+		out)
+
+	for v := range out {
+		fmt.Println(v)
+	}
 
 }
