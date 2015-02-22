@@ -1,21 +1,25 @@
 #!/bin/sh
 
 THROTTLING_LINES_PER_UPLOAD=100000
-
-echo "Getting list of S3 files"
-go-s3 -ls $S3_BUCKET/ > /tmp/all-items
+S3_BUCKET=dmp-log-analysis/
+ES_INDEX=s3data
 
 echo "Generating bulk requests"
-s3-2-es -in /tmp/all-items -out /tmp/all-requests -index $INDEX
+go-s3 s $S3_BUCKET | s3-2-es > /tmp/all-requests
 
-rm -rf /tmp/x*
+rm -rf ./x*
 split -d -l $THROTTLING_LINES_PER_UPLOAD /tmp/all-requests
 
-echo "Posting data"
-for f in /tmp/x*; 
-do 
+while ! curl -XPUT localhost:8080/$ES_INDEX --data-binary @index.json
+do
+	sleep 1
+done
 
-curl -XPOST es:9200/_bulk --data-binary @/data/$f > /data/all-requests-$f.log ; 
+echo "Posting data"
+for f in ./x*; 
+do 
+	echo $f;
+	curl -XPOST localhost:8080/$ES_INDEX/_bulk --data-binary @$f > /dev/null;
 
 done 
 
