@@ -22,7 +22,21 @@
     </cui-text-box>
   </div>
 
-  <cui-button ng-click='reset()'>Reset</cui-button>
+  <div class='cui-form-group'>
+    <label id="count"
+                  ng-model='job.count'
+                  >0 files</label>
+    </cui-text-box>
+  </div>
+
+  <div class='cui-form-group'>
+    <label id="size"
+                  ng-model='job.size'
+                  >0 bytes</label>
+    </cui-text-box>
+  </div>
+
+  <cui-button ng-click='calculate()'>Calculate</cui-button>
   <cui-button type='primary'>Submit</cui-button>
 
 </form>
