@@ -1,9 +1,10 @@
 <form class='cui-form-stacked' novalidate>
 
   <div class='cui-form-group'>
-    <label for='firstname'>From</label>
-    <cui-text-box cui-date-time-picker
-                  ng-model='from'
+    <label for='from'>From</label>
+    <cui-text-box id="from"
+                  cui-date-time-picker
+                  ng-model='job.from'
                   date-parser='short'
                   placeholder='m/d/yy h:mm a'
                   required>
@@ -11,16 +12,17 @@
   </div>
 
   <div class='cui-form-group'>
-    <label for='firstname'>To</label>
-    <cui-text-box cui-date-time-picker
-                  ng-model='to'
+    <label for='to'>To</label>
+    <cui-text-box id="to"
+                  cui-date-time-picker
+                  ng-model='job.to'
                   date-parser='short'
                   placeholder='m/d/yy h:mm a'
                   required>
     </cui-text-box>
   </div>
 
-  <cui-button ng-disabled='userdetails.$pristine' ng-click='reset()'>Reset</cui-button>
-  <cui-button type='primary' ng-disabled='userdetails.$invalid'>Submit</cui-button>
+  <cui-button ng-click='reset()'>Reset</cui-button>
+  <cui-button type='primary'>Submit</cui-button>
 
 </form>

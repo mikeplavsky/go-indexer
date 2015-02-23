@@ -54,6 +54,9 @@
         var applicationframe = {}
         $scope.applicationframe = applicationframe;
 
+        $scope.reset = function(){
+            $scope.job = {}
+        }
   }).
   controller('AboutBoxCtrl', function($scope, cuiAboutBox){
 
