@@ -21,15 +21,19 @@
   </div>
 
   <div class='cui-form-group'>
-    <label id="job.count"
-                  ng-model='job.count'>
-                  0 files</label>
+
+    <label for='to'>Number of logs</label>
+    <cui-text-box ng-model='job.count' >
+    </cui-text-box>
+
   </div>
 
   <div class='cui-form-group'>
-    <label id="size"
-                  ng-model='job.size' >
-                  0 bytes</label>
+
+    <label for='to'>Size</label>
+    <cui-text-box ng-model='job.size' >
+    </cui-text-box>
+
   </div>
 
   <cui-button ng-click='calculate()'>Calculate</cui-button>

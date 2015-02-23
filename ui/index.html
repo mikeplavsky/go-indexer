@@ -48,14 +48,28 @@
 
 <script>
 
-  angular.module('myApp', ['cui']).
-  controller('AppController', function($scope) {
+  angular.module('myApp', ['cui'])
+  .controller('AppController', function($scope, 
+                             cuiDataSourceService,
+                             cuiAlertService) {
 
         $scope.applicationframe = {};
         $scope.job = {}
 
         $scope.calculate = function(){
-            console.log($scope.job);
+
+            srv = cuiDataSourceService('/api/job');
+
+            srv.query($scope.job)
+            .then(function(res){
+            },
+            function(err){
+                cuiAlertService.warning(err);
+            });
+
+            $scope.job.count = 256
+            $scope.job.size = 347
+
         }
 
   }).
