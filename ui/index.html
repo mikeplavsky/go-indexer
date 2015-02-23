@@ -27,6 +27,25 @@
 
   <div cui-content>
   <!-- cui-content contains any content that should appear in the main part of the application-->
+
+    <h1>Select logs to be indexed</h1>
+
+    <div cui-content>
+        <cui-textbox cui-data-time-picker
+                     ng-model="from"
+                     date-parser='short'
+                     placeholder='m/d/yy h:mm a'> 
+        </cui-textbox>
+    </div>
+
+    <div cui-content>
+        <cui-textbox cui-data-time-picker
+                     ng-model="to"
+                     date-parser='short'
+                     placeholder='m/d/yy h:mm a'> 
+        </cui-textbox>
+    </div>
+
   </div>
 
 </cui-application-frame>
