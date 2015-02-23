@@ -7,8 +7,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes">
 
-  <script src='./js/cui-vendor.min.js'></script>
-  <script src='./js/cui.min.js'></script>
+  <script src='./js/cui-vendor.js'></script>
+  <script src='./js/cui.js'></script>
 
   <link rel="stylesheet" href="./css/cui.min.css">
 </head>
@@ -49,23 +49,14 @@
 <script>
 
   angular.module('myApp', ['cui']).
-  controller('AppController', function($scope,
-                                       cuiDataSourceService,
-                                       cuiAlertService) {
+  controller('AppController', function($scope) {
 
         $scope.applicationframe = {};
+        $scope.job = {}
 
-        $scope.calculate = function(){
-
-            srv = cuiDataSourceService('/api/job');
-
-            srv.query($scope.job)
-            .then(function(res){
-            }, 
-            function(err){
-                cuiAlertService.warning(err);
-            });
-
+        $scope.calculate = function(job){
+            console.log(job);
+            console.log($scope.job);
         }
 
   }).
