@@ -1,0 +1,63 @@
+<form name='userdetails' class='cui-form-stacked' novalidate>
+
+  <div class='cui-form-group'>
+    <label for='firstname'>First Name</label>
+    <cui-text-box type='text' id='firstname' name='firstname'
+      ng-model='stackedform.user.firstname'
+      cui-memo='stackedform.memos.firstname'
+      ng-pattern='validators.chars'
+      required></cui-text-box>
+  </div>
+
+  <div class='cui-form-group'>
+    <label for='lastname'>Last Name</label>
+    <cui-text-box type='text' id='lastname' name='lastname'
+      ng-model='stackedform.user.lastname'
+      cui-memo='stackedform.memos.lastname'
+      ng-pattern='validators.chars'
+      required></cui-text-box>
+  </div>
+
+  <div class='cui-form-group'>
+    <label for='age'>Age</label>
+    <cui-text-box type='number' id='age' name='age'
+      step='1' min='0' max='120'
+      ng-model='stackedform.user.age'
+      cui-memo='stackedform.memos.age'
+      required></cui-text-box>
+  </div>
+  
+  <div class='cui-form-group'>
+    <label for='gender'>Gender</label>
+    <select class="cui-drop-down-list" id='gender' name='gender'
+      ng-model='stackedform.user.gender'
+      cui-memo='stackedform.memos.gender'
+      required>
+        <option value='male'>Male</option>
+        <option value='female'>Female</option>
+    </select>
+  </div>
+
+  <div class='cui-form-group'>
+    <label for='relationship'>Marital Status</label>
+    <cui-drop-down-list id='relationship' name='relationship'
+      ng-model='stackedform.user.relationship'
+      cui-memo='stackedform.memos.relationship'
+      required>
+      <option value='single'>Single</option>
+      <option value='married'>Married</option>
+    </cui-drop-down-list>
+  </div>
+
+  <div class='cui-form-group'>
+    <label for='usercomment'>Comments</label>
+    <cui-textarea id='usercomment' name='usercomment'
+      ng-model='stackedform.user.comment'
+      cui-memo='stackedform.memos.comment'
+      maxlength=1000
+      required></cui-textarea>
+  </div>
+
+  <cui-button ng-disabled='userdetails.$pristine' ng-click='reset()'>Reset</cui-button>
+  <cui-button type='primary' ng-disabled='userdetails.$invalid'>Submit</cui-button>
+</form>
