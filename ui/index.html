@@ -14,10 +14,15 @@
 </head>
 <body ng-controller='AppController'>
 
-<cui-application-frame application-name='Sitraka' navigation-items='applicationframe.navigation' masthead-show-controls=true>
+<cui-application-frame application-name='Logs Indexer' navigation-items='applicationframe.navigation' masthead-show-controls=true>
 
   <div cui-controls>
   <!-- cui-controls contains any items that should appear in the application frame heading bar-->
+
+   <cui-button ng-click='showAboutBox()' ng-controller='AboutBoxCtrl'>
+       <cui-icon icon='question-sign'></cui-icon> About Box
+   </cui-button>
+
   </div>
 
   <div cui-content>
@@ -27,20 +32,24 @@
 </cui-application-frame>
 
 <script>
+
   angular.module('myApp', ['cui']).
   controller('AppController', function($scope) {
 
-    var applicationframe = {
-      navigation: [
-        {
-          label: 'Home',
-          icon: 'home'
-        }
-      ]
-    }
+        var applicationframe = {}
+        $scope.applicationframe = applicationframe;
 
-    $scope.applicationframe = applicationframe;
+  }).
+  controller('AboutBoxCtrl', function($scope, cuiAboutBox){
+
+        var aboutBox = cuiAboutBox(
+            {applicationName: 'Logs Indexer'}
+        );
+
+        $scope.showAboutBox = aboutBox.modal.show;
+
   });
+
 </script>
 </body>
 </html>
