@@ -21,6 +21,7 @@
     navigation-items='applicationframe.navigation' 
     masthead-show-controls=true>
 
+
   <div cui-controls>
   <!-- cui-controls contains any items that should appear in the application frame heading bar-->
 
@@ -33,7 +34,10 @@
   <div cui-content>
   <!-- cui-content contains any content that should appear in the main part of the application-->
 
+
     <div class='cui-grid'>
+        
+
       <cui-pane class='cui-unit cui-one-quarter' 
                 cui-title='Logs' icon='file'>
 
@@ -55,6 +59,7 @@
                              cuiLoading) {
 
         $scope.applicationframe = {};
+
         $scope.job = {}
 
         $scope.calculate = function(){
