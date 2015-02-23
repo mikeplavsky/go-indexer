@@ -12,9 +12,14 @@
 
   <link rel="stylesheet" href="./css/cui.min.css">
 </head>
+
 <body ng-controller='AppController'>
 
-<cui-application-frame application-name='Logs Indexer' navigation-items='applicationframe.navigation' masthead-show-controls=true>
+<cui-application-frame 
+    
+    application-name='Logs Indexer' 
+    navigation-items='applicationframe.navigation' 
+    masthead-show-controls=true>
 
   <div cui-controls>
   <!-- cui-controls contains any items that should appear in the application frame heading bar-->
@@ -29,8 +34,11 @@
   <!-- cui-content contains any content that should appear in the main part of the application-->
 
     <div class='cui-grid'>
-      <cui-pane class='cui-unit cui-two-thirds' cui-title='Profile' icon='user'>
+      <cui-pane class='cui-unit cui-one-quarter' 
+                cui-title='Logs' icon='file'>
+
         <div ng-include="'job.html'"></div>
+
       </cui-pane>
     </div>
 
