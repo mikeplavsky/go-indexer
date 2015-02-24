@@ -34,9 +34,9 @@ func getJob(r *http.Request) string {
 	check(err)
 
 	//todo: find a frameworkk that supports declarative fields description
-	if len(customer) < 1 {
-		panic("customer is required")
-	}
+//	if len(customer) < 1 {
+//		panic("customer is required")
+//	}
 
 	customerQuery := elastic.NewTermQuery("customer", customer)
 	sizeSumAggr := elastic.NewSumAggregation().Field("size")
