@@ -21,7 +21,7 @@ create DAL
 */
 
 func getJob(w http.ResponseWriter,
-	r *http.Request) string {
+	r *http.Request, params martini.Params) string {
 
 	log.Println(r.URL.Query())
 
@@ -35,12 +35,7 @@ func getJob(w http.ResponseWriter,
 		esurl)
 
 	if err != nil {
-
-		http.Error(w,
-			err.Error(),
-			http.StatusInternalServerError)
-
-		return ""
+		return showError(w, err)
 	}
 
 	if len(customer) == 0 {
@@ -54,30 +49,25 @@ func getJob(w http.ResponseWriter,
 
 	customerQuery := elastic.NewTermQuery("customer", customer)
 
-	postDateFilter := elastic.NewRangeFilter("@timestamp").
+	dateFilter := elastic.NewRangeFilter("@timestamp").
 		From(from).
 		To(to)
 
-	nested := elastic.NewFilteredQuery(customerQuery)
-	nested = nested.Filter(postDateFilter)
+	filteredQuery := elastic.NewFilteredQuery(customerQuery)
+	filteredQuery = filteredQuery.Filter(dateFilter)
 
 	sizeSumAggr := elastic.NewSumAggregation().Field("size")
 
 	searchResult, err := client.Search().
 		Index(index).
-		Query(&nested).
+		Query(&filteredQuery).
 		Aggregation("sum", sizeSumAggr).
 		Debug(true).
 		Pretty(true).
 		Do()
 
 	if err != nil {
-
-		http.Error(w,
-			err.Error(),
-			http.StatusInternalServerError)
-
-		return ""
+		return showError(w, err)
 	}
 
 	if searchResult.Hits != nil {
@@ -89,12 +79,7 @@ func getJob(w http.ResponseWriter,
 			&sumResult)
 
 		if err != nil {
-
-			http.Error(w,
-				err.Error(),
-				http.StatusInternalServerError)
-
-			return ""
+			showError(w, err)
 		}
 
 		size := sumResult["value"]
@@ -106,6 +91,15 @@ func getJob(w http.ResponseWriter,
 
 	return `{"count": 0, "size": 0}`
 
+}
+
+//todo: show stacktrace error in debug localhost, show empty 500 in production
+func showError(w http.ResponseWriter, err error) string {
+	http.Error(w,
+		err.Error(),
+		http.StatusInternalServerError)
+
+	return ""
 }
 
 func main() {
