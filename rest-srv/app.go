@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"encoding/json"
+
 	"github.com/go-martini/martini"
 	"github.com/olivere/elastic"
 )
@@ -15,41 +16,52 @@ var (
 	index string = "s3data"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-
 /* TODO:
 create DAL
 */
 
-func getJob(r *http.Request) string {
+func getJob(w http.ResponseWriter,
+	r *http.Request) string {
+
 	log.Println(r.URL.Query())
+
 	params := r.URL.Query()
 	customer := params.Get("customer")
 	from := params.Get("from")
 	to := params.Get("to")
-	client, err := elastic.NewClient(http.DefaultClient, esurl)
-	check(err)
 
-	//todo: find a frameworkk that supports declarative fields description
-//	if len(customer) < 1 {
-//		panic("customer is required")
-//	}
+	client, err := elastic.NewClient(
+		http.DefaultClient,
+		esurl)
+
+	if err != nil {
+
+		http.Error(w,
+			err.Error(),
+			http.StatusInternalServerError)
+
+		return ""
+	}
+
+	if len(customer) == 0 {
+
+		http.Error(w,
+			"Could you please specify the customer",
+			http.StatusBadRequest)
+		return ""
+
+	}
 
 	customerQuery := elastic.NewTermQuery("customer", customer)
-	postDateFilter := elastic.NewRangeFilter("@timestamp").From(from).To(to)
 
+	postDateFilter := elastic.NewRangeFilter("@timestamp").
+		From(from).
+		To(to)
 
 	nested := elastic.NewFilteredQuery(customerQuery)
 	nested = nested.Filter(postDateFilter)
-	
 
 	sizeSumAggr := elastic.NewSumAggregation().Field("size")
-
 
 	searchResult, err := client.Search().
 		Index(index).
@@ -58,17 +70,42 @@ func getJob(r *http.Request) string {
 		Debug(true).
 		Pretty(true).
 		Do()
-	check(err)
 
-	if searchResult.Hits != nil {
-		var sumResult map[string]interface{}
-		err = json.Unmarshal(searchResult.Aggregations["sum"], &sumResult) 
-		check(err)
-		size := sumResult["value"]
-		return fmt.Sprintf(`{"count":%d, "size": %f}`, searchResult.Hits.TotalHits, size)
+	if err != nil {
+
+		http.Error(w,
+			err.Error(),
+			http.StatusInternalServerError)
+
+		return ""
 	}
 
-	panic("todo:return 500")
+	if searchResult.Hits != nil {
+
+		var sumResult map[string]interface{}
+
+		err = json.Unmarshal(
+			searchResult.Aggregations["sum"],
+			&sumResult)
+
+		if err != nil {
+
+			http.Error(w,
+				err.Error(),
+				http.StatusInternalServerError)
+
+			return ""
+		}
+
+		size := sumResult["value"]
+
+		return fmt.Sprintf(`{"count":%d, "size": %f}`,
+			searchResult.Hits.TotalHits, size)
+
+	}
+
+	return `{"count": 0, "size": 0}`
+
 }
 
 func main() {
