@@ -2,20 +2,20 @@
 
   <div class='cui-form-group'>
     <label for='from'>From</label>
-    <cui-text-box cui-date-time-picker
+    <cui-text-box cui-date-picker
                   ng-model='job.from'
-                  date-parser='short'
-                  placeholder='m/d/yy h:mm a'
+                  date-parser='shortDate'
+                  placeholder='m/d/yy'
                   required>
     </cui-text-box>
   </div>
 
   <div class='cui-form-group'>
     <label for='to'>To</label>
-    <cui-text-box cui-date-time-picker
+    <cui-text-box cui-date-picker
                   ng-model='job.to'
-                  date-parser='short'
-                  placeholder='m/d/yy h:mm a'
+                  date-parser='shortDate'
+                  placeholder='m/d/yy'
                   required>
     </cui-text-box>
   </div>
