@@ -30,6 +30,8 @@ func getJob(r *http.Request) string {
 	log.Println(r.URL.Query())
 	params := r.URL.Query()
 	customer := params.Get("customer")
+	from := params.Get("from")
+	to := params.Get("to")
 	client, err := elastic.NewClient(http.DefaultClient, esurl)
 	check(err)
 
@@ -39,10 +41,19 @@ func getJob(r *http.Request) string {
 //	}
 
 	customerQuery := elastic.NewTermQuery("customer", customer)
+	postDateFilter := elastic.NewRangeFilter("@timestamp").From(from).To(to)
+
+
+	nested := elastic.NewFilteredQuery(customerQuery)
+	nested = nested.Filter(postDateFilter)
+	
+
 	sizeSumAggr := elastic.NewSumAggregation().Field("size")
+
+
 	searchResult, err := client.Search().
 		Index(index).
-		Query(&customerQuery).
+		Query(&nested).
 		Aggregation("sum", sizeSumAggr).
 		Debug(true).
 		Pretty(true).
