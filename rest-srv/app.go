@@ -1,16 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"fmt"
 
+	"encoding/json"
 	"github.com/go-martini/martini"
 	"github.com/olivere/elastic"
 )
 
 var (
-	esurl string = "http://localhost:8080" 
+	esurl string = "http://localhost:8080"
 	index string = "s3data"
 )
 
@@ -20,6 +21,11 @@ func check(e error) {
 	}
 }
 
+
+/* TODO:
+create DAL
+*/
+
 func getJob(r *http.Request) string {
 	log.Println(r.URL.Query())
 	params := r.URL.Query()
@@ -27,26 +33,28 @@ func getJob(r *http.Request) string {
 	client, err := elastic.NewClient(http.DefaultClient, esurl)
 	check(err)
 
-	//todo:find a frameworkk that supports declarative fields description
-	if(len(customer) < 1){
+	//todo: find a frameworkk that supports declarative fields description
+	if len(customer) < 1 {
 		panic("customer is required")
 	}
 
-	termQuery := elastic.NewTermQuery("customer", customer)
-
+	customerQuery := elastic.NewTermQuery("customer", customer)
+	sizeSumAggr := elastic.NewSumAggregation().Field("size")
 	searchResult, err := client.Search().
 		Index(index).
-		Query(&termQuery).
-		From(0).Size(10). 
-		Debug(true). 
-		Pretty(true). 
-		Do() 
+		Query(&customerQuery).
+		Aggregation("sum", sizeSumAggr).
+		Debug(true).
+		Pretty(true).
+		Do()
 	check(err)
 
 	if searchResult.Hits != nil {
-		//todo:use json.marshal
-		log.Printf("Found a total of %d tweets\n", searchResult.Hits.TotalHits)
-		return fmt.Sprintf(`{"count":%d, "size": 220}`,  searchResult.Hits.TotalHits)
+		var sumResult map[string]interface{}
+		err = json.Unmarshal(searchResult.Aggregations["sum"], &sumResult) 
+		check(err)
+		size := sumResult["value"]
+		return fmt.Sprintf(`{"count":%d, "size": %f}`, searchResult.Hits.TotalHits, size)
 	}
 
 	panic("todo:return 500")
@@ -60,5 +68,4 @@ func main() {
 	m.Get("/job", getJob)
 
 	m.Run()
-
 }
