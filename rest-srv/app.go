@@ -9,6 +9,11 @@ import (
 	"github.com/olivere/elastic"
 )
 
+var (
+	esurl string = "http://localhost:8080" 
+	index string = "s3data"
+)
+
 func check(e error) {
 	if e != nil {
 		panic(e)
@@ -16,24 +21,30 @@ func check(e error) {
 }
 
 func getJob(r *http.Request) string {
-	#todo:dehartdcode
-	url := "http://localhost:8080"
-
 	log.Println(r.URL.Query())
-
-	client, err := elastic.NewClient(http.DefaultClient, url)
+	params := r.URL.Query()
+	customer := params.Get("customer")
+	client, err := elastic.NewClient(http.DefaultClient, esurl)
 	check(err)
 
+	//todo:find a frameworkk that supports declarative fields description
+	if(len(customer) < 1){
+		panic("customer is required")
+	}
+
+	termQuery := elastic.NewTermQuery("customer", customer)
+
 	searchResult, err := client.Search().
-		Index("s3data").  // search in index "twitter"
-		From(0).Size(10). // take documents 0-9
-		Debug(true).      // print request and response to stdout
-		Pretty(true).     // pretty print request and response JSON
-		Do()              // execute
+		Index(index).
+		Query(&termQuery).
+		From(0).Size(10). 
+		Debug(true). 
+		Pretty(true). 
+		Do() 
 	check(err)
 
 	if searchResult.Hits != nil {
-		#todo:use json.marchal
+		//todo:use json.marshal
 		log.Printf("Found a total of %d tweets\n", searchResult.Hits.TotalHits)
 		return fmt.Sprintf(`{"count":%d, "size": 220}`,  searchResult.Hits.TotalHits)
 	}
