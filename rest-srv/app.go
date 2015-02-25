@@ -6,8 +6,8 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strings"
 	"os/exec"
+	"strings"
 
 	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
@@ -55,13 +55,16 @@ func listCustomers(w http.ResponseWriter,
 
 	customerTermsAggr := elastic.NewTermsAggregation().Field("customer")
 
-	out, _ := client.Search().
+	out, err := client.Search().
 		Index(index).
 		Aggregation("cust_unique", customerTermsAggr).
 		Debug(debug).
 		Pretty(debug).
 		Do()
 
+	if err != nil {
+		showError(w, err)
+	}
 	if out.Hits != nil {
 		var aggrResult map[string]interface{}
 
@@ -230,6 +233,7 @@ func startJob(w http.ResponseWriter,
 
 //todo: show stacktrace error in debug localhost, show empty 500 in production
 func showError(w http.ResponseWriter, err error) string {
+	log.Fatal(err)
 	http.Error(w,
 		err.Error(),
 		http.StatusInternalServerError)
