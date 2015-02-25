@@ -11,6 +11,16 @@ angular.module('myApp', ['cui'])
 
         $scope.job.customers = []
 
+        $scope.toUtc = function (d){
+
+            return moment.utc(
+                moment(d)
+                .local()
+                .format()
+                .substring(0,19)).toJSON()
+
+        }
+
         customerSvc = cuiDataSourceService('api/customers');
 
         cuiLoading(customerSvc.query()
@@ -30,20 +40,10 @@ angular.module('myApp', ['cui'])
 
             srv = cuiDataSourceService('/api/job');
 
-            var toUtc = function (d){
-
-                return moment.utc(
-                    moment(d)
-                    .local()
-                    .format()
-                    .substring(0,19)).toJSON()
-
-            }
-
             job = {
                 customer: $scope.job.customer,
-                from: toUtc($scope.job.from),
-                to: toUtc($scope.job.to)
+                from: $scope.toUtc($scope.job.from),
+                to: $scope.toUtc($scope.job.to)
             }   
 
             cuiLoading(
@@ -62,20 +62,26 @@ angular.module('myApp', ['cui'])
         }
 
 
-    $scope.submit = function(){
+        $scope.submit = function(){
 
             //todo:make it post
-        srv = cuiDataSourceService('/api/job/create');
+            srv = cuiDataSourceService('/api/job/create');
+
+            job = {
+                customer: $scope.job.customer,
+                from: $scope.toUtc($scope.job.from),
+                to: $scope.toUtc($scope.job.to)
+            }   
 
             cuiLoading(
-                srv.query($scope.job)
+                srv.query(job)
                     .then(function (res) {
                     },
                     function (err) {
                         cuiAlertService.warning(err);
                     })
             );
-    }
+        }
     })
     .controller('AboutBoxCtrl', function ($scope, cuiAboutBox) {
         var aboutBox = cuiAboutBox({
