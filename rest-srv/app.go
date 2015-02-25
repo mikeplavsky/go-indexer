@@ -216,7 +216,7 @@ func startJob(w http.ResponseWriter,
 			return showError(w, err)
 		}
 
-		cmd := exec.Command("go-send")
+		cmd := exec.Command("go-send", "s")
 		cmdin, err := cmd.StdinPipe()
 
 		if err != nil {
