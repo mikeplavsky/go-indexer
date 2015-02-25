@@ -140,6 +140,12 @@ func getJob(w http.ResponseWriter,
 
 }
 
+func startJob(w http.ResponseWriter,
+        r *http.Request) string {
+
+	return "started"
+}
+
 //todo: show stacktrace error in debug localhost, show empty 500 in production
 func showError(w http.ResponseWriter, err error) string {
 	http.Error(w,
@@ -156,6 +162,8 @@ func main() {
 
 	m.Get("/job", getJob)
 	m.Get("/customers", listCustomers)
-
+	m.Post("/job", startJob)
+	//todo:remove this as I understand how to enable post in CUI
+	m.Get("/job/create", startJob)
 	m.Run()
 }
