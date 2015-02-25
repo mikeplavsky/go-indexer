@@ -35,6 +35,7 @@ angular.module('myApp', ['cui'])
 
                         $scope.job.count = res.count;
                         $scope.job.size = res.size;
+                        $scope.job.eta = res.eta;
 
                     },
                     function (err) {
