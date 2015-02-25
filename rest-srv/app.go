@@ -3,11 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"os/exec"
-	"strings"
 	"runtime"
 	"time"
 
@@ -22,23 +19,27 @@ var (
 	debug        = false
 )
 
-type Job struct {
+type job struct {
 	customer, from, to string
 }
 
-func parseParams(r *http.Request) (job Job, e error) {
+func parseParams(r *http.Request) (job, error) {
+
 	log.Println(r.URL.Query())
+
 	params := r.URL.Query()
+
 	customer := params.Get("customer")
 	from := params.Get("from")
 	to := params.Get("to")
-	job = Job{customer: customer, from: from, to: to}
-	e = nil
 
 	if len(customer) == 0 || len(from) == 0 || len(to) == 0 {
-		e = fmt.Errorf("customer, from, to fields are required")
+		return job{},
+			fmt.Errorf("customer, from, to fields are required")
 	}
-	return
+
+	return job{customer: customer, from: from, to: to}, nil
+
 }
 
 //todo: create DAL
@@ -97,18 +98,26 @@ func listCustomers(w http.ResponseWriter,
 }
 
 //todo:move to DAL
-func getFilteredQuery(job Job) elastic.FilteredQuery {
-	customerQuery := elastic.NewTermQuery("customer", job.customer)
+func getFilteredQuery(j job) elastic.FilteredQuery {
+
+	customerQuery := elastic.NewTermQuery("customer", j.customer)
 	filteredQuery := elastic.NewFilteredQuery(customerQuery)
-	dateFilter := elastic.NewRangeFilter("@timestamp").From(job.from).To(job.to)
+
+	dateFilter := elastic.NewRangeFilter("@timestamp").
+		From(j.from).
+		To(j.to)
+
 	filteredQuery = filteredQuery.Filter(dateFilter)
+
 	return filteredQuery
+
 }
 
 func getJob(w http.ResponseWriter,
 	r *http.Request) string {
 
 	job, err := parseParams(r)
+
 	if err != nil {
 		http.Error(w,
 			err.Error(),
@@ -178,7 +187,8 @@ func getJob(w http.ResponseWriter,
 func startJob(w http.ResponseWriter,
 	r *http.Request) string {
 
-	job, err := parseParams(r)
+	j, err := parseParams(r)
+
 	if err != nil {
 		http.Error(w,
 			err.Error(),
@@ -186,60 +196,7 @@ func startJob(w http.ResponseWriter,
 		return ""
 	}
 
-	client, err := elastic.NewClient(
-		http.DefaultClient,
-		esurl)
-
-	if err != nil {
-		return showError(w, err)
-	}
-
-	filteredQuery := getFilteredQuery(job)
-
-	skip := 0
-	take := 1000
-	var total int64
-	total = int64(take)
-
-	for int64(skip) < total {
-		out, err := client.Search().
-			Index(index).
-			From(skip).
-			Size(take).
-			Query(&filteredQuery).
-			Debug(debug).
-			Pretty(debug).
-			Do()
-		total = out.Hits.TotalHits
-		skip += take
-		if err != nil {
-			return showError(w, err)
-		}
-
-		cmd := exec.Command("go-send", "s")
-		cmdin, err := cmd.StdinPipe()
-
-		if err != nil {
-			return showError(w, err)
-		}
-
-		for _, hit := range out.Hits.Hits {
-			item := make(map[string]interface{})
-			json.Unmarshal(*hit.Source, &item)
-
-			uri := strings.TrimLeft(item["uri"].(string), "https://3.amazonaws.com/")
-			io.WriteString(cmdin, uri+"\n")
-		}
-
-		cmdin.Close()
-		cmdout, err := cmd.Output()
-
-		if err != nil {
-			return showError(w, err)
-		}
-
-		log.Println("go-s3 out: " + string(cmdout))
-	}
+	go sendJob(j)
 
 	return "started"
 }
@@ -255,8 +212,8 @@ func showError(w http.ResponseWriter, err error) string {
 
 func main() {
 
-        num := runtime.NumCPU()
-        runtime.GOMAXPROCS(num)
+	num := runtime.NumCPU()
+	runtime.GOMAXPROCS(num)
 
 	m := martini.Classic()
 	m.Use(martini.Logger())

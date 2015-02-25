@@ -2,49 +2,18 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"log"
 	"os"
-	"strings"
 	"sync"
-	"time"
-
-	"github.com/goamz/goamz/aws"
-	"github.com/goamz/goamz/sqs"
 
 	"github.com/codegangsta/cli"
+	
+	"go-indexer/go-send/sender"
 )
-
-func send(s3path string, q *sqs.Queue) {
-
-	ps := strings.SplitN(s3path, "/", 2)
-
-	msg := map[string]string{
-		"bucket": ps[0],
-		"path":   ps[1],
-	}
-
-	res, _ := json.Marshal(msg)
-
-	for {
-
-		_, err := q.SendMessage(string(res))
-
-		if err != nil {
-			time.Sleep(time.Second * 2)
-			continue
-		}
-
-		return
-
-	}
-
-}
 
 func main() {
 
-	auth, _ := aws.GetAuth("", "", "", time.Time{})
-	sqs := sqs.New(auth, aws.USEast)
+	sqs := sender.GetSqs()
 
 	app := cli.NewApp()
 	app.Name = "go-send"
@@ -89,7 +58,7 @@ func main() {
 
 					go func(s string) {
 
-						send(s, q)
+						sender.Send(s, q)
 						w.Done()
 
 					}(s3path)
