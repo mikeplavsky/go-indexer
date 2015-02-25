@@ -39,6 +39,22 @@ angular.module('myApp', ['cui'])
                     })
             );
         }
+
+
+	$scope.submit = function(){
+
+            //todo:make it post
+	    srv = cuiDataSourceService('/api/job/create');
+
+            cuiLoading(
+                srv.query($scope.job)
+                    .then(function (res) {
+                    },
+                    function (err) {
+                        cuiAlertService.warning(err);
+                    })
+            );
+	}
     })
     .controller('AboutBoxCtrl', function ($scope, cuiAboutBox) {
         var aboutBox = cuiAboutBox({
