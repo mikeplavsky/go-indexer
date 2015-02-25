@@ -246,7 +246,6 @@ func startJob(w http.ResponseWriter,
 
 //todo: show stacktrace error in debug localhost, show empty 500 in production
 func showError(w http.ResponseWriter, err error) string {
-	log.Fatal(err)
 	http.Error(w,
 		err.Error(),
 		http.StatusInternalServerError)

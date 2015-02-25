@@ -1,5 +1,6 @@
 angular.module('myApp', ['cui'])
     .controller('AppController', function ($scope,
+                       $http,
                                            cuiDataSourceService,
                                            cuiAlertService,
                                            cuiLoading) {
@@ -21,19 +22,29 @@ angular.module('myApp', ['cui'])
                     };
                 });
             },
-		function (err) {
+        function (err) {
                    cuiAlertService.warning(err);
-	    }));
+        }));
 
         $scope.calculate = function () {
 
             srv = cuiDataSourceService('/api/job');
 
-	    job = {
+            var toUtc = function (d){
+
+                return moment.utc(
+                    moment(d)
+                    .local()
+                    .format()
+                    .substring(0,19)).toJSON()
+
+            }
+
+            job = {
                 customer: $scope.job.customer,
-                from: $scope.job.from,
-                to: $scope.job.to
-            }	
+                from: toUtc($scope.job.from),
+                to: toUtc($scope.job.to)
+            }   
 
             cuiLoading(
                 srv.query(job)
@@ -51,10 +62,10 @@ angular.module('myApp', ['cui'])
         }
 
 
-	$scope.submit = function(){
+    $scope.submit = function(){
 
             //todo:make it post
-	    srv = cuiDataSourceService('/api/job/create');
+        srv = cuiDataSourceService('/api/job/create');
 
             cuiLoading(
                 srv.query($scope.job)
@@ -64,7 +75,7 @@ angular.module('myApp', ['cui'])
                         cuiAlertService.warning(err);
                     })
             );
-	}
+    }
     })
     .controller('AboutBoxCtrl', function ($scope, cuiAboutBox) {
         var aboutBox = cuiAboutBox({
