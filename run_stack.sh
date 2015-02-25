@@ -11,6 +11,11 @@ docker run -ti \
 ./start_stack.sh
 ./start_loaders.sh
 
+while ! curl -XGET localhost:8080
+do
+        sleep 1
+done
+
 ./run_s3.sh
 ./run_rest.sh
 ./run_kibana.sh
