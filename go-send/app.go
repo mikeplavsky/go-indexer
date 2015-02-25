@@ -11,6 +11,8 @@ import (
 
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/sqs"
+
+	"github.com/codegangsta/cli"
 )
 
 func send(s3path string, q *sqs.Queue) {
@@ -44,28 +46,66 @@ func main() {
 	auth, _ := aws.GetAuth("", "", "", time.Time{})
 	sqs := sqs.New(auth, aws.USEast)
 
-	q, err := sqs.GetQueue(os.Getenv("ES_QUEUE"))
+	app := cli.NewApp()
+	app.Name = "go-send"
 
-	if err != nil {
-		log.Println(err)
-		return
+	qn := os.Getenv("ES_QUEUE")
+
+	cmds := []cli.Command{
+		{
+			Name:      "create",
+			ShortName: "c",
+			Usage:     "creates the queue",
+			Action: func(c *cli.Context) {
+
+				_, err := sqs.CreateQueue(qn)
+
+				if err != nil {
+					log.Println(err)
+					return
+				}
+			},
+		},
+		{
+			Name:      "send",
+			ShortName: "s",
+			Usage:     "sends messages to the queue",
+			Action: func(c *cli.Context) {
+
+				q, err := sqs.GetQueue(qn)
+
+				if err != nil {
+					log.Println(err)
+					return
+				}
+
+				scanner := bufio.NewScanner(os.Stdin)
+				var w sync.WaitGroup
+
+				for scanner.Scan() {
+
+					s3path := scanner.Text()
+					w.Add(1)
+
+					go func(s string) {
+
+						send(s, q)
+						w.Done()
+
+					}(s3path)
+
+				}
+				w.Wait()
+			},
+		},
 	}
 
-	scanner := bufio.NewScanner(os.Stdin)
-	var w sync.WaitGroup
+	app.Commands = cmds
 
-	for scanner.Scan() {
-
-		s3path := scanner.Text()
-		w.Add(1)
-
-		go func(s string) {
-
-			send(s, q)
-			w.Done()
-
-		}(s3path)
-
+	app.Action = func(c *cli.Context) {
+		cli.ShowAppHelp(c)
 	}
-	w.Wait()
+
+	app.Run(os.Args)
+
 }
