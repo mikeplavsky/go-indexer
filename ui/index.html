@@ -7,8 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes">
 
-  <script src='./js/cui-vendor.min.js'></script>
-  <script src='./js/cui.min.js'></script>
+
 
   <link rel="stylesheet" href="./css/cui.min.css">
 </head>
@@ -50,51 +49,7 @@
 
 </cui-application-frame>
 
-<script>
-
-  angular.module('myApp', ['cui'])
-  .controller('AppController', function($scope, 
-                             cuiDataSourceService,
-                             cuiAlertService,
-                             cuiLoading) {
-
-        $scope.applicationframe = {};
-
-        $scope.job = {}
-
-        $scope.calculate = function(){
-
-            srv = cuiDataSourceService('/api/job');
-
-            cuiLoading(
-            
-            srv.query($scope.job)
-            .then(function(res){
-
-                $scope.job.count = res.count;
-                $scope.job.size = res.size;
-
-            },
-            function(err){
-                cuiAlertService.warning(err);
-            })
-            
-            );
-
-
-        }
-
-  }).
-  controller('AboutBoxCtrl', function($scope, cuiAboutBox){
-
-        var aboutBox = cuiAboutBox(
-            {applicationName: 'Logs Indexer'}
-        );
-
-        $scope.showAboutBox = aboutBox.modal.show;
-
-  });
-
-</script>
-</body>
+<script src='./js/cui-vendor.min.js'></script>
+<script src='./js/cui.min.js'></script>
+<script src='./js/app.js'></script>
 </html>
