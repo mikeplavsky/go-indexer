@@ -19,7 +19,7 @@ import (
 var (
 	esurl string = "http://localhost:8080"
 	index string = "s3data"
-	debug        = true
+	debug        = false
 )
 
 type Job struct {
@@ -254,6 +254,9 @@ func showError(w http.ResponseWriter, err error) string {
 }
 
 func main() {
+
+        num := runtime.NumCPU()
+        runtime.GOMAXPROCS(num)
 
 	m := martini.Classic()
 	m.Use(martini.Logger())
