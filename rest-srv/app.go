@@ -1,11 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-
-	"encoding/json"
 
 	"github.com/go-martini/martini"
 	"github.com/olivere/elastic"
@@ -14,14 +13,62 @@ import (
 var (
 	esurl string = "http://localhost:8080"
 	index string = "s3data"
+	debug        = true
 )
 
-/* TODO:
-create DAL
-*/
+//todo: create DAL
+
+func listCustomers(w http.ResponseWriter,
+	r *http.Request) string {
+	client, err := elastic.NewClient(
+		http.DefaultClient,
+		esurl)
+
+	if err != nil {
+		return showError(w, err)
+	}
+
+	customerTermsAggr := elastic.NewTermsAggregation().Field("customer")
+
+	out, _ := client.Search().
+		Index(index).
+		Aggregation("cust_unique", customerTermsAggr).
+		Debug(debug).
+		Pretty(debug).
+		Do()
+
+	if out.Hits != nil {
+		var aggrResult map[string]interface{}
+
+		err = json.Unmarshal(
+			out.Aggregations["cust_unique"],
+			&aggrResult)
+
+		if err != nil {
+			showError(w, err)
+		}
+
+
+		buckets := aggrResult["buckets"].([]interface{})
+		
+		ret := make([]string, len(buckets))
+		for i, bucket := range buckets { 
+        		item :=  bucket.(map[string]interface{})
+			ret[i] = item["key"].(string)
+		}
+		
+		JSON, _ := json.Marshal(map[string]interface{}{
+			"result": ret, 
+		})
+		
+		return string(JSON)
+
+	}
+	return ""
+}
 
 func getJob(w http.ResponseWriter,
-	r *http.Request, params martini.Params) string {
+	r *http.Request) string {
 
 	log.Println(r.URL.Query())
 
@@ -58,34 +105,34 @@ func getJob(w http.ResponseWriter,
 
 	sizeSumAggr := elastic.NewSumAggregation().Field("size")
 
-	searchResult, err := client.Search().
+	out, err := client.Search().
 		Index(index).
 		Query(&filteredQuery).
 		Aggregation("sum", sizeSumAggr).
-		Debug(true).
-		Pretty(true).
+		Debug(debug).
+		Pretty(debug).
 		Do()
 
 	if err != nil {
 		return showError(w, err)
 	}
 
-	if searchResult.Hits != nil {
+	if out.Hits != nil {
 
-		var sumResult map[string]interface{}
+		var aggrResult map[string]interface{}
 
 		err = json.Unmarshal(
-			searchResult.Aggregations["sum"],
-			&sumResult)
+			out.Aggregations["sum"],
+			&aggrResult)
 
 		if err != nil {
 			showError(w, err)
 		}
 
-		size := sumResult["value"]
+		size := aggrResult["value"]
 
 		return fmt.Sprintf(`{"count":%d, "size": %f}`,
-			searchResult.Hits.TotalHits, size)
+			out.Hits.TotalHits, size)
 
 	}
 
@@ -108,6 +155,7 @@ func main() {
 	m.Use(martini.Logger())
 
 	m.Get("/job", getJob)
+	m.Get("/customers", listCustomers)
 
 	m.Run()
 }
