@@ -3,7 +3,7 @@
     <div class='cui-form-group'>
         <label for='customer'>Customer</label>
         <cui-combobox
-                name='aaaa'
+                name='customer'
                 ng-model='job.customer'
                 items='job.customers'
                 cui-type='primary'
@@ -14,6 +14,7 @@
     <div class='cui-form-group'>
         <label for='from'>From</label>
         <cui-text-box cui-date-picker
+                      name='from'
                       ng-model='job.from'
                       date-parser='shortDate'
                       placeholder='m/d/yy'
@@ -24,6 +25,7 @@
     <div class='cui-form-group'>
         <label for='to'>To</label>
         <cui-text-box cui-date-picker
+                      name='to'
                       ng-model='job.to'
                       date-parser='shortDate'
                       placeholder='m/d/yy'
@@ -33,16 +35,16 @@
 
     <div class='cui-form-group'>
 
-        <label for='to'>Number of logs</label>
-        <cui-text-box ng-model='job.count'>
+        <label for='count'>Number of logs</label>
+        <cui-text-box name='count' ng-model='job.count'>
         </cui-text-box>
 
     </div>
 
     <div class='cui-form-group'>
 
-        <label for='to'>Size</label>
-        <cui-text-box ng-model='job.size'>
+        <label for='size'>Size</label>
+        <cui-text-box name='size' ng-model='job.size'>
         </cui-text-box>
 
     </div>
