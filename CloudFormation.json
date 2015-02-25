@@ -1,0 +1,86 @@
+{
+    "Description": "Stack for LogManagement project",
+
+    "Parameters": {
+        "InstanceType": {
+            "Description": "Elasticsearch EC2 instance type",
+            "Type": "String",
+            "Default": "r3.2xlarge",
+            "AllowedValues": [ "r3.xlarge", "r3.2xlarge", "r3.4xlarge", "r3.8xlarge" ],
+            "ConstraintDescription": "must be a valid EC2 instance type."
+        }
+    },
+
+    "Resources": {
+        "Indexer": {
+            "Type": "AWS::AutoScaling::AutoScalingGroup",
+            "Properties": {
+                "AvailabilityZones": [ "us-east-1c" ],
+                "LaunchConfigurationName": { "Ref": "LaunchConfig" },
+                "MinSize": "1",
+                "MaxSize": "1",
+                "DesiredCapacity": "1",
+                "NotificationConfiguration": {
+                    "TopicARN": "arn:aws:sns:us-east-1:128732327734:maxim",
+                    "NotificationTypes": [
+                        "autoscaling:EC2_INSTANCE_LAUNCH",
+                        "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+                        "autoscaling:EC2_INSTANCE_TERMINATE",
+                        "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
+                    ]
+                },
+                "Tags": [
+                    {
+                        "Key": "team",
+                        "Value": "logman",
+                        "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "protection",
+                        "Value": "1",
+                        "PropagateAtLaunch": "true"
+                    },
+                    {
+                        "Key": "Name",
+                        "Value": "LogManagement",
+                        "PropagateAtLaunch": "true"
+                    }
+                ]
+            }
+        },
+
+        "LaunchConfig": {
+            "Type": "AWS::AutoScaling::LaunchConfiguration",
+            "Properties": {
+                "KeyName": "ESKeyPair",
+                "ImageId": "ami-c098c5a8",
+                "SecurityGroups": [ "sg-f8ebb992" ],
+                "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
+                "InstanceType": { "Ref": "InstanceType" },
+                "SpotPrice": "0.8",
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/sh\n",
+                                "cd /home/ec2-user/go-indexer/ && ./run_stack.sh\n"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    },
+
+    "Outputs": {
+        "DashboardURL": {
+            "Description": "The URL of the dashboard",
+            "Value": "https://logman.sa4sp.com"
+        },
+        "KibanaURL": {
+            "Description": "The URL of the kibana v4",
+            "Value": "https://logman.sa4sp.com/kibana"
+        }
+    }
+}
