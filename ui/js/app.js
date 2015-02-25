@@ -8,6 +8,21 @@ angular.module('myApp', ['cui'])
 
         $scope.job = {}
 
+
+	$scope.job.customers = []
+
+	customerSvc = cuiDataSourceService('api/customers');
+	
+	customerSvc.query()
+		.then(function(res){
+			$scope.job.customers = res.result.map(function(value, key) {
+				       return { 
+  						label: value,
+  						description: value
+					};
+			});
+		});
+
         $scope.calculate = function() {
 
             srv = cuiDataSourceService('/api/job');

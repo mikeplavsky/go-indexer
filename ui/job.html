@@ -1,5 +1,17 @@
 <form name="jobdetail" class='cui-form-stacked' novalidate>
 
+
+  <div class='cui-form-group'>
+    <label for='customer'>Customer</label>
+    <cui-combobox
+	name='aaaa'
+        ng-model='job.customer'
+        items='job.customers'
+        cui-type='primary'
+        placeholder='Select customer'>
+      </cui-combobox>
+  </div>
+
   <div class='cui-form-group'>
     <label for='from'>From</label>
     <cui-text-box cui-date-picker
