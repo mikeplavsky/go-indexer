@@ -181,7 +181,7 @@ func startJob(w http.ResponseWriter,
 	filteredQuery := getFilteredQuery(job)
 
 	skip := 0
-	take := 10
+	take := 1000
 	var total int64
 	total = int64(take)
 
