@@ -1,54 +1,53 @@
 <form name="jobdetail" class='cui-form-stacked' novalidate>
 
+    <div class='cui-form-group'>
+        <label for='customer'>Customer</label>
+        <cui-combobox
+                name='aaaa'
+                ng-model='job.customer'
+                items='job.customers'
+                cui-type='primary'
+                placeholder='Select customer'>
+        </cui-combobox>
+    </div>
 
-  <div class='cui-form-group'>
-    <label for='customer'>Customer</label>
-    <cui-combobox
-	name='aaaa'
-        ng-model='job.customer'
-        items='job.customers'
-        cui-type='primary'
-        placeholder='Select customer'>
-      </cui-combobox>
-  </div>
+    <div class='cui-form-group'>
+        <label for='from'>From</label>
+        <cui-text-box cui-date-picker
+                      ng-model='job.from'
+                      date-parser='shortDate'
+                      placeholder='m/d/yy'
+                      required>
+        </cui-text-box>
+    </div>
 
-  <div class='cui-form-group'>
-    <label for='from'>From</label>
-    <cui-text-box cui-date-picker
-                  ng-model='job.from'
-                  date-parser='shortDate'
-                  placeholder='m/d/yy'
-                  required>
-    </cui-text-box>
-  </div>
+    <div class='cui-form-group'>
+        <label for='to'>To</label>
+        <cui-text-box cui-date-picker
+                      ng-model='job.to'
+                      date-parser='shortDate'
+                      placeholder='m/d/yy'
+                      required>
+        </cui-text-box>
+    </div>
 
-  <div class='cui-form-group'>
-    <label for='to'>To</label>
-    <cui-text-box cui-date-picker
-                  ng-model='job.to'
-                  date-parser='shortDate'
-                  placeholder='m/d/yy'
-                  required>
-    </cui-text-box>
-  </div>
+    <div class='cui-form-group'>
 
-  <div class='cui-form-group'>
+        <label for='to'>Number of logs</label>
+        <cui-text-box ng-model='job.count'>
+        </cui-text-box>
 
-    <label for='to'>Number of logs</label>
-    <cui-text-box ng-model='job.count' >
-    </cui-text-box>
+    </div>
 
-  </div>
+    <div class='cui-form-group'>
 
-  <div class='cui-form-group'>
+        <label for='to'>Size</label>
+        <cui-text-box ng-model='job.size'>
+        </cui-text-box>
 
-    <label for='to'>Size</label>
-    <cui-text-box ng-model='job.size' >
-    </cui-text-box>
+    </div>
 
-  </div>
-
-  <cui-button ng-click='calculate()'>Calculate</cui-button>
-  <cui-button type='primary'>Submit</cui-button>
+    <cui-button ng-click='calculate()'>Calculate</cui-button>
+    <cui-button type='primary'>Submit</cui-button>
 
 </form>
