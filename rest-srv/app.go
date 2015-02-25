@@ -3,8 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"strings"
+	"os/exec"
 
 	"github.com/go-martini/martini"
 	"github.com/olivere/elastic"
@@ -193,14 +196,32 @@ func startJob(w http.ResponseWriter,
 		if err != nil {
 			return showError(w, err)
 		}
+
+		cmd := exec.Command("go-send")
+		cmdin, err := cmd.StdinPipe()
+
+		if err != nil {
+			return showError(w, err)
+		}
+
 		for _, hit := range out.Hits.Hits {
 			item := make(map[string]interface{})
 			json.Unmarshal(*hit.Source, &item)
-			fmt.Println(item["uri"])
+
+			uri := strings.TrimLeft(item["uri"].(string), "https://3.amazonaws.com/")
+			io.WriteString(cmdin, uri+"\n")
 		}
+
+		cmdin.Close()
+		cmdout, err := cmd.Output()
+
+		if err != nil {
+			return showError(w, err)
+		}
+
+		log.Println("go-s3 out: " + string(cmdout))
 	}
 
-	//fmt.Sprintf("%s", out)
 	return "started"
 }
 
