@@ -29,8 +29,14 @@ angular.module('myApp', ['cui'])
 
             srv = cuiDataSourceService('/api/job');
 
+	    job = {
+                customer: $scope.job.customer,
+                from: $scope.job.from,
+                to: $scope.job.to
+            }	
+
             cuiLoading(
-                srv.query($scope.job)
+                srv.query(job)
                     .then(function (res) {
 
                         $scope.job.count = res.count;
