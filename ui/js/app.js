@@ -12,7 +12,7 @@ angular.module('myApp', ['cui'])
 
         customerSvc = cuiDataSourceService('api/customers');
 
-        customerSvc.query()
+        cuiLoading(customerSvc.query()
             .then(function (res) {
                 $scope.job.customers = res.result.map(function (value, key) {
                     return {
@@ -20,7 +20,10 @@ angular.module('myApp', ['cui'])
                         description: value
                     };
                 });
-            });
+            },
+		function (err) {
+                   cuiAlertService.warning(err);
+	    }));
 
         $scope.calculate = function () {
 
