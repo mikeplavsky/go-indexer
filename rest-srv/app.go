@@ -3,12 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"os/exec"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -22,23 +19,27 @@ var (
 	debug        = false
 )
 
-type Job struct {
+type job struct {
 	customer, from, to string
 }
 
-func parseParams(r *http.Request) (job Job, e error) {
+func parseParams(r *http.Request) (job, error) {
+
 	log.Println(r.URL.Query())
+
 	params := r.URL.Query()
+
 	customer := params.Get("customer")
 	from := params.Get("from")
 	to := params.Get("to")
-	job = Job{customer: customer, from: from, to: to}
-	e = nil
 
 	if len(customer) == 0 || len(from) == 0 || len(to) == 0 {
-		e = fmt.Errorf("customer, from, to fields are required")
+		return job{},
+			fmt.Errorf("customer, from, to fields are required")
 	}
-	return
+
+	return job{customer: customer, from: from, to: to}, nil
+
 }
 
 //todo: create DAL
@@ -97,18 +98,26 @@ func listCustomers(w http.ResponseWriter,
 }
 
 //todo:move to DAL
-func getFilteredQuery(job Job) elastic.FilteredQuery {
-	customerQuery := elastic.NewTermQuery("customer", job.customer)
+func getFilteredQuery(j job) elastic.FilteredQuery {
+
+	customerQuery := elastic.NewTermQuery("customer", j.customer)
 	filteredQuery := elastic.NewFilteredQuery(customerQuery)
-	dateFilter := elastic.NewRangeFilter("@timestamp").From(job.from).To(job.to)
+
+	dateFilter := elastic.NewRangeFilter("@timestamp").
+		From(j.from).
+		To(j.to)
+
 	filteredQuery = filteredQuery.Filter(dateFilter)
+
 	return filteredQuery
+
 }
 
 func getJob(w http.ResponseWriter,
 	r *http.Request) string {
 
 	job, err := parseParams(r)
+
 	if err != nil {
 		http.Error(w,
 			err.Error(),
@@ -178,13 +187,16 @@ func getJob(w http.ResponseWriter,
 func startJob(w http.ResponseWriter,
 	r *http.Request) string {
 
-	job, err := parseParams(r)
+	j, err := parseParams(r)
+
 	if err != nil {
 		http.Error(w,
 			err.Error(),
 			http.StatusBadRequest)
 		return ""
 	}
+
+	go sendJob(j)
 
 	return "started"
 }
