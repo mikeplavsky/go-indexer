@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os/exec"
 	"strings"
+	"runtime"
+	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
@@ -152,11 +154,22 @@ func getJob(w http.ResponseWriter,
 
 		size := aggrResult["value"]
 
-		return fmt.Sprintf(
-			`{"count":"%v", "size": "%v"}`,
-			humanize.Comma(out.Hits.TotalHits),
-			humanize.Bytes(uint64(size.(float64))))
+		res := map[string]interface{}{}
 
+		res["count"] = humanize.Comma(out.Hits.TotalHits)
+		res["size"] = humanize.Bytes(uint64(size.(float64)))
+
+		cpu := runtime.NumCPU()
+
+		fPerSec := 2.5 / 70.0 * float64(cpu)
+		secs := float64(out.Hits.TotalHits) / fPerSec
+
+		eta := time.Second * time.Duration(secs)
+
+		res["eta"] = fmt.Sprintf("%v", eta)
+
+		data, _ := json.Marshal(res)
+		return string(data)
 	}
 
 	return `{"count": 0, "size": 0}`
