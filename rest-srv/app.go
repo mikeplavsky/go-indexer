@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
 	"github.com/olivere/elastic"
 )
@@ -48,19 +49,18 @@ func listCustomers(w http.ResponseWriter,
 			showError(w, err)
 		}
 
-
 		buckets := aggrResult["buckets"].([]interface{})
-		
+
 		ret := make([]string, len(buckets))
-		for i, bucket := range buckets { 
-        		item :=  bucket.(map[string]interface{})
+		for i, bucket := range buckets {
+			item := bucket.(map[string]interface{})
 			ret[i] = item["key"].(string)
 		}
-		
+
 		JSON, _ := json.Marshal(map[string]interface{}{
-			"result": ret, 
+			"result": ret,
 		})
-		
+
 		return string(JSON)
 
 	}
@@ -131,8 +131,10 @@ func getJob(w http.ResponseWriter,
 
 		size := aggrResult["value"]
 
-		return fmt.Sprintf(`{"count":%d, "size": %f}`,
-			out.Hits.TotalHits, size)
+		return fmt.Sprintf(
+			`{"count":"%v", "size": "%v"}`,
+			humanize.Comma(out.Hits.TotalHits),
+			humanize.Bytes(uint64(size.(float64))))
 
 	}
 
