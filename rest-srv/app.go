@@ -16,6 +16,25 @@ var (
 	debug        = true
 )
 
+type Job struct {
+	customer, from, to string
+}
+
+func parseParams(r *http.Request) (job Job, e error) {
+	log.Println(r.URL.Query())
+	params := r.URL.Query()
+	customer := params.Get("customer")
+	from := params.Get("from")
+	to := params.Get("to")
+	job = Job{customer: customer, from: from, to: to}
+	e = nil
+
+	if len(customer) == 0 || len(from) == 0 || len(to) == 0 {
+		e = fmt.Errorf("customer, from, to fields are required")
+	}
+	return
+}
+
 //todo: create DAL
 
 func listCustomers(w http.ResponseWriter,
@@ -25,7 +44,9 @@ func listCustomers(w http.ResponseWriter,
 		esurl)
 
 	if err != nil {
-		return showError(w, err)
+		http.Error(w,
+			err.Error(),
+			http.StatusBadRequest)
 	}
 
 	customerTermsAggr := elastic.NewTermsAggregation().Field("customer")
@@ -48,34 +69,43 @@ func listCustomers(w http.ResponseWriter,
 			showError(w, err)
 		}
 
-
 		buckets := aggrResult["buckets"].([]interface{})
-		
+
 		ret := make([]string, len(buckets))
-		for i, bucket := range buckets { 
-        		item :=  bucket.(map[string]interface{})
+		for i, bucket := range buckets {
+			item := bucket.(map[string]interface{})
 			ret[i] = item["key"].(string)
 		}
-		
+
 		JSON, _ := json.Marshal(map[string]interface{}{
-			"result": ret, 
+			"result": ret,
 		})
-		
+
 		return string(JSON)
 
 	}
 	return ""
 }
 
+//todo:move to DAL
+func getFilteredQuery(job Job) elastic.FilteredQuery {
+	customerQuery := elastic.NewTermQuery("customer", job.customer)
+	filteredQuery := elastic.NewFilteredQuery(customerQuery)
+	dateFilter := elastic.NewRangeFilter("@timestamp").From(job.from).To(job.to)
+	filteredQuery = filteredQuery.Filter(dateFilter)
+	return filteredQuery
+}
+
 func getJob(w http.ResponseWriter,
 	r *http.Request) string {
 
-	log.Println(r.URL.Query())
-
-	params := r.URL.Query()
-	customer := params.Get("customer")
-	from := params.Get("from")
-	to := params.Get("to")
+	job, err := parseParams(r)
+	if err != nil {
+		http.Error(w,
+			err.Error(),
+			http.StatusBadRequest)
+		return ""
+	}
 
 	client, err := elastic.NewClient(
 		http.DefaultClient,
@@ -85,23 +115,7 @@ func getJob(w http.ResponseWriter,
 		return showError(w, err)
 	}
 
-	if len(customer) == 0 {
-
-		http.Error(w,
-			"Could you please specify the customer",
-			http.StatusBadRequest)
-		return ""
-
-	}
-
-	customerQuery := elastic.NewTermQuery("customer", customer)
-
-	dateFilter := elastic.NewRangeFilter("@timestamp").
-		From(from).
-		To(to)
-
-	filteredQuery := elastic.NewFilteredQuery(customerQuery)
-	filteredQuery = filteredQuery.Filter(dateFilter)
+	filteredQuery := getFilteredQuery(job)
 
 	sizeSumAggr := elastic.NewSumAggregation().Field("size")
 
@@ -137,12 +151,56 @@ func getJob(w http.ResponseWriter,
 	}
 
 	return `{"count": 0, "size": 0}`
-
 }
 
 func startJob(w http.ResponseWriter,
-        r *http.Request) string {
+	r *http.Request) string {
 
+	job, err := parseParams(r)
+	if err != nil {
+		http.Error(w,
+			err.Error(),
+			http.StatusBadRequest)
+		return ""
+	}
+
+	client, err := elastic.NewClient(
+		http.DefaultClient,
+		esurl)
+
+	if err != nil {
+		return showError(w, err)
+	}
+
+	filteredQuery := getFilteredQuery(job)
+
+	skip := 0
+	take := 10
+	var total int64
+	total = int64(take)
+
+	for int64(skip) < total {
+		out, err := client.Search().
+			Index(index).
+			From(skip).
+			Size(take).
+			Query(&filteredQuery).
+			Debug(debug).
+			Pretty(debug).
+			Do()
+		total = out.Hits.TotalHits
+		skip += take
+		if err != nil {
+			return showError(w, err)
+		}
+		for _, hit := range out.Hits.Hits {
+			item := make(map[string]interface{})
+			json.Unmarshal(*hit.Source, &item)
+			fmt.Println(item["uri"])
+		}
+	}
+
+	//fmt.Sprintf("%s", out)
 	return "started"
 }
 
