@@ -7,8 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
-	"strings"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -186,61 +186,6 @@ func startJob(w http.ResponseWriter,
 		return ""
 	}
 
-	client, err := elastic.NewClient(
-		http.DefaultClient,
-		esurl)
-
-	if err != nil {
-		return showError(w, err)
-	}
-
-	filteredQuery := getFilteredQuery(job)
-
-	skip := 0
-	take := 1000
-	var total int64
-	total = int64(take)
-
-	for int64(skip) < total {
-		out, err := client.Search().
-			Index(index).
-			From(skip).
-			Size(take).
-			Query(&filteredQuery).
-			Debug(debug).
-			Pretty(debug).
-			Do()
-		total = out.Hits.TotalHits
-		skip += take
-		if err != nil {
-			return showError(w, err)
-		}
-
-		cmd := exec.Command("go-send", "s")
-		cmdin, err := cmd.StdinPipe()
-
-		if err != nil {
-			return showError(w, err)
-		}
-
-		for _, hit := range out.Hits.Hits {
-			item := make(map[string]interface{})
-			json.Unmarshal(*hit.Source, &item)
-
-			uri := strings.TrimLeft(item["uri"].(string), "https://3.amazonaws.com/")
-			io.WriteString(cmdin, uri+"\n")
-		}
-
-		cmdin.Close()
-		cmdout, err := cmd.Output()
-
-		if err != nil {
-			return showError(w, err)
-		}
-
-		log.Println("go-s3 out: " + string(cmdout))
-	}
-
 	return "started"
 }
 
@@ -255,8 +200,8 @@ func showError(w http.ResponseWriter, err error) string {
 
 func main() {
 
-        num := runtime.NumCPU()
-        runtime.GOMAXPROCS(num)
+	num := runtime.NumCPU()
+	runtime.GOMAXPROCS(num)
 
 	m := martini.Classic()
 	m.Use(martini.Logger())
