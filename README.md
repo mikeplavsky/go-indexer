@@ -46,39 +46,21 @@ Steps to run:
     - export AWS_ACCESS_KEY_ID=...
     - export AWS_SECRET_ACCESS_KEY=...
     
-- Prepare Image
+- Prepare Images
 
     - git clone git@github.com:GitQuest/go-indexer.git
     - cd go-indexer/
-    - docker build -t go_indexer .
-    - ./create_stack.sh 
-    - ./start_stack.sh
-    - Check stack:
-      - curl localhost:8080/_cat/nodes?v there should be $ES_STACK_NUM nodes
-    
-- Synchronize S3 to Elastic
-    
-    - ./run_s3.sh
-     
-- Rub Kibana 
+    - ./prep_env.sh
 
-    - ./run_kibana.sh
+- Run
+    
+    - ./run_stack.sh
+     
+- Use App :)
+
     - Go to https://IP
 
-- Analyze uploaded files throw Kibana: s3data index
-
-- Run Indexer
+- In Kibana there are two index patterns:
     
-    - ./run_env.sh
-    - go-s3 l dmp-log-analysis/D4755B98-A20C-42B1-A685-D42B5B326B52/folder/UnifiedMailSync_1 | go-send
-    - ./create_loaders.sh 
-    - ./start_loaders.sh
-
-- Analyze uploaded logs throw Kibana: test* indices
-
-- To Reindex
-
-    - ./stop_loaders.sh
-    - ./stop_stack.sh
-    - sudo rm -rf /data
-    - Run Indexer
+    - s3data This one is where S3 was synced 
+    - test* This is where all logs are. 
