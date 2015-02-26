@@ -35,7 +35,7 @@ angular.module('myApp', ['cui'])
         }
 
         $scope.refreshEta()
-        $interval($scope.refreshEta, 5000)
+        $interval($scope.refreshEta, 10000)
 
         $scope.toUtc = function (d){
 
