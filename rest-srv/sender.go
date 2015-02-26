@@ -61,8 +61,8 @@ func sendJob(j job) {
 				json.Unmarshal(*hit.Source,
 					&item)
 
-				uri := strings.TrimLeft(item["uri"].(string),
-					"https://3.amazonaws.com/")
+				uri := strings.TrimPrefix(item["uri"].(string),
+					"https://s3.amazonaws.com/")
 
 				sender.Send(uri, q)
 
