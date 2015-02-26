@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"runtime"
-	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
@@ -168,14 +167,7 @@ func getJob(w http.ResponseWriter,
 		res["count"] = humanize.Comma(out.Hits.TotalHits)
 		res["size"] = humanize.Bytes(uint64(size.(float64)))
 
-		cpu := runtime.NumCPU()
-
-		fPerSec := 2.5 / 70.0 * float64(cpu)
-		secs := float64(out.Hits.TotalHits) / fPerSec
-
-		eta := time.Second * time.Duration(secs)
-
-		res["eta"] = fmt.Sprintf("%v", eta)
+		res["eta"] = calcEta(float64(out.Hits.TotalHits))
 
 		data, _ := json.Marshal(res)
 		return string(data)
