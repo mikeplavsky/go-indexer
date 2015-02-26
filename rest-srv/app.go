@@ -219,6 +219,7 @@ func main() {
 	m.Use(martini.Logger())
 
 	m.Get("/job", getJob)
+	m.Get("/eta", getEta)
 	m.Get("/customers", listCustomers)
 	m.Post("/job", startJob)
 	//todo:remove this as I understand how to enable post in CUI

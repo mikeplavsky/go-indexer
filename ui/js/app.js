@@ -1,15 +1,37 @@
 angular.module('myApp', ['cui'])
     .controller('AppController', function ($scope,
-                       $http,
+                                           $http,
                                            cuiDataSourceService,
                                            cuiAlertService,
-                                           cuiLoading) {
+                                           cuiLoading,
+                                           $interval) {
 
         $scope.applicationframe = {};
-
         $scope.job = {}
-
+        $scope.eta = {}
         $scope.job.customers = []
+
+        etaSvc = cuiDataSourceService('api/eta');
+
+        $scope.refreshEta = function() {
+
+            etaSvc.query()
+            .then(
+                function(eta){
+
+                    $scope.eta.files = eta.files;
+                    $scope.eta.time = eta.time;
+
+                },
+                function(err){
+                }
+            );
+             
+            console.log($scope.eta)
+
+        }
+
+        $interval($scope.refreshEta, 5000)
 
         $scope.toUtc = function (d){
 
