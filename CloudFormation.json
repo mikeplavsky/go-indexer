@@ -64,7 +64,9 @@
                             "",
                             [
                                 "#!/bin/sh\n",
-                                "cd /home/ec2-user/go-indexer/ && ./run_stack.sh\n"
+                                "aws s3 cp s3://logmanagement/indexer.zip /tmp/\n",
+                                "unzip /tmp/indexer.zip -d /etc/go-indexer/\n",
+                                "cd /etc/go-indexer/ && ./prep_env.sh && ./run_stack.sh\n"
                             ]
                         ]
                     }

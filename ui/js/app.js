@@ -30,7 +30,6 @@ angular.module('myApp', ['cui'])
                 }
             );
              
-            console.log($scope.eta)
 
         }
 
