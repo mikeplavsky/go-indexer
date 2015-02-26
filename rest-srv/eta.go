@@ -55,6 +55,7 @@ func getEta() (int, string) {
 
 	res["files"] = num
 	res["time"] = calcEta(float64(num))
+	res["queue"] = sender.GetQueueName()
 
 	data, _ := json.Marshal(res)
 

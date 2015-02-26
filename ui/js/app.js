@@ -11,6 +11,7 @@ angular.module('myApp', ['cui'])
         $scope.eta = {}
         $scope.job.customers = []
 
+
         etaSvc = cuiDataSourceService('api/eta');
 
         $scope.refreshEta = function() {
@@ -21,6 +22,8 @@ angular.module('myApp', ['cui'])
 
                     $scope.eta.files = eta.files;
                     $scope.eta.time = eta.time;
+
+                    $scope.queue = eta.queue
 
                 },
                 function(err){

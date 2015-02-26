@@ -17,10 +17,17 @@ func GetSqs() *sqs.SQS {
 
 }
 
+func GetQueueName() (qn string) {
+
+	qn = os.Getenv("ES_QUEUE")
+	return
+
+}
+
 func GetQueue() (*sqs.Queue, error) {
 
-	qn := os.Getenv("ES_QUEUE")
-	return GetSqs().GetQueue(qn)
+	return GetSqs().
+		GetQueue(GetQueueName())
 
 }
 

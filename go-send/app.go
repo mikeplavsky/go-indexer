@@ -7,7 +7,7 @@ import (
 	"sync"
 
 	"github.com/codegangsta/cli"
-	
+
 	"go-indexer/go-send/sender"
 )
 
