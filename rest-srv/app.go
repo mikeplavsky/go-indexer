@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	esurl string = "http://localhost:8080"
-	index string = "s3data"
+	esurl = "http://localhost:8080"
+	index = "s3data"
 	debug        = false
 )
 
