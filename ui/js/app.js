@@ -102,6 +102,7 @@ angular.module('myApp', ['cui'])
             cuiLoading(
                 srv.query(job)
                     .then(function (res) {
+                        $scope.refreshEta();
                     },
                     function (err) {
                         cuiAlertService.warning(err);
