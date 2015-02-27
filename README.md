@@ -1,7 +1,11 @@
 # go-indexer
 Docker container for indexing of zipped log files from AWS S3
 
-### Choose instance type. 
+### How to start the application
+
+Manual: https://commons.quest.com/thread/32697
+
+### How to choose your right instance type. 
 
 Criteria:
 
@@ -30,6 +34,8 @@ Current Speed per instance type:
     - 280M of events per hous
     - 4112 log files per hour
 
+### Developer manual
+
 Steps to run:
 
 - Install Docker https://docs.docker.com/installation/ubuntulinux/
@@ -41,11 +47,6 @@ Steps to run:
       - sudo service docker restart
       - newgrp docker
 
-- Set Environment Variables, if IAM role is used - AWS_... variables are not needed
-
-    - export AWS_ACCESS_KEY_ID=...
-    - export AWS_SECRET_ACCESS_KEY=...
-    
 - Prepare Images
 
     - git clone git@github.com:GitQuest/go-indexer.git
