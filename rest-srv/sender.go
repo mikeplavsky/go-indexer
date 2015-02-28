@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"log"
-	"net/http"
 	"strings"
 
 	"go-indexer/go-send/sender"
@@ -22,7 +21,6 @@ func sendJob(j job) {
 	}
 
 	client, _ := elastic.NewClient(
-		http.DefaultClient,
 		esurl)
 
 	filteredQuery := getFilteredQuery(j)
@@ -39,7 +37,6 @@ func sendJob(j job) {
 			From(skip).
 			Size(take).
 			Query(&filteredQuery).
-			Debug(debug).
 			Pretty(debug).
 			Do()
 
