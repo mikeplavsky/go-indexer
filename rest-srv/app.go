@@ -9,13 +9,13 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
-	"github.com/olivere/elastic"
+	"gopkg.in/olivere/elastic.v1"
 )
 
 var (
-	esurl  = elastic.SetURL("http://localhost:8080")
-	index  = "s3data"
-	debug  = false
+	esurl = "http://localhost:8080"
+	index = "s3data"
+	debug = false
 )
 
 type job struct {
@@ -45,7 +45,7 @@ func parseParams(r *http.Request) (job, error) {
 
 func listCustomers(w http.ResponseWriter,
 	r *http.Request) string {
-	client, err := elastic.NewClient(esurl)
+	client, err := elastic.NewClient(http.DefaultClient, esurl)
 
 	if err != nil {
 		http.Error(w,
@@ -58,6 +58,7 @@ func listCustomers(w http.ResponseWriter,
 	out, err := client.Search().
 		Index(index).
 		Aggregation("cust_unique", customerTermsAggr).
+		Debug(debug).
 		Pretty(debug).
 		Do()
 
@@ -121,7 +122,7 @@ func getJob(w http.ResponseWriter,
 		return ""
 	}
 
-	client, err := elastic.NewClient(
+	client, err := elastic.NewClient(http.DefaultClient,
 		esurl)
 
 	if err != nil {
@@ -136,6 +137,8 @@ func getJob(w http.ResponseWriter,
 		Index(index).
 		Query(&filteredQuery).
 		Aggregation("sum", sizeSumAggr).
+		Debug(debug).
+		Pretty(debug).
 		Do()
 
 	if err != nil {

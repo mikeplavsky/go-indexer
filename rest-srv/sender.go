@@ -7,7 +7,8 @@ import (
 
 	"go-indexer/go-send/sender"
 
-	"github.com/olivere/elastic"
+	"gopkg.in/olivere/elastic.v1"
+	"net/http"
 )
 
 func sendJob(j job) {
@@ -20,7 +21,7 @@ func sendJob(j job) {
 		log.Println(err)
 	}
 
-	client, _ := elastic.NewClient(
+	client, _ := elastic.NewClient(http.DefaultClient,
 		esurl)
 
 	filteredQuery := getFilteredQuery(j)
@@ -37,6 +38,7 @@ func sendJob(j job) {
 			From(skip).
 			Size(take).
 			Query(&filteredQuery).
+			Debug(debug).
 			Pretty(debug).
 			Do()
 
