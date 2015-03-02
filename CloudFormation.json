@@ -42,7 +42,7 @@
                     },
                     {
                         "Key": "Name",
-                        "Value": "LogManagement",
+                        "Value": { "Ref": "AWS::StackName" },
                         "PropagateAtLaunch": "true"
                     }
                 ]
@@ -53,7 +53,7 @@
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
                 "KeyName": "ESKeyPair",
-                "ImageId": "ami-c098c5a8",
+                "ImageId": "ami-c07728a8",
                 "SecurityGroups": [ "sg-f8ebb992" ],
                 "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
                 "InstanceType": { "Ref": "InstanceType" },
@@ -64,6 +64,12 @@
                             "",
                             [
                                 "#!/bin/sh\n",
+                                "/opt/aws/bin/cfn-init -v -c provision -s ",
+                                { "Ref": "AWS::StackName" },
+                                "  -r LaunchConfig ",
+                                "  --region ",
+                                { "Ref": "AWS::Region" },
+                                "\n",
                                 "aws s3 cp s3://logmanagement/indexer.zip /tmp/\n",
                                 "unzip /tmp/indexer.zip -d /etc/go-indexer/\n",
                                 "cd /etc/go-indexer/ && ./prep_env.sh && ./run_stack.sh\n"
@@ -71,18 +77,87 @@
                         ]
                     }
                 }
+            },
+
+            "Metadata": {
+                "AWS::CloudFormation::Init": {
+                    "configSets": {
+                        "provision": [
+                            "register-hostname"
+                        ]
+                    },
+                    "register-hostname": {
+                        "files": {
+                            "/home/ec2-user/route53-origin.json": {
+                                "content": {
+                                    "Changes": [
+                                        {
+                                            "Action": "UPSERT",
+                                            "ResourceRecordSet": {
+                                                "Name": { "Fn::Join": [ "", [ { "Ref": "AWS::StackName" }, ".sa4sp.com." ] ] },
+                                                "Type": "CNAME",
+                                                "TTL": 300,
+                                                "ResourceRecords": [
+                                                    {
+                                                        "Value": "$PUBLIC_IP"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                "mode": "000755",
+                                "owner": "ec2-user",
+                                "group": "ec2-user"
+                            }
+                        },
+                        "commands": {
+                            "0001_subs-template": {
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4) && sed -i \"s/\\$PUBLIC_IP/$PUBLIC_IP/g\" /home/ec2-user/route53-origin.json && sed -i \"s/\\\"300\\\"/300/g\" /home/ec2-user/route53-origin.json"
+                                        ]
+                                    ]
+                                }
+                            },
+                            "0002_submit-zone-update-request": {
+                                "ignoreErrors": true,
+                                "command": {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "aws route53 change-resource-record-sets",
+                                            " --hosted-zone-id Z2XLKK5Y4BC9Z1",
+                                            " --change-batch file:///home/ec2-user/route53-origin.json --region us-east-1"
+                                        ]
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },
 
-    "Outputs": {
-        "DashboardURL": {
-            "Description": "The URL of the dashboard",
-            "Value": "https://logman.sa4sp.com"
-        },
+    "Outputs": {        
         "KibanaURL": {
-            "Description": "The URL of the kibana v4",
-            "Value": "https://logman.sa4sp.com/kibana"
+            "Value": { "Fn::Join": [ "", [ "https://", { "Ref": "AWS::StackName" }, ".sa4sp.com/Kibana" ] ] }
+        }, 
+        "DashboardURL": {
+            "Value": { "Fn::Join": [ "", [ "https://", { "Ref": "AWS::StackName" }, ".sa4sp.com/" ] ] }
+        },
+        "SSH": {
+            "Value": { "Fn::Join": [ "", [ "ssh ec2-user@", { "Ref": "AWS::StackName" }, ".sa4sp.com -v -i ~/ESKeyPair.pem" ] ] }
+        },
+        "Instance": {
+            "Value": { "Fn::Join": [ "", [ "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:instanceTypeFilter=all-instance-types;instanceState=running;tag:aws:cloudformation:stack-id=", { "Ref": "AWS::StackName" } ] ] },
+            "Description": "May be empty if AutoScalingGroup has not yet created instance"
+        },
+        "AutoScalingGroups": {
+            "Value": { "Fn::Join": [ "", [ "https://console.aws.amazon.com/ec2/autoscaling/home?region=us-east-1#AutoScalingGroups:view=details;filter=", { "Ref": "AWS::StackName" } ] ] }
         }
     }
 }
