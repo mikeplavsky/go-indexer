@@ -53,7 +53,7 @@
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
                 "KeyName": "ESKeyPair",
-                "ImageId": "ami-c07728a8",
+                "ImageId": "ami-ee306986",
                 "SecurityGroups": [ "sg-f8ebb992" ],
                 "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
                 "InstanceType": { "Ref": "InstanceType" },
@@ -70,8 +70,8 @@
                                 "  --region ",
                                 { "Ref": "AWS::Region" },
                                 "\n",
-                                "aws s3 cp s3://logmanagement/indexer.zip /tmp/\n",
-                                "unzip /tmp/indexer.zip -d /etc/go-indexer/\n",
+                                "aws s3 cp s3://logmanagement/go-indexer.zip /tmp/\n",
+                                "unzip /tmp/go-indexer.zip -d /etc/go-indexer/\n",
                                 "cd /etc/go-indexer/ && ./prep_env.sh && ./run_stack.sh\n"
                             ]
                         ]
@@ -144,7 +144,7 @@
 
     "Outputs": {        
         "KibanaURL": {
-            "Value": { "Fn::Join": [ "", [ "https://", { "Ref": "AWS::StackName" }, ".sa4sp.com/Kibana" ] ] }
+            "Value": { "Fn::Join": [ "", [ "https://", { "Ref": "AWS::StackName" }, ".sa4sp.com/kibana" ] ] }
         }, 
         "DashboardURL": {
             "Value": { "Fn::Join": [ "", [ "https://", { "Ref": "AWS::StackName" }, ".sa4sp.com/" ] ] }
