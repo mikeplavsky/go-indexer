@@ -22,10 +22,6 @@ type job struct {
 	customer, from, to string
 }
 
-func newConnection() (*elastic.Client, error) {
-	return elastic.NewClient(http.DefaultClient, esurl)
-}
-
 func parseParams(r *http.Request) (job, error) {
 	params := r.URL.Query()
 	log.Println(params)
@@ -42,57 +38,19 @@ func parseParams(r *http.Request) (job, error) {
 	return job{customer: customer, from: from, to: to}, nil
 }
 
-//todo: create DAL
-
 func listCustomers(w http.ResponseWriter,
 	r *http.Request) string {
-	client, err := newConnection()
-
-	if err != nil {
-		http.Error(w,
-			err.Error(),
-			http.StatusBadRequest)
-	}
-
-	customerTermsAggr := elastic.NewTermsAggregation().Field("customer")
-
-	out, err := client.Search().
-		Index(index).
-		Aggregation("cust_unique", customerTermsAggr).
-		Debug(debug).
-		Pretty(debug).
-		Do()
+	list, err := getCustomers()
 
 	if err != nil {
 		showError(w, err)
 	}
-	if out.Hits != nil {
-		var aggrResult map[string]interface{}
 
-		err = json.Unmarshal(
-			out.Aggregations["cust_unique"],
-			&aggrResult)
+	JSON, _ := json.Marshal(map[string]interface{}{
+		"result": list,
+	})
 
-		if err != nil {
-			showError(w, err)
-		}
-
-		buckets := aggrResult["buckets"].([]interface{})
-
-		ret := make([]string, len(buckets))
-		for i, bucket := range buckets {
-			item := bucket.(map[string]interface{})
-			ret[i] = item["key"].(string)
-		}
-
-		JSON, _ := json.Marshal(map[string]interface{}{
-			"result": ret,
-		})
-
-		return string(JSON)
-
-	}
-	return ""
+	return string(JSON)
 }
 
 //todo:move to DAL
