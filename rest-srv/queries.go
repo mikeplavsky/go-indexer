@@ -8,6 +8,16 @@ import (
 	"gopkg.in/olivere/elastic.v1"
 )
 
+var (
+	esurl = "http://localhost:8080"
+	index = "s3data"
+	debug = false
+)
+
+type job struct {
+	customer, from, to string
+}
+
 func newConnection() (*elastic.Client, error) {
 	return elastic.NewClient(http.DefaultClient, esurl)
 }
@@ -50,4 +60,19 @@ func getCustomers() ([]string, error) {
 	}
 	//todo:check on empty db
 	return nil, fmt.Errorf("no hits")
+}
+
+func getFilteredQuery(j job) elastic.FilteredQuery {
+
+	customerQuery := elastic.NewTermQuery("customer", j.customer)
+	filteredQuery := elastic.NewFilteredQuery(customerQuery)
+
+	dateFilter := elastic.NewRangeFilter("@timestamp").
+		From(j.from).
+		To(j.to)
+
+	filteredQuery = filteredQuery.Filter(dateFilter)
+
+	return filteredQuery
+
 }

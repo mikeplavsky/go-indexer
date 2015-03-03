@@ -12,16 +12,6 @@ import (
 	"gopkg.in/olivere/elastic.v1"
 )
 
-var (
-	esurl = "http://localhost:8080"
-	index = "s3data"
-	debug = false
-)
-
-type job struct {
-	customer, from, to string
-}
-
 func parseParams(r *http.Request) (job, error) {
 	params := r.URL.Query()
 	log.Println(params)
@@ -51,22 +41,6 @@ func listCustomers(w http.ResponseWriter,
 	})
 
 	return string(JSON)
-}
-
-//todo:move to DAL
-func getFilteredQuery(j job) elastic.FilteredQuery {
-
-	customerQuery := elastic.NewTermQuery("customer", j.customer)
-	filteredQuery := elastic.NewFilteredQuery(customerQuery)
-
-	dateFilter := elastic.NewRangeFilter("@timestamp").
-		From(j.from).
-		To(j.to)
-
-	filteredQuery = filteredQuery.Filter(dateFilter)
-
-	return filteredQuery
-
 }
 
 func getJob(w http.ResponseWriter,
