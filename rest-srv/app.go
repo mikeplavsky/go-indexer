@@ -22,11 +22,13 @@ type job struct {
 	customer, from, to string
 }
 
+func newConnection() (*elastic.Client, error) {
+	return elastic.NewClient(http.DefaultClient, esurl)
+}
+
 func parseParams(r *http.Request) (job, error) {
-
-	log.Println(r.URL.Query())
-
 	params := r.URL.Query()
+	log.Println(params)
 
 	customer := params.Get("customer")
 	from := params.Get("from")
@@ -38,14 +40,13 @@ func parseParams(r *http.Request) (job, error) {
 	}
 
 	return job{customer: customer, from: from, to: to}, nil
-
 }
 
 //todo: create DAL
 
 func listCustomers(w http.ResponseWriter,
 	r *http.Request) string {
-	client, err := elastic.NewClient(http.DefaultClient, esurl)
+	client, err := newConnection()
 
 	if err != nil {
 		http.Error(w,
@@ -122,8 +123,7 @@ func getJob(w http.ResponseWriter,
 		return ""
 	}
 
-	client, err := elastic.NewClient(http.DefaultClient,
-		esurl)
+	client, err := newConnection()
 
 	if err != nil {
 		return showError(w, err)
