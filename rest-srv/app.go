@@ -48,10 +48,7 @@ func getJob(w http.ResponseWriter,
 	job, err := parseParams(r)
 
 	if err != nil {
-		http.Error(w,
-			err.Error(),
-			http.StatusBadRequest)
-		return ""
+		return showBadRequest(w, err)
 	}
 
 	stats, err := getJobStats(job)
@@ -83,12 +80,11 @@ func startJob(w http.ResponseWriter,
 	return "started"
 }
 
-//todo: show stacktrace error in debug localhost, show empty 500 in production
+//todo: show error stacktrace in debug localhost, show empty 500 in production
 func showError(w http.ResponseWriter, err error) string {
 	http.Error(w,
 		err.Error(),
 		http.StatusInternalServerError)
-
 	return ""
 }
 

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	//	"strconv"
 	"gopkg.in/olivere/elastic.v1"
 )
 
@@ -74,7 +73,6 @@ func getFilteredQuery(j job) elastic.FilteredQuery {
 	filteredQuery = filteredQuery.Filter(dateFilter)
 
 	return filteredQuery
-
 }
 
 func getJobStats(j job) (map[string]uint64, error) {
