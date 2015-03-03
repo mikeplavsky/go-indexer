@@ -9,7 +9,6 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
-	"gopkg.in/olivere/elastic.v1"
 )
 
 func parseParams(r *http.Request) (job, error) {
@@ -55,54 +54,19 @@ func getJob(w http.ResponseWriter,
 		return ""
 	}
 
-	client, err := newConnection()
+	stats, err := getJobStats(job)
 
 	if err != nil {
-		return showError(w, err)
+		showError(w, err)
 	}
 
-	filteredQuery := getFilteredQuery(job)
+	res := map[string]interface{}{}
+	res["count"] = humanize.Comma(int64(stats["count"]))
+	res["size"] = humanize.Bytes(stats["size"])
+	res["eta"] = calcEta(float64(stats["count"]))
 
-	sizeSumAggr := elastic.NewSumAggregation().Field("size")
-
-	out, err := client.Search().
-		Index(index).
-		Query(&filteredQuery).
-		Aggregation("sum", sizeSumAggr).
-		Debug(debug).
-		Pretty(debug).
-		Do()
-
-	if err != nil {
-		return showError(w, err)
-	}
-
-	if out.Hits != nil {
-
-		var aggrResult map[string]interface{}
-
-		err = json.Unmarshal(
-			out.Aggregations["sum"],
-			&aggrResult)
-
-		if err != nil {
-			showError(w, err)
-		}
-
-		size := aggrResult["value"]
-
-		res := map[string]interface{}{}
-
-		res["count"] = humanize.Comma(out.Hits.TotalHits)
-		res["size"] = humanize.Bytes(uint64(size.(float64)))
-
-		res["eta"] = calcEta(float64(out.Hits.TotalHits))
-
-		data, _ := json.Marshal(res)
-		return string(data)
-	}
-
-	return `{"count": 0, "size": 0}`
+	data, _ := json.Marshal(res)
+	return string(data)
 }
 
 func startJob(w http.ResponseWriter,
@@ -111,10 +75,7 @@ func startJob(w http.ResponseWriter,
 	j, err := parseParams(r)
 
 	if err != nil {
-		http.Error(w,
-			err.Error(),
-			http.StatusBadRequest)
-		return ""
+		return showBadRequest(w, err)
 	}
 
 	go sendJob(j)
@@ -128,6 +89,13 @@ func showError(w http.ResponseWriter, err error) string {
 		err.Error(),
 		http.StatusInternalServerError)
 
+	return ""
+}
+
+func showBadRequest(w http.ResponseWriter, err error) string {
+	http.Error(w,
+		err.Error(),
+		http.StatusBadRequest)
 	return ""
 }
 

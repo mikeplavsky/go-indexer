@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
+	//	"strconv"
 	"gopkg.in/olivere/elastic.v1"
 )
 
@@ -75,4 +75,49 @@ func getFilteredQuery(j job) elastic.FilteredQuery {
 
 	return filteredQuery
 
+}
+
+func getJobStats(j job) (map[string]uint64, error) {
+	conn, err := newConnection()
+
+	if err != nil {
+		return nil, err
+	}
+
+	filteredQuery := getFilteredQuery(j)
+
+	sizeSumAggr := elastic.NewSumAggregation().Field("size")
+
+	out, err := conn.Search().
+		Index(index).
+		Query(&filteredQuery).
+		Aggregation("sum", sizeSumAggr).
+		Debug(debug).
+		Pretty(debug).
+		Do()
+
+	if err != nil {
+		return nil, err
+	}
+
+	if out.Hits != nil {
+
+		var aggrResult map[string]interface{}
+
+		err = json.Unmarshal(
+			out.Aggregations["sum"],
+			&aggrResult)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return map[string]uint64{
+			"count": uint64(out.Hits.TotalHits),
+			"size":  uint64(aggrResult["value"].(float64)),
+		}, nil
+
+	}
+
+	return nil, fmt.Errorf("no hits")
 }
