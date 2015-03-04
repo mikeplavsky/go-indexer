@@ -53,7 +53,7 @@ func listCustomers(w http.ResponseWriter,
 			http.StatusBadRequest)
 	}
 
-	customerTermsAggr := elastic.NewTermsAggregation().Field("customer")
+	customerTermsAggr := elastic.NewTermsAggregation().Field("customer").Size(1000)
 
 	out, err := client.Search().
 		Index(index).
