@@ -1,0 +1,14 @@
+*.jar
+*.zip
+/FitNesseRoot/files/*
+/FitNesseRoot/RecentChanges
+/FitNesseRoot/ErrorLogs
+/FitNesseRoot/properties
+/FitNesseRoot/updateDoNotCopyOverList
+/FitNesseRoot/updateList
+/FitNesseRoot/FitNesse
+/FitNesseRoot/TemplateLibrary
+/FitNesseRoot/FrontPage
+/FitNesseRoot/PageHeader
+/FitNesseRoot/PageFooter
+/fixtures
