@@ -15,6 +15,7 @@ var formats = map[string]*regexp.Regexp{
 
 	"20060102_150405": regexp.MustCompile(`.*_(\d+_\d+).*\.zip`),
 	"01.02.2006":      regexp.MustCompile(`.*\.(\d{2}\.\d{2}\.\d{4}).*\.zip`),
+	"20060102150405": regexp.MustCompile(`.*-(\d{14}).*\.zip`),
 }
 
 func parseTime(uri string) (string, error) {
