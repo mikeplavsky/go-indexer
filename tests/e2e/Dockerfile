@@ -4,6 +4,7 @@ RUN \
   curl -o fitnesse-standalone.jar -L http://fitnesse.org/fitnesse-standalone.jar?responder=releaseDownload&release=20150226 && \
   sudo apt-get update && \
   sudo apt-get install -y python2.7 && \
+  sudo apt-get install -y build-essential python-dev libxml2-dev libxslt-dev  && \
   WAFERSLIM_URL=http://pypi.python.org/packages/source/w/waferslim  && \
   WAFERSLIM_URL=http://pypi.python.org/packages/source/w/waferslim && \
   WAFERSLIM_ZIP=waferslim-1.0.2-py2.6.zip && \
