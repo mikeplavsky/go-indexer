@@ -1,7 +1,7 @@
 FROM dockerfile/java:oracle-java7
 
 RUN \
-  curl -o fitnesse-standalone.jar -L http://fitnesse.org/fitnesse-standalone.jar?responder=releaseDownload&release=20150226 && \
+  curl -o fitnesse-standalone.jar -L "http://fitnesse.org/fitnesse-standalone.jar?responder=releaseDownload&release=20150226" && \
   sudo apt-get update && \
   sudo apt-get install -y python2.7 && \
   sudo apt-get install -y build-essential python-dev libxml2-dev libxslt-dev  && \
@@ -25,4 +25,4 @@ EXPOSE 3680
 
 ADD / /data
 
-CMD ./trust_ca.sh && java -jar fitnesse-standalone.jar -p 3680
+CMD ./trust_ca.sh && java -jar fitnesse-standalone.jar $COMMAND -p 3680
