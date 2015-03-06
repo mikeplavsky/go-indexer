@@ -5,6 +5,7 @@ RUN \
   sudo apt-get update && \
   sudo apt-get install -y python2.7 && \
   sudo apt-get install -y build-essential python-dev libxml2-dev libxslt-dev  && \
+  sudo apt-get install ca-certificates && \
   WAFERSLIM_URL=http://pypi.python.org/packages/source/w/waferslim  && \
   WAFERSLIM_URL=http://pypi.python.org/packages/source/w/waferslim && \
   WAFERSLIM_ZIP=waferslim-1.0.2-py2.6.zip && \
@@ -24,4 +25,4 @@ EXPOSE 3680
 
 ADD / /data
 
-CMD java -jar fitnesse-standalone.jar -p 3680
+CMD ./trust_ca.sh && java -jar fitnesse-standalone.jar -p 3680

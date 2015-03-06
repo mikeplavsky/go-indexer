@@ -6,8 +6,8 @@
 
 !define COMMAND_PATTERN {python -m waferslim.server -i 0.0.0.0 --syspath %p -v  }
 
-!define API_HOST {!-http://localhost-!}
-!define ES_URL (${API_HOST}:8080)
-!define SERVICE_URL (${API_HOST}:3000)
+!define API_HOST {!-https://localhost-!}
+!define ES_URL (${API_HOST}!-/es-!)
+!define SERVICE_URL (${API_HOST}!-/api-!)
 
 !contents -R2 -g -p -f -h

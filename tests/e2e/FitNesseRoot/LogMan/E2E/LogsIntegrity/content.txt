@@ -7,8 +7,8 @@
 |url    |${ES_URL}/${INDEX}/_search|response attribute|total|has value|0|for|1|seconds|5|times|
 
 |query:response as table|${SERVICE_URL}/job/create?from=2015-03-03T16:30:00Z&to=2015-03-03T18:00:00Z&customer=Fuji|
-|status_code                                                                                                      |
-|200                                                                                                              |
+|status_code                                                                                                          |
+|200                                                                                                                  |
 
 !|script|!-RestTools-!                                                                             |
 |url    |${ES_URL}/${INDEX}/_search|response attribute|total|has value|57815|for|3|seconds|20|times|
