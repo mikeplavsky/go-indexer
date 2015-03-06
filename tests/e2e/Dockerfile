@@ -1,7 +1,6 @@
 FROM dockerfile/java:oracle-java7
 
 RUN \
-  cd / && \
   curl -o fitnesse-standalone.jar -L http://fitnesse.org/fitnesse-standalone.jar?responder=releaseDownload&release=20150226 && \
   sudo apt-get update && \
   sudo apt-get install -y python2.7 && \
@@ -22,4 +21,6 @@ RUN \
 
 EXPOSE 3680
 
-ADD / /
+ADD / /data
+
+CMD java -jar fitnesse-standalone.jar -p 3680
