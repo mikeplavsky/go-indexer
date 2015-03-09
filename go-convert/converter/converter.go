@@ -2,6 +2,7 @@ package converter
 
 import (
 	"bufio"
+	"crypto/md5"
 	"io"
 	"runtime"
 	"strings"
@@ -23,6 +24,11 @@ func worker(
 	in <-chan event,
 	out chan<- string,
 	done chan<- bool) {
+
+	h := md5.New()
+	io.WriteString(h, path)
+
+	id := h.Sum(nil)
 
 	for {
 		select {
