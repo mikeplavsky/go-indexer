@@ -8,7 +8,7 @@
         "_default_" : {
 
            "_source": {
-               "enabled": false
+               "enabled": true
             },
            "_all": {
                "enabled": false
