@@ -11,6 +11,8 @@ do
 let port=i+8080
 
 docker create \
+-v $(pwd)/indexer.sh:/go/src/go-indexer/indexer.sh:ro \
+-v $(pwd)/index.json:/go/src/go-indexer/index.json:ro \
 -e ES_INDEX=test$i \
 -e ES_PORT=$port \
 -e ES_QUEUE=$ES_QUEUE \
