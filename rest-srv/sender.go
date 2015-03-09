@@ -53,11 +53,11 @@ func sendJob(j job) {
 
 		for _, hit := range out.Hits.Hits {
 
-			go func(*elastic.SearchHit) {
+			go func(h *elastic.SearchHit) {
 
 				item := make(map[string]interface{})
 
-				json.Unmarshal(*hit.Source,
+				json.Unmarshal(*h.Source,
 					&item)
 
 				uri := strings.TrimPrefix(item["uri"].(string),

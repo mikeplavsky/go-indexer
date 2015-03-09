@@ -6,8 +6,6 @@ import (
 	"go-indexer/go-send/sender"
 	"log"
 	"strconv"
-
-	"github.com/dustin/go-humanize"
 )
 
 func getCount() (uint64, error) {
@@ -46,7 +44,7 @@ func getCount() (uint64, error) {
 	r := msg["path"].(string)
 	count, _ := strconv.Atoi(r)
 
-	return uint64(count) / 2, nil
+	return uint64(count), nil
 
 }
 
@@ -54,7 +52,7 @@ func main() {
 
 	count := uint64(0)
 
-	for {
+	for i := 0; ; i++ {
 		c, err := getCount()
 
 		if err != nil {
@@ -62,7 +60,10 @@ func main() {
 		}
 
 		count += c
-		log.Println(humanize.Comma(int64(count)))
+		log.Printf("%v\t%v\t%v",
+			i,
+			c,
+			count)
 	}
 
 }

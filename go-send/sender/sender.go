@@ -2,6 +2,7 @@ package sender
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -47,6 +48,9 @@ func Send(s3path string, q *sqs.Queue) {
 		_, err := q.SendMessage(string(res))
 
 		if err != nil {
+
+			log.Println(err)
+
 			time.Sleep(time.Second * 2)
 			continue
 		}
