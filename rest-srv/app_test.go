@@ -22,12 +22,15 @@ func TestInvalidJobParameters(t *testing.T) {
 		r := &http.Request{Method: "GET", URL: url}
 		response := httptest.NewRecorder()
 		getJob(response, r)
-		assert.Equal(t, http.StatusBadRequest, response.Code, testCase + ": customer, from, to params are required")
+		assert.Equal(t, http.StatusBadRequest, response.Code, testCase+": customer, from, to params are required")
 
 	}
 }
 
 func TestCustomers(t *testing.T) {
+	getCustomers = func() ([]string, error) {
+		return nil, nil
+	}
 	r := &http.Request{}
 	response := httptest.NewRecorder()
 	listCustomers(response, r)

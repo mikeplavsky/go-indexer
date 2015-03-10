@@ -23,7 +23,7 @@ func newConnection() (*elastic.Client, error) {
 	return elastic.NewClient(http.DefaultClient, esurl)
 }
 
-func getCustomers() ([]string, error) {
+var getCustomers = func () ([]string, error) {
 	conn, err := newConnection()
 
 	customerTermsAggr := elastic.NewTermsAggregation().Field("customer").Size(CUSTOMER_LIMIT)
