@@ -11,26 +11,26 @@ import (
 	"github.com/go-martini/martini"
 )
 
-func parseParams(params martini.Params) (job, error) {
+func parseParams(r *http.Request) (job, error) {
+	params := r.URL.Query()
 	log.Println(params)
-
-	customer := params["customer"]
-	from := params["from"]
-	to := params["to"]
-
+	log.Println(r.URL)
+	customer := params.Get("customer")
+	from := params.Get("from")
+	to := params.Get("to")
 	if len(customer) == 0 || len(from) == 0 || len(to) == 0 {
 		return job{},
 			fmt.Errorf("customer, from, to fields are required")
 	}
-
 	return job{customer: customer, from: from, to: to}, nil
 }
 
-func listCustomers(params martini.Params, w http.ResponseWriter) string {
+func listCustomers(w http.ResponseWriter,
+	r *http.Request) string {
 	list, err := getCustomers()
 
 	if err != nil {
-		showError(w, err)
+		return showError(w, err)
 	}
 
 	JSON, _ := json.Marshal(map[string]interface{}{
@@ -40,9 +40,9 @@ func listCustomers(params martini.Params, w http.ResponseWriter) string {
 	return string(JSON)
 }
 
-func getJob(params martini.Params, w http.ResponseWriter) string {
-
-	job, err := parseParams(params)
+func getJob(w http.ResponseWriter,
+	r *http.Request) string {
+	job, err := parseParams(r)
 
 	if err != nil {
 		return showBadRequest(w, err)
@@ -63,9 +63,10 @@ func getJob(params martini.Params, w http.ResponseWriter) string {
 	return string(data)
 }
 
-func startJob(params martini.Params, w http.ResponseWriter) string {
+func startJob(w http.ResponseWriter,
+	r *http.Request) string {
 
-	j, err := parseParams(params)
+	j, err := parseParams(r)
 
 	if err != nil {
 		return showBadRequest(w, err)
