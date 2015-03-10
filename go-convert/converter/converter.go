@@ -58,6 +58,10 @@ func worker(
 				`{"index": {"_type": "log","_id":"%v"}}`,
 				lineId)
 
+			if obj != nil {
+				obj["fileId"] = id
+			}
+
 			res, _ := json.Marshal(obj)
 			idx[1] = string(res)
 
