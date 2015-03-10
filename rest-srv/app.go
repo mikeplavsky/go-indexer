@@ -11,13 +11,12 @@ import (
 	"github.com/go-martini/martini"
 )
 
-func parseParams(r *http.Request) (job, error) {
-	params := r.URL.Query()
+func parseParams(params martini.Params) (job, error) {
 	log.Println(params)
 
-	customer := params.Get("customer")
-	from := params.Get("from")
-	to := params.Get("to")
+	customer := params["customer"]
+	from := params["from"]
+	to := params["to"]
 
 	if len(customer) == 0 || len(from) == 0 || len(to) == 0 {
 		return job{},
@@ -27,8 +26,7 @@ func parseParams(r *http.Request) (job, error) {
 	return job{customer: customer, from: from, to: to}, nil
 }
 
-func listCustomers(w http.ResponseWriter,
-	r *http.Request) string {
+func listCustomers(params martini.Params, w http.ResponseWriter) string {
 	list, err := getCustomers()
 
 	if err != nil {
@@ -42,10 +40,9 @@ func listCustomers(w http.ResponseWriter,
 	return string(JSON)
 }
 
-func getJob(w http.ResponseWriter,
-	r *http.Request) string {
+func getJob(params martini.Params, w http.ResponseWriter) string {
 
-	job, err := parseParams(r)
+	job, err := parseParams(params)
 
 	if err != nil {
 		return showBadRequest(w, err)
@@ -66,10 +63,9 @@ func getJob(w http.ResponseWriter,
 	return string(data)
 }
 
-func startJob(w http.ResponseWriter,
-	r *http.Request) string {
+func startJob(params martini.Params, w http.ResponseWriter) string {
 
-	j, err := parseParams(r)
+	j, err := parseParams(params)
 
 	if err != nil {
 		return showBadRequest(w, err)
@@ -95,11 +91,7 @@ func showBadRequest(w http.ResponseWriter, err error) string {
 	return ""
 }
 
-func main() {
-
-	num := runtime.NumCPU()
-	runtime.GOMAXPROCS(num)
-
+func newServer() *martini.ClassicMartini {
 	m := martini.Classic()
 	m.Use(martini.Logger())
 
@@ -109,5 +101,13 @@ func main() {
 	m.Post("/job", startJob)
 	//todo:remove this as I understand how to enable post in CUI
 	m.Get("/job/create", startJob)
+	return m
+}
+
+func main() {
+	num := runtime.NumCPU()
+	runtime.GOMAXPROCS(num)
+
+	m := newServer()
 	m.Run()
 }
