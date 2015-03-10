@@ -29,10 +29,11 @@ func TestInvalidJobParameters(t *testing.T) {
 
 func TestCustomers(t *testing.T) {
 	getCustomers = func() ([]string, error) {
-		return nil, nil
+		return []string{ "foo", "bar" }, nil
 	}
 	r := &http.Request{}
 	response := httptest.NewRecorder()
-	listCustomers(response, r)
+	ret := listCustomers(response, r)
 	assert.Equal(t, http.StatusOK, response.Code, "")
+        assert.Equal(t, "[\"foo\",\"bar\"]", ret, "")
 }
