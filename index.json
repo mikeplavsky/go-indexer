@@ -21,8 +21,7 @@
 		    "format" : "dateOptionalTime"
 		  },
 		  "path" : {
-		    "type" : "string",
-                    "store": true
+		    "type" : "string"
 		  },
 		  "agent" : {
 		    "type" : "string"
