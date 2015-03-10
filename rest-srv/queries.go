@@ -78,7 +78,7 @@ func getFilteredQuery(j job) elastic.FilteredQuery {
 	return filteredQuery
 }
 
-func getJobStats(j job) (map[string]uint64, error) {
+var getJobStats = func (j job) (map[string]uint64, error) {
 	conn, err := newConnection()
 
 	if err != nil {
