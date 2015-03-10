@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"go-indexer/go-convert/converter"
 	"os"
@@ -15,7 +14,7 @@ var formats = map[string]*regexp.Regexp{
 
 	"20060102_150405": regexp.MustCompile(`.*_(\d+_\d+).*\.zip`),
 	"01.02.2006":      regexp.MustCompile(`.*\.(\d{2}\.\d{2}\.\d{4}).*\.zip`),
-	"20060102150405": regexp.MustCompile(`.*-(\d{14}).*\.zip`),
+	"20060102150405":  regexp.MustCompile(`.*-(\d{14}).*\.zip`),
 }
 
 func parseTime(uri string) (string, error) {
@@ -39,7 +38,7 @@ func parseTime(uri string) (string, error) {
 }
 
 func parseLine(
-	line string) (map[string]string, error) {
+	line string) (map[string]interface{}, error) {
 
 	fields := strings.Split(line, "\t")
 
@@ -54,7 +53,7 @@ func parseLine(
 		return nil, err
 	}
 
-	dataContract := map[string]string{
+	dataContract := map[string]interface{}{
 		"uri":        "https://s3.amazonaws.com/" + uri,
 		"size":       size,
 		"customer":   ps[1],
@@ -67,15 +66,9 @@ func parseLine(
 func parse(
 	path,
 	i string,
-	num int) ([]byte, error) {
+	num int) (map[string]interface{}, error) {
 
-	obj, err := parseLine(i)
-
-	if err != nil {
-		return []byte(i), err
-	}
-
-	return json.Marshal(obj)
+	return parseLine(i)
 
 }
 

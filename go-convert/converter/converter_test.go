@@ -35,7 +35,7 @@ func TestValue(t *testing.T) {
 	var parse = func(
 		path,
 		line string,
-		num int) ([]byte, error) {
+		num int) (map[string]interface{}, error) {
 
 		res := map[string]interface{}{}
 
@@ -43,7 +43,7 @@ func TestValue(t *testing.T) {
 		res["line"] = line
 		res["num"] = num
 
-		return json.Marshal(res)
+		return res, nil
 
 	}
 
@@ -104,8 +104,8 @@ func TestNextIndex(t *testing.T) {
 	var parse = func(
 		path,
 		line string,
-		num int) ([]byte, error) {
-		return []byte(""), nil
+		num int) (map[string]interface{}, error) {
+		return nil, nil
 	}
 
 	r := strings.NewReader("one\ntwo\nthree")
@@ -133,12 +133,12 @@ func TestNextIndex(t *testing.T) {
 func TestParsingError(t *testing.T) {
 
 	table := []struct {
-		line string
+		line map[string]interface{}
 		err  error
 	}{
-		{"a", nil},
-		{"b", errors.New("")},
-		{"c", nil},
+		{nil, nil},
+		{nil, errors.New("")},
+		{nil, nil},
 	}
 
 	i := 0
@@ -146,13 +146,13 @@ func TestParsingError(t *testing.T) {
 	var parse = func(
 		path,
 		line string,
-		num int) (res []byte, err error) {
+		num int) (map[string]interface{}, error) {
 
-		res = []byte(table[i].line)
-		err = table[i].err
+		res := table[i].line
+		err := table[i].err
 
 		i = i + 1
-		return
+		return res, err
 
 	}
 

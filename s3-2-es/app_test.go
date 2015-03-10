@@ -19,7 +19,7 @@ func TestParseTime(t *testing.T) {
 			"1998-08-28T00:00:00Z"}, //legacy format: US digitd order, Europerian dots, akward
 		{"s3://dmp-log-analysis/Quadra2901/UKTCEUCMIGPRDV1/UnifiedCalendarSync/MAgE_20150129_031000 (1).zip",
 			"2015-01-29T03:10:00Z"},
-		 {"dmp-log-analysis/Ijuf/Bil/Calendar00-20150303152329.zip", "2015-03-03T15:23:29Z"},
+		{"dmp-log-analysis/Ijuf/Bil/Calendar00-20150303152329.zip", "2015-03-03T15:23:29Z"},
 	}
 
 	for _, testCase := range cases {

@@ -3,6 +3,7 @@ package converter
 import (
 	"bufio"
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"io"
 	"runtime"
@@ -18,7 +19,7 @@ type event struct {
 type Parse func(
 	path,
 	line string,
-	num int) (res []byte, err error)
+	num int) (res map[string]interface{}, err error)
 
 func worker(
 	path string,
@@ -41,7 +42,7 @@ func worker(
 				return
 			}
 
-			res, err := parse(
+			obj, err := parse(
 				path,
 				e.line,
 				e.num)
@@ -57,6 +58,7 @@ func worker(
 				`{"index": {"_type": "log","_id":"%v"}}`,
 				lineId)
 
+			res, _ := json.Marshal(obj)
 			idx[1] = string(res)
 
 			out <- strings.Join(idx[:2], "\n")

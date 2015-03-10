@@ -7,8 +7,9 @@ import (
 
 	"go-indexer/go-send/sender"
 
-	"gopkg.in/olivere/elastic.v1"
 	"net/http"
+
+	"gopkg.in/olivere/elastic.v1"
 )
 
 func sendJob(j job) {
