@@ -50,7 +50,7 @@ angular.module('myApp', ['cui'])
 
         cuiLoading(customerSvc.query()
             .then(function (res) {
-                $scope.job.customers = res.result.map(function (value, key) {
+                $scope.job.customers = res.map(function (value, key) {
                     return {
                         label: value,
                         description: value

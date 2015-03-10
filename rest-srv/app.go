@@ -33,9 +33,7 @@ func listCustomers(w http.ResponseWriter,
 		return showError(w, err)
 	}
 
-	JSON, _ := json.Marshal(map[string]interface{}{
-		"result": list,
-	})
+	JSON, _ := json.Marshal(list)
 
 	return string(JSON)
 }
