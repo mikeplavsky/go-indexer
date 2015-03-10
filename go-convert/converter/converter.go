@@ -3,8 +3,10 @@ package converter
 import (
 	"bufio"
 	"crypto/md5"
+	"fmt"
 	"io"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -28,7 +30,7 @@ func worker(
 	h := md5.New()
 	io.WriteString(h, path)
 
-	id := h.Sum(nil)
+	id := fmt.Sprintf("%x", h.Sum(nil))
 
 	for {
 		select {
@@ -49,8 +51,12 @@ func worker(
 			}
 
 			idx := [2]string{}
+			lineId := id + strconv.Itoa(e.num)
 
-			idx[0] = `{"index": {"_type": "log"}}`
+			idx[0] = fmt.Sprintf(
+				`{"index": {"_type": "log","_id":"%v"}}`,
+				lineId)
+
 			idx[1] = string(res)
 
 			out <- strings.Join(idx[:2], "\n")

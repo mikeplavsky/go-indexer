@@ -66,6 +66,7 @@ func TestValue(t *testing.T) {
 	for _, v := range lines {
 
 		line := res[v]
+		t.Log(line)
 
 		var val map[string]interface{}
 		err := json.Unmarshal([]byte(line), &val)
@@ -113,6 +114,7 @@ func TestNextIndex(t *testing.T) {
 	for _, v := range []int{0, 2, 4} {
 
 		line := res[v]
+		t.Log(line)
 
 		var idx map[string]map[string]string
 		err := json.Unmarshal([]byte(line), &idx)
