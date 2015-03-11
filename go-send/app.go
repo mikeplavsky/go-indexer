@@ -33,6 +33,13 @@ func main() {
 					log.Println(err)
 					return
 				}
+
+				_, err = sqs.CreateQueue(qn + "-error")
+
+				if err != nil {
+					log.Println(err)
+					return
+				}
 			},
 		},
 		{
