@@ -26,11 +26,22 @@ func GetQueueName() (qn string) {
 
 }
 
+var queues = map[int]*sqs.Queue{}
+
 func GetQueue(i int) (*sqs.Queue, error) {
 
-	return GetSqs().
-		GetQueue(
-		GetQueueName() + strconv.Itoa(i))
+	var err error = nil
+
+	if _, ok := queues[i]; !ok {
+
+		qn := GetQueueName() + strconv.Itoa(i)
+		log.Printf("Getting queue %v", qn)
+
+		queues[i], err = GetSqs().GetQueue(qn)
+
+	}
+
+	return queues[i], err
 
 }
 

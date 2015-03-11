@@ -65,6 +65,7 @@ func sendJob(j job) {
 
 				if err != nil {
 					log.Println(err)
+					return
 				}
 
 				sender.Send(uri, q)
