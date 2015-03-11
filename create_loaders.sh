@@ -15,7 +15,7 @@ docker create \
 -v $(pwd)/index.json:/go/src/go-indexer/index.json:ro \
 -e ES_INDEX=test$i \
 -e ES_PORT=$port \
--e ES_QUEUE=$ES_QUEUE \
+-e ES_QUEUE=$ES_QUEUE$i \
 -e ES_INDEXER=./indexer.sh \
 --net=host --name=loader$i go_indexer 
 
