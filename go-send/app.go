@@ -27,7 +27,7 @@ func main() {
 			Usage:     "creates the queue",
 			Action: func(c *cli.Context) {
 
-				_, err := sqs.CreateQueue(qn)
+				_, err := sqs.CreateQueueWithTimeout(qn, 3600*12)
 
 				if err != nil {
 					log.Println(err)
