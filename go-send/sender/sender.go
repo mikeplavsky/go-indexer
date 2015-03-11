@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -26,23 +27,29 @@ func GetQueueName() (qn string) {
 
 }
 
-var queues = map[int]*sqs.Queue{}
+type queue struct {
+	q   *sqs.Queue
+	err error
+}
 
-func GetQueue(i int) (*sqs.Queue, error) {
+var queues = map[int]queue{}
 
-	var err error = nil
+func init() {
 
-	if _, ok := queues[i]; !ok {
+	for i := 0; i < runtime.NumCPU(); i++ {
 
 		qn := GetQueueName() + strconv.Itoa(i)
 		log.Printf("Getting queue %v", qn)
 
-		queues[i], err = GetSqs().GetQueue(qn)
+		q, err := GetSqs().GetQueue(qn)
+		queues[i] = queue{q, err}
 
 	}
 
-	return queues[i], err
+}
 
+func GetQueue(i int) (*sqs.Queue, error) {
+	return queues[i].q, queues[i].err
 }
 
 func Send(s3path string, q *sqs.Queue) {
