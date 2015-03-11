@@ -26,9 +26,8 @@ func TestCustomers(t *testing.T) {
 	getCustomers = func() ([]string, error) {
 		return []string{"foo", "bar"}, nil
 	}
-	r, _ := http.NewRequest("GET", "", nil)
 	response := httptest.NewRecorder()
-	ret := listCustomers(response, r)
+	ret := listCustomers(response)
 	assert.Equal(t, http.StatusOK, response.Code, "")
 	assert.Equal(t, "[\"foo\",\"bar\"]", ret, "")
 }

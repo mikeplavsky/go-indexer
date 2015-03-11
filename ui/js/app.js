@@ -61,6 +61,18 @@ angular.module('myApp', ['cui'])
                    cuiAlertService.warning(err);
         }));
 
+	var onError = function(err){
+		if(Array.isArray(err)){
+			//todo: pass to validation control
+			msg = err.map(function(value) { 
+				return "field " + value.fieldNames.join() + " is " + value.message				
+			}).join()
+                	cuiAlertService.warning(msg);
+                } else {
+                        cuiAlertService.warning(err);
+                }
+	}
+
         $scope.calculate = function () {
 
             srv = cuiDataSourceService('/api/job');
@@ -80,9 +92,7 @@ angular.module('myApp', ['cui'])
                         $scope.job.eta = res.eta;
 
                     },
-                    function (err) {
-                        cuiAlertService.warning(err);
-                    })
+                    onError)
             );
         }
 
@@ -104,7 +114,12 @@ angular.module('myApp', ['cui'])
                         $scope.refreshEta();
                     },
                     function (err) {
-                        cuiAlertService.warning(err);
+			if(Array.isArray(err)){
+			               cuiAlertService.warning(err.message);     
+			             } else {
+                           cuiAlertService.warning(err);
+			             }
+
                     })
             );
         }

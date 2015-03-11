@@ -10,8 +10,7 @@ import (
 	"github.com/martini-contrib/binding"
 )
 
-func listCustomers(w http.ResponseWriter,
-	r *http.Request) string {
+func listCustomers(w http.ResponseWriter) string {
 	list, err := getCustomers()
 
 	if err != nil {
