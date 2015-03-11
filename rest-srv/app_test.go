@@ -8,22 +8,6 @@ import (
 	"testing"
 )
 
-func TestInvalidJobParameters(t *testing.T) {
-	cases := []string{
-		"http://example.com/job",
-		"http://example.com/job?customer=contoso&from=2000", //missing params should not cause 500 status
-		"http://example.com/job?from=2000&from=2002",
-		"http://example.com/job?employer=contoso&from=2000&to=2002",
-	}
-
-	for _, testCase := range cases {
-		r, _ := http.NewRequest("GET", testCase, nil)
-		response := httptest.NewRecorder()
-		getJob(response, r)
-		assert.Equal(t, http.StatusBadRequest, response.Code, testCase+": customer, from, to params are required")
-	}
-}
-
 func TestJobInfo(t *testing.T) {
 	getJobStats = func(j job) (map[string]uint64, error) {
 		return map[string]uint64{
@@ -32,9 +16,9 @@ func TestJobInfo(t *testing.T) {
 		}, nil
 	}
 
-	r, _ := http.NewRequest("GET", "http://example.com/job?customer=contoso&from=2000&to=2002", nil)
+	r := job{Customer: "constoso", From: "200", To: "2001"}
 	response := httptest.NewRecorder()
-	getJob(response, r)
+	getJob(r, response)
 	assert.Equal(t, http.StatusOK, response.Code)
 }
 
@@ -54,8 +38,6 @@ func TestStartJob(t *testing.T) {
 		return nil, nil
 	}
 
-	r, _ := http.NewRequest("GET", "http://example.com/job?customer=contoso&from=2000&to=2002", nil)
-	response := httptest.NewRecorder()
-	startJob(response, r)
-	assert.Equal(t, http.StatusOK, response.Code)
+	r := job{Customer: "constoso", From: "200", To: "2001"}
+	startJob(r)
 }

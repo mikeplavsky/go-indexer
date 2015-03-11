@@ -15,9 +15,13 @@ var (
 
 const CUSTOMER_LIMIT = 1000
 
+
 type job struct {
-	customer, from, to string
+    Customer    string `form:"customer" binding:"required"`
+    From   string `form:"from" binding:"required"`
+    To string `form:"to" binding:"required"`
 }
+
 
 func newConnection() (*elastic.Client, error) {
 	return elastic.NewClient(http.DefaultClient, esurl)
@@ -66,12 +70,12 @@ var getCustomers = func() ([]string, error) {
 
 func getFilteredQuery(j job) elastic.FilteredQuery {
 
-	customerQuery := elastic.NewTermQuery("customer", j.customer)
+	customerQuery := elastic.NewTermQuery("customer", j.Customer)
 	filteredQuery := elastic.NewFilteredQuery(customerQuery)
 
 	dateFilter := elastic.NewRangeFilter("@timestamp").
-		From(j.from).
-		To(j.to)
+		From(j.From).
+		To(j.To)
 
 	filteredQuery = filteredQuery.Filter(dateFilter)
 

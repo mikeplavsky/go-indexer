@@ -2,28 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 	"runtime"
 
 	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
+	"github.com/martini-contrib/binding"
 )
-
-func parseParams(r *http.Request) (job, error) {
-	params := r.URL.Query()
-	log.Println(params)
-	log.Println(r.URL)
-	customer := params.Get("customer")
-	from := params.Get("from")
-	to := params.Get("to")
-	if len(customer) == 0 || len(from) == 0 || len(to) == 0 {
-		return job{},
-			fmt.Errorf("customer, from, to fields are required")
-	}
-	return job{customer: customer, from: from, to: to}, nil
-}
 
 func listCustomers(w http.ResponseWriter,
 	r *http.Request) string {
@@ -38,14 +23,7 @@ func listCustomers(w http.ResponseWriter,
 	return string(JSON)
 }
 
-func getJob(w http.ResponseWriter,
-	r *http.Request) string {
-	job, err := parseParams(r)
-
-	if err != nil {
-		return showBadRequest(w, err)
-	}
-
+func getJob(job job, w http.ResponseWriter) string {
 	stats, err := getJobStats(job)
 
 	if err != nil {
@@ -61,17 +39,8 @@ func getJob(w http.ResponseWriter,
 	return string(data)
 }
 
-func startJob(w http.ResponseWriter,
-	r *http.Request) string {
-
-	j, err := parseParams(r)
-
-	if err != nil {
-		return showBadRequest(w, err)
-	}
-
-	go sendJob(j)
-
+func startJob(job job) string {
+	go sendJob(job)
 	return "started"
 }
 
@@ -83,23 +52,16 @@ func showError(w http.ResponseWriter, err error) string {
 	return ""
 }
 
-func showBadRequest(w http.ResponseWriter, err error) string {
-	http.Error(w,
-		err.Error(),
-		http.StatusBadRequest)
-	return ""
-}
-
 func newServer() *martini.ClassicMartini {
 	m := martini.Classic()
 	m.Use(martini.Logger())
 
-	m.Get("/job", getJob)
+	m.Get("/job", binding.Bind(job{}), getJob)
 	m.Get("/eta", getEta)
 	m.Get("/customers", listCustomers)
-	m.Post("/job", startJob)
+	m.Post("/job", binding.Bind(job{}), startJob)
 	//todo:remove this as I understand how to enable post in CUI
-	m.Get("/job/create", startJob)
+	m.Get("/job/create", binding.Bind(job{}), startJob)
 	return m
 }
 
