@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"runtime"
 	"strings"
 
 	"go-indexer/go-send/sender"
@@ -15,12 +16,6 @@ import (
 func sendJob(j job) {
 
 	log.Println("Sending", j)
-
-	q, err := sender.GetQueue()
-
-	if err != nil {
-		log.Println(err)
-	}
 
 	client, _ := elastic.NewClient(http.DefaultClient,
 		esurl)
@@ -56,7 +51,7 @@ func sendJob(j job) {
 
 		for _, hit := range out.Hits.Hits {
 
-			go func(h *elastic.SearchHit) {
+			go func(qn int, h *elastic.SearchHit) {
 
 				item := make(map[string]interface{})
 
@@ -66,9 +61,15 @@ func sendJob(j job) {
 				uri := strings.TrimPrefix(item["uri"].(string),
 					"https://s3.amazonaws.com/")
 
+				q, err := sender.GetQueue(qn)
+
+				if err != nil {
+					log.Println(err)
+				}
+
 				sender.Send(uri, q)
 
-			}(hit)
+			}(i, hit)
 
 			i = (i + 1) % runtime.NumCPU()
 
