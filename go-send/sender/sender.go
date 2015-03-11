@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -25,10 +26,11 @@ func GetQueueName() (qn string) {
 
 }
 
-func GetQueue() (*sqs.Queue, error) {
+func GetQueue(i int) (*sqs.Queue, error) {
 
 	return GetSqs().
-		GetQueue(GetQueueName())
+		GetQueue(
+		GetQueueName() + strconv.Itoa(i))
 
 }
 

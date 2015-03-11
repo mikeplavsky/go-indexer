@@ -52,6 +52,8 @@ func sendJob(j job) {
 
 		log.Println(total, skip)
 
+		i := 0
+
 		for _, hit := range out.Hits.Hits {
 
 			go func(h *elastic.SearchHit) {
@@ -67,6 +69,8 @@ func sendJob(j job) {
 				sender.Send(uri, q)
 
 			}(hit)
+
+			i = (i + 1) % runtime.NumCPU()
 
 		}
 	}
