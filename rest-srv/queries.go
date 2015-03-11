@@ -13,7 +13,7 @@ var (
 	debug = false
 )
 
-const CUSTOMER_LIMIT = 1000
+const customerLimit = 1000
 
 
 type job struct {
@@ -30,7 +30,7 @@ func newConnection() (*elastic.Client, error) {
 var getCustomers = func() ([]string, error) {
 	conn, err := newConnection()
 
-	customerTermsAggr := elastic.NewTermsAggregation().Field("customer").Size(CUSTOMER_LIMIT)
+	customerTermsAggr := elastic.NewTermsAggregation().Field("customer").Size(customerLimit)
 
 	out, err := conn.Search().
 		Index(index).

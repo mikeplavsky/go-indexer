@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"encoding/json"
+	"fmt"
 )
 
 func TestJobInfo(t *testing.T) {
@@ -18,8 +20,15 @@ func TestJobInfo(t *testing.T) {
 
 	r := job{Customer: "constoso", From: "200", To: "2001"}
 	response := httptest.NewRecorder()
-	getJob(r, response)
+	ret := getJob(r, response)
 	assert.Equal(t, http.StatusOK, response.Code)
+	
+	var out map[string]interface{}
+	json.Unmarshal([]byte(ret), &out)
+
+	fmt.Println(out)
+	assert.Equal(t, "100KB", out["size"])
+	assert.Equal(t, "9,000", out["count"])
 }
 
 func TestCustomers(t *testing.T) {
