@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"gopkg.in/olivere/elastic.v1"
+	"net/http"
 )
 
 var (
@@ -23,7 +23,7 @@ func newConnection() (*elastic.Client, error) {
 	return elastic.NewClient(http.DefaultClient, esurl)
 }
 
-var getCustomers = func () ([]string, error) {
+var getCustomers = func() ([]string, error) {
 	conn, err := newConnection()
 
 	customerTermsAggr := elastic.NewTermsAggregation().Field("customer").Size(CUSTOMER_LIMIT)
@@ -78,7 +78,7 @@ func getFilteredQuery(j job) elastic.FilteredQuery {
 	return filteredQuery
 }
 
-var getJobStats = func (j job) (map[string]uint64, error) {
+var getJobStats = func(j job) (map[string]uint64, error) {
 	conn, err := newConnection()
 
 	if err != nil {
@@ -121,4 +121,22 @@ var getJobStats = func (j job) (map[string]uint64, error) {
 	}
 
 	return nil, fmt.Errorf("no hits")
+}
+
+var getFiles = func(j job, skip int, take int) (hits *elastic.SearchHits, err error) {
+
+	client, _ := newConnection()
+
+	filteredQuery := getFilteredQuery(j)
+
+	out, err := client.Search().
+		Index(index).
+		From(skip).
+		Size(take).
+		Query(&filteredQuery).
+		Debug(debug).
+		Pretty(debug).
+		Do()
+
+	return out.Hits, err
 }

@@ -11,7 +11,6 @@ import (
 )
 
 func sendJob(j job) {
-
 	log.Println("Sending", j)
 
 	q, err := sender.GetQueue()
@@ -20,10 +19,6 @@ func sendJob(j job) {
 		log.Println(err)
 	}
 
-	client, _ := newConnection()
-
-	filteredQuery := getFilteredQuery(j)
-
 	skip := 0
 	take := 1000
 	var total int64
@@ -31,25 +26,18 @@ func sendJob(j job) {
 
 	for int64(skip) < total {
 
-		out, err := client.Search().
-			Index(index).
-			From(skip).
-			Size(take).
-			Query(&filteredQuery).
-			Debug(debug).
-			Pretty(debug).
-			Do()
+		out, err := getFiles(j, skip, take)
 
 		if err != nil {
 			log.Println(err)
 		}
 
-		total = out.Hits.TotalHits
+		total = out.TotalHits
 		skip += take
 
 		log.Println(total, skip)
 
-		for _, hit := range out.Hits.Hits {
+		for _, hit := range out.Hits {
 
 			go func(*elastic.SearchHit) {
 
