@@ -2,41 +2,18 @@ package sender
 
 import (
 	"encoding/json"
-	"github.com/goamz/goamz/sqs"
 	"github.com/stretchr/testify/assert"
+	. "go-indexer/testUtils"
 	"testing"
 )
 
-var queueName = "testQueue12" //todo: plus machine guid
-var queue (*sqs.Queue)
-
-func checkErr(t *testing.T, err error) {
-	if err != nil {
-		t.Error(t)
-	}
-}
-
-func TestMain(t *testing.T) {
-	//create own ctor, not app one
-	sqs := GetSqs()
-
-	_, err := sqs.CreateQueue(queueName)
-	checkErr(t, err)
-
-	queue, err = sqs.GetQueue(queueName)
-        checkErr(t, err)
-
-	//Purge is available only one time in 60 seconds
-	//_, err = queue.Purge()
-	resp, err := queue.ReceiveMessage(10)
-	checkErr(t, err)
-	
-	if(len(resp.Messages) > 0) {
-		queue.DeleteMessageBatch(resp.Messages)
-	}	
-}
+var queueName = "testQueue11" //todo: plus machine id
 
 func TestInvalidJobParameters(t *testing.T) {
+	queue, err := GetCleanQueue(queueName)
+	if err != nil {
+		t.Error(err)
+	}
 	Send("mybucket/path /to /the /file", queue)
 	resp, _ := queue.ReceiveMessage(1)
 	msg := resp.Messages[0]

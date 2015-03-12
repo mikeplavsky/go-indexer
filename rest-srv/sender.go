@@ -24,6 +24,8 @@ func sendJob(j job) {
 	var total int64
 	total = int64(take)
 
+	doneCh := make(chan bool)
+	totalReceived := false
 	for int64(skip) < total {
 
 		out, err := getFiles(j, skip, take)
@@ -35,12 +37,14 @@ func sendJob(j job) {
 		total = out.TotalHits
 		skip += take
 
+		if !totalReceived {
+			doneCh = make(chan bool, total)
+			totalReceived = true
+		}
+
 		log.Println(total, skip)
-
 		for _, hit := range out.Hits {
-
-			go func(*elastic.SearchHit) {
-
+			func(*elastic.SearchHit) {
 				item := make(map[string]interface{})
 
 				json.Unmarshal(*hit.Source,
@@ -48,14 +52,13 @@ func sendJob(j job) {
 
 				uri := strings.TrimPrefix(item["uri"].(string),
 					"https://s3.amazonaws.com/")
-
 				sender.Send(uri, q)
-
+				doneCh <- true
 			}(hit)
-
 		}
 	}
-
+	for i := 0; i < int(total); i++ {
+		<-doneCh
+	}
 	log.Println(j, "Done")
-
 }

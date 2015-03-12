@@ -1,13 +1,12 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/olivere/elastic.v1"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"encoding/json"
-	"fmt"
 )
 
 func TestJobInfo(t *testing.T) {
@@ -39,13 +38,4 @@ func TestCustomers(t *testing.T) {
 	ret := listCustomers(response)
 	assert.Equal(t, http.StatusOK, response.Code, "")
 	assert.Equal(t, "[\"foo\",\"bar\"]", ret, "")
-}
-
-func TestStartJob(t *testing.T) {
-	getFiles = func(j job, skip int, take int) (hits *elastic.SearchHits, err error) {
-		return nil, nil
-	}
-
-	r := job{Customer: "constoso", From: "200", To: "2001"}
-	startJob(r)
 }
