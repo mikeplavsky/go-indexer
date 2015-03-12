@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 THROTTLING_LINES_PER_UPLOAD=100000
 rm -rf ./x*
