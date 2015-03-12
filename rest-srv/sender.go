@@ -4,28 +4,21 @@ import (
 	"encoding/json"
 	"log"
 	"strings"
-
+	"runtime"
 	"go-indexer/go-send/sender"
 
 	"gopkg.in/olivere/elastic.v1"
 )
 
+
 func sendJob(j job) {
 	log.Println("Sending", j)
-
-	q, err := sender.GetQueue()
-
-	if err != nil {
-		log.Println(err)
-	}
 
 	skip := 0
 	take := 1000
 	var total int64
 	total = int64(take)
 
-	doneCh := make(chan bool)
-	totalReceived := false
 	for int64(skip) < total {
 
 		out, err := getFiles(j, skip, take)
@@ -37,28 +30,37 @@ func sendJob(j job) {
 		total = out.TotalHits
 		skip += take
 
-		if !totalReceived {
-			doneCh = make(chan bool, total)
-			totalReceived = true
-		}
-
 		log.Println(total, skip)
+
+		i := 0
+
 		for _, hit := range out.Hits {
-			func(*elastic.SearchHit) {
+
+			go func(qn int, h *elastic.SearchHit) {
+
 				item := make(map[string]interface{})
 
-				json.Unmarshal(*hit.Source,
+				json.Unmarshal(*h.Source,
 					&item)
 
 				uri := strings.TrimPrefix(item["uri"].(string),
 					"https://s3.amazonaws.com/")
+
+				q, err := sender.GetQueue(qn)
+
+				if err != nil {
+					log.Println(err)
+					return
+				}
+
 				sender.Send(uri, q)
-				doneCh <- true
-			}(hit)
+
+			}(i, hit)
+
+			i = (i + 1) % runtime.NumCPU()
+
 		}
 	}
-	for i := 0; i < int(total); i++ {
-		<-doneCh
-	}
+
 	log.Println(j, "Done")
 }

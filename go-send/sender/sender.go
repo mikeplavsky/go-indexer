@@ -2,7 +2,10 @@ package sender
 
 import (
 	"encoding/json"
+	"log"
 	"os"
+	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -24,11 +27,32 @@ func GetQueueName() (qn string) {
 
 }
 
-func GetQueue() (*sqs.Queue, error) {
+type queue struct {
+	q   *sqs.Queue
+	err error
+}
 
-	return GetSqs().
-		GetQueue(GetQueueName())
+var queues = map[int]queue{}
 
+func init() {
+
+	for i := 0; i < runtime.NumCPU(); i++ {
+
+		qn := GetQueueName() + strconv.Itoa(i)
+		log.Printf("Getting queue %v", qn)
+
+		q, err := GetSqs().GetQueue(qn)
+		queues[i] = queue{q, err}
+
+	}
+
+}
+
+func GetQueue(i int) (*sqs.Queue, error) {
+	log.Println("GETTING===")
+	log.Println(i)
+	log.Println(queues[i].q)
+	return queues[i].q, queues[i].err
 }
 
 func Send(s3path string, q *sqs.Queue) {
@@ -47,6 +71,9 @@ func Send(s3path string, q *sqs.Queue) {
 		_, err := q.SendMessage(string(res))
 
 		if err != nil {
+
+			log.Println(err)
+
 			time.Sleep(time.Second * 2)
 			continue
 		}

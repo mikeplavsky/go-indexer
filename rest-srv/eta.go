@@ -28,28 +28,41 @@ func getFilesPerSecond() (fPerSec float64) {
 	return
 }
 
-func getEta() (int, string) {
+func getQueueNum(i int) (int, error) {
 
-	q, err := sender.GetQueue()
+	q, err := sender.GetQueue(i)
 
 	if err != nil {
-
-		return http.StatusInternalServerError,
-			err.Error()
-
+		return 0, err
 	}
 
 	attr, err := q.GetQueueAttributes(
 		"ApproximateNumberOfMessages")
 
 	if err != nil {
-
-		return http.StatusInternalServerError,
-			err.Error()
-
+		return 0, err
 	}
 
 	num, _ := strconv.Atoi(attr.Attributes[0].Value)
+	return num, nil
+
+}
+
+func getEta() (int, string) {
+
+	num := 0
+
+	for i := 0; i < runtime.NumCPU(); i++ {
+
+		n, err := getQueueNum(i)
+
+		if err != nil {
+			return http.StatusInternalServerError,
+				err.Error()
+		}
+
+		num += n
+	}
 
 	res := map[string]interface{}{}
 

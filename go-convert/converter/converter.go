@@ -2,8 +2,12 @@ package converter
 
 import (
 	"bufio"
+	"crypto/md5"
+	"encoding/json"
+	"fmt"
 	"io"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -15,7 +19,7 @@ type event struct {
 type Parse func(
 	path,
 	line string,
-	num int) (res []byte, err error)
+	num int) (res map[string]interface{}, err error)
 
 func worker(
 	path string,
@@ -23,6 +27,11 @@ func worker(
 	in <-chan event,
 	out chan<- string,
 	done chan<- bool) {
+
+	h := md5.New()
+	io.WriteString(h, path)
+
+	id := fmt.Sprintf("%x", h.Sum(nil))
 
 	for {
 		select {
@@ -33,7 +42,7 @@ func worker(
 				return
 			}
 
-			res, err := parse(
+			obj, err := parse(
 				path,
 				e.line,
 				e.num)
@@ -43,8 +52,17 @@ func worker(
 			}
 
 			idx := [2]string{}
+			lineId := id + strconv.Itoa(e.num)
 
-			idx[0] = `{"index": {"_type": "log"}}`
+			idx[0] = fmt.Sprintf(
+				`{"index": {"_type": "log","_id":"%v"}}`,
+				lineId)
+
+			if obj != nil {
+				obj["fileId"] = id
+			}
+
+			res, _ := json.Marshal(obj)
 			idx[1] = string(res)
 
 			out <- strings.Join(idx[:2], "\n")

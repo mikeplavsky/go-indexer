@@ -4,12 +4,27 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"runtime"
+	"strconv"
 	"sync"
 
 	"github.com/codegangsta/cli"
 
 	"go-indexer/go-send/sender"
 )
+
+func createQueue(qn string) {
+
+	sqs := sender.GetSqs()
+
+	_, err := sqs.CreateQueue(qn)
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+}
 
 func main() {
 
@@ -27,12 +42,13 @@ func main() {
 			Usage:     "creates the queue",
 			Action: func(c *cli.Context) {
 
-				_, err := sqs.CreateQueue(qn)
+				n := runtime.NumCPU()
 
-				if err != nil {
-					log.Println(err)
-					return
+				for i := 0; i < n; i++ {
+					createQueue(
+						qn + strconv.Itoa(i))
 				}
+
 			},
 		},
 		{

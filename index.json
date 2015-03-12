@@ -8,7 +8,7 @@
         "_default_" : {
 
            "_source": {
-               "enabled": false
+               "enabled": true
             },
            "_all": {
                "enabled": false
@@ -21,8 +21,7 @@
 		    "format" : "dateOptionalTime"
 		  },
 		  "path" : {
-		    "type" : "string",
-                    "store": true
+		    "type" : "string"
 		  },
 		  "agent" : {
 		    "type" : "string"

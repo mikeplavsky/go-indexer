@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -18,12 +17,12 @@ var S3_PATH string
 func parse(
 	path,
 	i string,
-	num int) ([]byte, error) {
+	num int) (map[string]interface{}, error) {
 
 	ts := strings.SplitN(i, "\t", 9)
 
 	if len(ts) != 9 {
-		return []byte(i), errors.New("can't parse")
+		return nil, errors.New("can't parse")
 	}
 
 	d := ts[0] + "\t" + ts[1]
@@ -41,9 +40,7 @@ func parse(
 	obj["msg_type"] = ts[7]
 	obj["msg"] = ts[8]
 
-	res, _ := json.Marshal(obj)
-
-	return res, nil
+	return obj, nil
 
 }
 
