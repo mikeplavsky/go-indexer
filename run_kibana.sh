@@ -3,3 +3,5 @@ docker create \
 --name=kibana --link=es0:es --restart=always mikeplavsky/kibana
 
 docker start kibana
+
+./init-kibana-settings.sh
