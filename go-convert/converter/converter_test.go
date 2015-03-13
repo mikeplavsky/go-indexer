@@ -33,7 +33,7 @@ func callConvert(
 
 func TestValue(t *testing.T) {
 
-	var parse = func(
+	var parseStub = func(
 		path,
 		line string,
 		num int) (map[string]interface{}, error) {
@@ -49,7 +49,7 @@ func TestValue(t *testing.T) {
 	}
 
 	r := strings.NewReader("one\ntwo\nthree")
-	res := callConvert(r, parse)
+	out := callConvert(r, parseStub)
 
 	// index line between parsed lines has been inserted
 	outLineNums := []int{
@@ -68,7 +68,7 @@ func TestValue(t *testing.T) {
 
 	fileIds := []string{}
 	for _, outLineNum := range outLineNums {
-		outLine := res[outLineNum]
+		outLine := out[outLineNum]
 		t.Log(outLine)
 
 		var out map[string]interface{}
@@ -102,7 +102,7 @@ func TestValue(t *testing.T) {
 
 func TestNextIndex(t *testing.T) {
 
-	var parse = func(
+	var parseDummy = func(
 		path,
 		line string,
 		num int) (map[string]interface{}, error) {
@@ -110,47 +110,43 @@ func TestNextIndex(t *testing.T) {
 	}
 
 	r := strings.NewReader("one\ntwo\nthree")
-	res := callConvert(r, parse)
+	out := callConvert(r, parseDummy)
 
-	for _, v := range []int{0, 2, 4} {
+	for _, outLineNum := range []int{0, 2, 4} {
 
-		line := res[v]
+		line := out[outLineNum]
 		t.Log(line)
 
 		var idx map[string]map[string]string
 		err := json.Unmarshal([]byte(line), &idx)
 
-		if err != nil {
-			t.Error(line, err)
-		}
-
-		if idx["index"]["_type"] != "log" {
-			t.Error(line, "wrong index")
-		}
+		assert.Nil(t, err, "Unable to parse JSON: "+line)
+		assert.Equal(t, "log", idx["index"]["_type"], "wrong index type")
 	}
 
 }
 
 func TestParsingError(t *testing.T) {
 
-	table := []struct {
+	parseResults := []struct {
 		line map[string]interface{}
 		err  error
 	}{
 		{nil, nil},
+		//skipped
 		{nil, errors.New("")},
 		{nil, nil},
 	}
 
 	i := 0
 
-	var parse = func(
+	var parseStub = func(
 		path,
 		line string,
 		num int) (map[string]interface{}, error) {
 
-		res := table[i].line
-		err := table[i].err
+		res := parseResults[i].line
+		err := parseResults[i].err
 
 		i = i + 1
 		return res, err
@@ -158,7 +154,8 @@ func TestParsingError(t *testing.T) {
 	}
 
 	r := strings.NewReader("one\ntwo\nthree")
-	res := callConvert(r, parse)
+	out := callConvert(r, parseStub)
 
-	assert.Equal(t, 4, len(res), "Wrong length")
+	// (3 total - 1 failed) * (1 index line + 1 content line)
+	assert.Equal(t, 4, len(out), "Wrong length")
 }
