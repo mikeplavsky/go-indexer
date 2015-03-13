@@ -2,25 +2,14 @@ package main
 
 import (
 	"encoding/json"
-	"log"
-	"runtime"
-	"strings"
-
 	"go-indexer/go-send/sender"
-
-	"net/http"
-
 	"gopkg.in/olivere/elastic.v1"
+	"log"
+	"strings"
 )
 
 func sendJob(j job) {
-
 	log.Println("Sending", j)
-
-	client, _ := elastic.NewClient(http.DefaultClient,
-		esurl)
-
-	filteredQuery := getFilteredQuery(j)
 
 	skip := 0
 	take := 1000
@@ -29,27 +18,20 @@ func sendJob(j job) {
 
 	for int64(skip) < total {
 
-		out, err := client.Search().
-			Index(index).
-			From(skip).
-			Size(take).
-			Query(&filteredQuery).
-			Debug(debug).
-			Pretty(debug).
-			Do()
+		out, err := getFiles(j, skip, take)
 
 		if err != nil {
 			log.Println(err)
 		}
 
-		total = out.Hits.TotalHits
+		total = out.TotalHits
 		skip += take
 
 		log.Println(total, skip)
 
 		i := 0
 
-		for _, hit := range out.Hits.Hits {
+		for _, hit := range out.Hits {
 
 			go func(qn int, h *elastic.SearchHit) {
 
@@ -72,11 +54,10 @@ func sendJob(j job) {
 
 			}(i, hit)
 
-			i = (i + 1) % runtime.NumCPU()
+			i = (i + 1) % sender.NQueues
 
 		}
 	}
 
 	log.Println(j, "Done")
-
 }

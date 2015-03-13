@@ -33,10 +33,15 @@ type queue struct {
 }
 
 var queues = map[int]queue{}
+var NQueues = runtime.NumCPU()
 
 func init() {
+	Init()
+}
 
-	for i := 0; i < runtime.NumCPU(); i++ {
+// todo: init queuename other way, without reading env vars on start
+func Init() {
+	for i := 0; i < NQueues; i++ {
 
 		qn := GetQueueName() + strconv.Itoa(i)
 		log.Printf("Getting queue %v", qn)
@@ -45,7 +50,6 @@ func init() {
 		queues[i] = queue{q, err}
 
 	}
-
 }
 
 func GetQueue(i int) (*sqs.Queue, error) {

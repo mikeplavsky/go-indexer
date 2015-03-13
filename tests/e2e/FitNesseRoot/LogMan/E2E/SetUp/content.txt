@@ -1,0 +1,7 @@
+!*> Import fixtures
+|import    |
+|http_calls|
+
+!|script|!-RestTools-!|
+|set host url||
+*!

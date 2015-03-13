@@ -53,11 +53,11 @@
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
                 "KeyName": "ESKeyPair",
-                "ImageId": "ami-ee306986",
+                "ImageId": "ami-3277565a",
                 "SecurityGroups": [ "sg-f8ebb992" ],
                 "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
                 "InstanceType": { "Ref": "InstanceType" },
-                "SpotPrice": "0.8",
+                "SpotPrice": "1.4",
                 "UserData": {
                     "Fn::Base64": {
                         "Fn::Join": [
@@ -88,7 +88,7 @@
                     },
                     "register-hostname": {
                         "files": {
-                            "/tmp/route53-origin.json": {
+                            "/tmp/route53.json": {
                                 "content": {
                                     "Changes": [
                                         {
@@ -117,7 +117,7 @@
                                     "Fn::Join": [
                                         "",
                                         [
-                                            "PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4) && sed -i \"s/\\$PUBLIC_IP/$PUBLIC_IP/g\" /tmp/route53-origin.json && sed -i \"s/\\\"60\\\"/60/g\" /tmp/route53-origin.json"
+                                            "PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4) && sed -i \"s/\\$PUBLIC_IP/$PUBLIC_IP/g\" /tmp/route53.json && sed -i \"s/\\\"60\\\"/60/g\" /tmp/route53.json"
                                         ]
                                     ]
                                 }
@@ -130,7 +130,7 @@
                                         [
                                             "aws route53 change-resource-record-sets",
                                             " --hosted-zone-id Z2XLKK5Y4BC9Z1",
-                                            " --change-batch file:///tmp/route53-origin.json --region us-east-1"
+                                            " --change-batch file:///tmp/route53.json --region us-east-1"
                                         ]
                                     ]
                                 }
@@ -142,10 +142,10 @@
         }
     },
 
-    "Outputs": {        
+    "Outputs": {
         "KibanaURL": {
             "Value": { "Fn::Join": [ "", [ "https://", { "Ref": "AWS::StackName" }, ".sa4sp.com/kibana" ] ] }
-        }, 
+        },
         "DashboardURL": {
             "Value": { "Fn::Join": [ "", [ "https://", { "Ref": "AWS::StackName" }, ".sa4sp.com/" ] ] }
         },
