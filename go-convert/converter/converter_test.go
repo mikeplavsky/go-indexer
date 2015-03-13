@@ -38,11 +38,11 @@ func TestValue(t *testing.T) {
 		line string,
 		num int) (map[string]interface{}, error) {
 
-		res := map[string]interface{}{}
-
-		res["path"] = path
-		res["line"] = line
-		res["num"] = num
+		res := map[string]interface{}{
+			"path": path,
+			"line": line,
+			"num":  num,
+		}
 
 		return res, nil
 
@@ -51,41 +51,44 @@ func TestValue(t *testing.T) {
 	r := strings.NewReader("one\ntwo\nthree")
 	res := callConvert(r, parse)
 
-	lines := []int{
+	// index line between parsed lines has been inserted
+	outLineNums := []int{
 		1,
 		3,
 		5}
 
-	table := map[float64]string{
+	inFile := map[float64]string{
+		//line number -> line content
 		0: "one",
 		1: "two",
 		2: "three",
 	}
 
-	check := map[float64]bool{}
+	isParsed := map[float64]bool{}
 
-	for _, v := range lines {
+	for _, outLineNum := range outLineNums {
 
-		line := res[v]
-		t.Log(line)
+		outLine := res[outLineNum]
+		t.Log(outLine)
 
-		var val map[string]interface{}
-		err := json.Unmarshal([]byte(line), &val)
-		assert.Nil(t, err, "Unable to parse JSON: "+line)
-		assert.Equal(t, "path", val["path"], "Wrong parsing")
+		var out map[string]interface{}
+		err := json.Unmarshal([]byte(outLine), &out)
+		assert.Nil(t, err, "Unable to parse JSON: "+outLine)
 
-		n := val["num"].(float64)
-		assert.Equal(t, table[n], val["line"], "Wrong parsing")
+		assert.NotEmpty(t, out["fileId"])
+		assert.Equal(t, "path", out["path"], "Wrong parsing")
 
-		check[n] = true
+		n := out["num"].(float64)
+		assert.Equal(t, inFile[n], out["line"], "Wrong parsing")
 
+		isParsed[n] = true
 	}
 
-	for _, i := range []float64{0, 1, 2} {
-		if !check[i] {
+	for lineNum, _ := range inFile {
+		if !isParsed[lineNum] {
 			t.Errorf(
 				"Line %v has not been parsed",
-				i)
+				lineNum)
 		}
 	}
 
