@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/stretchr/testify/assert"
 	"go-indexer/go-convert/converter"
 	"strings"
 	"testing"
@@ -10,9 +11,7 @@ import (
 func TestError(t *testing.T) {
 
 	_, err := parse("", "", 0)
-	if err == nil {
-		t.Error("parsing does not return error")
-	}
+	assert.NotNil(t, err, "parsing does not return error")
 
 }
 
@@ -55,21 +54,10 @@ func TestParse(t *testing.T) {
 
 	t.Log(val)
 
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
 
-	w := val["@timestamp"].(string)
-
-	if !strings.Contains(w, "2014") {
-		t.Error("wrong year")
-	}
-
-	p := val["path"].(string)
-
-	if p != "testing#0" {
-		t.Error("wrong path")
-	}
+	assert.Contains(t, val["@timestamp"], "2014", "wrong year")
+	assert.Equal(t, "testing#0", val["path"])
 
 	fs := []struct {
 		pos  int
@@ -85,15 +73,7 @@ func TestParse(t *testing.T) {
 	}
 
 	for _, f := range fs {
-
-		if val[f.name] != in[f.pos] {
-
-			t.Errorf("expected %v, got %v",
-				in[f.pos],
-				val[f.name])
-
-		}
-
+		assert.Equal(t, in[f.pos], val[f.name])
 	}
 
 }
