@@ -49,7 +49,7 @@ func TestStartJob(t *testing.T) {
 	expectedPaths := []string{"path/1.zip"}
 
 	assert.Equal(t, 1, len(messages))
-	for index, _ := range expectedPaths {
+	for index := range expectedPaths {
 		msg := messages[index]
 		var out map[string]interface{}
 		json.Unmarshal([]byte(msg.Body), &out)

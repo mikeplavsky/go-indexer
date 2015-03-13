@@ -39,6 +39,7 @@ func init() {
 	Init()
 }
 
+// todo: init queuename other way, without reading env vars on start
 func Init() {
 	for i := 0; i < NQueues; i++ {
 

@@ -15,15 +15,13 @@ var (
 
 const customerLimit = 1000
 
-
 type job struct {
-    Customer    string `form:"customer" binding:"required"`
-    From   string `form:"from" binding:"required"`
-    To string `form:"to" binding:"required"`
+	Customer string `form:"customer" binding:"required"`
+	From     string `form:"from" binding:"required"`
+	To       string `form:"to" binding:"required"`
 }
 
-
-func newConnection() (*elastic.Client, error) {
+var newConnection = func() (*elastic.Client, error) {
 	return elastic.NewClient(http.DefaultClient, esurl)
 }
 
@@ -129,11 +127,15 @@ var getJobStats = func(j job) (map[string]uint64, error) {
 
 var getFiles = func(j job, skip int, take int) (hits *elastic.SearchHits, err error) {
 
-	client, _ := newConnection()
+	conn, err := newConnection()
+
+	if err != nil {
+		return nil, err
+	}
 
 	filteredQuery := getFilteredQuery(j)
 
-	out, err := client.Search().
+	out, err := conn.Search().
 		Index(index).
 		From(skip).
 		Size(take).
