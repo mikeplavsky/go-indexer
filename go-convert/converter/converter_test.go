@@ -100,6 +100,14 @@ func TestValue(t *testing.T) {
 
 }
 
+func isAllValuesUnique(values []string) bool {
+	var set = map[string]bool{}
+	for _, v := range values {
+		set[v] = true
+	}
+	return len(set) == len(values)
+}
+
 func TestNextIndex(t *testing.T) {
 
 	var parseDummy = func(
@@ -112,6 +120,7 @@ func TestNextIndex(t *testing.T) {
 	r := strings.NewReader("one\ntwo\nthree")
 	out := callConvert(r, parseDummy)
 
+	lineIds := []string{}
 	for _, outLineNum := range []int{0, 2, 4} {
 
 		line := out[outLineNum]
@@ -122,8 +131,10 @@ func TestNextIndex(t *testing.T) {
 
 		assert.Nil(t, err, "Unable to parse JSON: "+line)
 		assert.Equal(t, "log", idx["index"]["_type"], "wrong index type")
+		assert.NotEmpty(t, idx["index"]["_id"])
+		lineIds = append(lineIds, idx["index"]["_id"])
 	}
-
+	assert.True(t, isAllValuesUnique(lineIds))
 }
 
 func TestParsingError(t *testing.T) {
