@@ -3,12 +3,11 @@ package main
 import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
+	"go-indexer/go-send/sender"
 	. "go-indexer/testUtils"
 	"gopkg.in/olivere/elastic.v1"
 	"os"
-	"runtime"
 	"testing"
-	"log"
 )
 
 var queueName = "testQueue11" //todo: plus machine id
@@ -32,20 +31,7 @@ var filesJSON = []byte(`{
         ]
     }`)
 
-func init(){
-	log.Println("11111")
-}
-
-func TestMain(t *testing.T) {
-	 os.Setenv("ES_QUEUE", "AAAAAAAAAAAAAAAAAA")	
-
-}
-
-
 func TestStartJob(t *testing.T) {
-	log.Println("INIT called")
-	
-	runtime.GOMAXPROCS(runtime.NumCPU())
 	getFiles = func(job job, skip int, take int) (h *elastic.SearchHits, err error) {
 		var hits elastic.SearchHits
 		err = json.Unmarshal(filesJSON, &hits)
@@ -54,6 +40,7 @@ func TestStartJob(t *testing.T) {
 
 	queue, _ := GetCleanQueue(queueName + "0")
 	os.Setenv("ES_QUEUE", queueName)
+	sender.Init()
 	sendJob(job{})
 
 	messages := GetMessages(queue, 1)

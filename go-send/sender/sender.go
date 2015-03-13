@@ -33,10 +33,14 @@ type queue struct {
 }
 
 var queues = map[int]queue{}
+var NQueues = runtime.NumCPU()
 
 func init() {
+	Init()
+}
 
-	for i := 0; i < runtime.NumCPU(); i++ {
+func Init() {
+	for i := 0; i < NQueues; i++ {
 
 		qn := GetQueueName() + strconv.Itoa(i)
 		log.Printf("Getting queue %v", qn)
@@ -45,13 +49,9 @@ func init() {
 		queues[i] = queue{q, err}
 
 	}
-
 }
 
 func GetQueue(i int) (*sqs.Queue, error) {
-	log.Println("GETTING===")
-	log.Println(i)
-	log.Println(queues[i].q)
 	return queues[i].q, queues[i].err
 }
 

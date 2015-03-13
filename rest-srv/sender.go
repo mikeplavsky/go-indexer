@@ -2,14 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"go-indexer/go-send/sender"
+	"gopkg.in/olivere/elastic.v1"
 	"log"
 	"strings"
-	"runtime"
-	"go-indexer/go-send/sender"
-
-	"gopkg.in/olivere/elastic.v1"
 )
-
 
 func sendJob(j job) {
 	log.Println("Sending", j)
@@ -57,7 +54,7 @@ func sendJob(j job) {
 
 			}(i, hit)
 
-			i = (i + 1) % runtime.NumCPU()
+			i = (i + 1) % sender.NQueues
 
 		}
 	}
