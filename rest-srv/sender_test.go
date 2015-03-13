@@ -29,7 +29,7 @@ var filesJSON = []byte(`{
                     "uri": "mybucket/path/1.zip"
                 }
             },
-			{
+            {
                 "_index": "s3data",
                 "_type": "log",
                 "_id": "AUwDvrNjjoXknblNwCGN",
@@ -40,23 +40,13 @@ var filesJSON = []byte(`{
                     "size": "1379306",
                     "uri": "https://s3.amazonaws.com/mybucket/path/2.zip"
                 }
-            },
-			{
-                "_index": "s3data",
-                "_type": "log",
-                "_id": "AUwDvrNjjoXknblNwCGN",
-                "_score": 9.776058,
-                "_source": {
-                    "@timestamp": "2015-03-02T12:17:02Z",
-                    "customer": "Contoso",
-                    "size": "1379306",
-                    "uri": "https://s3.amazonaws.com/mybucket/path/3.zip"
-                }
             }
         ]
     }`)
 
-func TestStartJob(t *testing.T) {
+// Sends 3 different messages in single queue
+// and checks that all messages has been delivered
+func TestStartJob_DifferentMessagesUpload(t *testing.T) {
 	getFiles = func(job job, skip int, take int) (h *elastic.SearchHits, err error) {
 		var hits elastic.SearchHits
 		err = json.Unmarshal(filesJSON, &hits)
@@ -72,9 +62,9 @@ func TestStartJob(t *testing.T) {
 	messages := GetMessages(queue, 3)
 
 	// there is no set datatype in stdlib
-	expectedPaths := []string{"path/1.zip", "path/2.zip", "path/3.zip"}
+	expectedPaths := []string{"path/1.zip", "path/2.zip"}
 
-	assert.Equal(t, 3, len(messages))
+	assert.Equal(t, 2, len(messages))
 
 	for index := range expectedPaths {
 		msg := messages[index]
