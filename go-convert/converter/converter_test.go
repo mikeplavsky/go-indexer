@@ -66,8 +66,8 @@ func TestValue(t *testing.T) {
 
 	isParsed := map[float64]bool{}
 
+	fileIds := []string{}
 	for _, outLineNum := range outLineNums {
-
 		outLine := res[outLineNum]
 		t.Log(outLine)
 
@@ -75,13 +75,19 @@ func TestValue(t *testing.T) {
 		err := json.Unmarshal([]byte(outLine), &out)
 		assert.Nil(t, err, "Unable to parse JSON: "+outLine)
 
-		assert.NotEmpty(t, out["fileId"])
 		assert.Equal(t, "path", out["path"], "Wrong parsing")
 
 		n := out["num"].(float64)
 		assert.Equal(t, inFile[n], out["line"], "Wrong parsing")
 
+		fileIds = append(fileIds, out["fileId"].(string))
 		isParsed[n] = true
+	}
+
+	for _, fileId := range fileIds {
+		assert.NotEmpty(t, fileId)
+		assert.Equal(t, fileIds[0], fileId,
+			"lines from the same file should have the same fileID")
 	}
 
 	for lineNum, _ := range inFile {
