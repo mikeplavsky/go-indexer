@@ -9,7 +9,7 @@ import (
 
 var queueName = "testQueue11" //todo: plus machine id
 
-func TestInvalidJobParameters(t *testing.T) {
+func TestSend(t *testing.T) {
 	queue, err := GetCleanQueue(queueName)
 	if err != nil {
 		t.Error(err)

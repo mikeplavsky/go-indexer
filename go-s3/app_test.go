@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/mitchellh/goamz/s3"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRetry(t *testing.T) {
@@ -27,9 +28,7 @@ func TestRetry(t *testing.T) {
 
 	res := retryCall(f).(bool)
 
-	if !res {
-		t.Error("retry does not work")
-	}
+	assert.True(t, res, "retry should be finished when count = 3")
 }
 
 func TestTruncatedWoMarker(t *testing.T) {
