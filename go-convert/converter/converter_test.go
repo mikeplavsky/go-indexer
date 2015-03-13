@@ -3,6 +3,7 @@ package converter
 import (
 	"encoding/json"
 	"errors"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"strings"
 	"testing"
@@ -70,20 +71,11 @@ func TestValue(t *testing.T) {
 
 		var val map[string]interface{}
 		err := json.Unmarshal([]byte(line), &val)
-
-		if err != nil {
-			t.Error(line, err)
-		}
-
-		if val["path"] != "path" {
-			t.Error(v, v, val, "Wrong parsing")
-		}
+		assert.Nil(t, err, "Unable to parse JSON: "+line)
+		assert.Equal(t, "path", val["path"], "Wrong parsing")
 
 		n := val["num"].(float64)
-
-		if val["line"] != table[n] {
-			t.Error(v, v, val, "Wrong parsing")
-		}
+		assert.Equal(t, table[n], val["line"], "Wrong parsing")
 
 		check[n] = true
 
@@ -159,8 +151,5 @@ func TestParsingError(t *testing.T) {
 	r := strings.NewReader("one\ntwo\nthree")
 	res := callConvert(r, parse)
 
-	if len(res) != 4 {
-		t.Error("Wrong length", len(res), res)
-	}
-
+	assert.Equal(t, 4, len(res), "Wrong length")
 }
