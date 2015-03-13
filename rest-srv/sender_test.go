@@ -13,7 +13,7 @@ import (
 var queueName = "testQueue11" //todo: plus machine id
 
 var filesJSON = []byte(`{
-        "total": 1,
+        "total": 3,
         "max_score": 9.776058,
         "hits": [
             {
@@ -27,6 +27,30 @@ var filesJSON = []byte(`{
                     "size": "1379306",
                     "uri": "mybucket/path/1.zip"
                 }
+            },
+			{
+                "_index": "s3data",
+                "_type": "log",
+                "_id": "AUwDvrNjjoXknblNwCGN",
+                "_score": 9.776058,
+                "_source": {
+                    "@timestamp": "2015-03-02T12:17:02Z",
+                    "customer": "Contoso",
+                    "size": "1379306",
+                    "uri": "https://s3.amazonaws.com/mybucket/path/2.zip"
+                }
+            },
+			{
+                "_index": "s3data",
+                "_type": "log",
+                "_id": "AUwDvrNjjoXknblNwCGN",
+                "_score": 9.776058,
+                "_source": {
+                    "@timestamp": "2015-03-02T12:17:02Z",
+                    "customer": "Contoso",
+                    "size": "1379306",
+                    "uri": "https://s3.amazonaws.com/mybucket/path/3.zip"
+                }
             }
         ]
     }`)
@@ -39,16 +63,18 @@ func TestStartJob(t *testing.T) {
 	}
 
 	queue, _ := GetCleanQueue(queueName + "0")
+	sender.NQueues = 1
 	os.Setenv("ES_QUEUE", queueName)
 	sender.Init()
 	sendJob(job{})
 
-	messages := GetMessages(queue, 1)
+	messages := GetMessages(queue, 3)
 
 	// there is no set datatype in stdlib
-	expectedPaths := []string{"path/1.zip"}
+	expectedPaths := []string{"path/1.zip", "path/2.zip", "path/3.zip"}
 
-	assert.Equal(t, 1, len(messages))
+	assert.Equal(t, 3, len(messages))
+
 	for index := range expectedPaths {
 		msg := messages[index]
 		var out map[string]interface{}
