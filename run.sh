@@ -1,6 +1,6 @@
 #!/bin/sh
 
-while ! curl -XPUT localhost:$ES_PORT/$ES_INDEX --data-binary @index.json 
+while ! curl localhost:$ES_PORT
 do
 	sleep 1
 done

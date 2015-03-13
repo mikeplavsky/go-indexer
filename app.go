@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"time"
 
 	"github.com/goamz/goamz/aws"
@@ -18,6 +19,8 @@ import (
 var (
 	S3_PATH,
 	ES_QUEUE,
+	ES_FS_PER_INDEX,
+	ES_INDEX,
 	ES_INDEXER string
 )
 
@@ -117,11 +120,29 @@ func main() {
 
 	ES_QUEUE = os.Getenv("ES_QUEUE")
 	ES_INDEXER = os.Getenv("ES_INDEXER")
+	ES_INDEX = os.Getenv("ES_INDEX")
+	ES_FS_PER_INDEX = os.Getenv("ES_FS_PER_INDEX")
 
-	for {
+	currIdx := 0
+	perIdx, _ := strconv.Atoi(ES_FS_PER_INDEX)
+
+	for i := 0; ; i++ {
+
+		if i%perIdx == 0 && i != 0 {
+			currIdx += 1
+		}
+
+		idxName := fmt.Sprintf(
+			"test%v_%v",
+			currIdx,
+			ES_INDEX)
+
+		os.Setenv("ES_INDEX", idxName)
+
 		if err := index(); err != nil {
 			log.Println(err)
 		}
+
 	}
 
 }
