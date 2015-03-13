@@ -1,7 +1,9 @@
 #!/bin/sh
 set -e
 
-curl -XPUT localhost:$ES_PORT/$ES_INDEX --data-binary @index.json 
+echo $ES_INDEX
+
+curl -XPUT localhost:$ES_PORT/$ES_INDEX --data-binary @index.json > /dev/null 
 
 THROTTLING_LINES_PER_UPLOAD=100000
 rm -rf ./x*
