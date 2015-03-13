@@ -44,7 +44,7 @@ var filesJSON = []byte(`{
         ]
     }`)
 
-// Sends 3 different messages in single queue
+// Sends two different messages in single queue
 // and checks that all messages has been delivered
 func TestStartJob_DifferentMessagesUpload(t *testing.T) {
 	getFiles = func(job job, skip int, take int) (h *elastic.SearchHits, err error) {
@@ -59,7 +59,7 @@ func TestStartJob_DifferentMessagesUpload(t *testing.T) {
 	sender.Init()
 	sendJob(job{})
 
-	messages := GetMessages(queue, 3)
+	messages := GetMessages(queue, 2)
 
 	// there is no set datatype in stdlib
 	expectedPaths := []string{"path/1.zip", "path/2.zip"}
