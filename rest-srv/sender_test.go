@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"go-indexer/go-send/sender"
 	. "go-indexer/testUtils"
@@ -87,6 +88,6 @@ func TestStartJob(t *testing.T) {
 				contains = true
 			}
 		}
-		assert.Equal(t, true, contains, "not found")
+		assert.Equal(t, true, contains, fmt.Sprintf("%s not found in %s", out["path"], expectedPaths))
 	}
 }
