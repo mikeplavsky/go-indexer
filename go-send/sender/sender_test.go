@@ -15,8 +15,7 @@ func TestInvalidJobParameters(t *testing.T) {
 		t.Error(err)
 	}
 	Send("mybucket/path /to /the /file", queue)
-	resp, _ := queue.ReceiveMessage(1)
-	msg := resp.Messages[0]
+	msg := GetMessages(queue, 1)[0]
 
 	var out map[string]interface{}
 	json.Unmarshal([]byte(msg.Body), &out)
