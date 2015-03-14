@@ -14,30 +14,14 @@ import (
 var queueName = "testQueue11" //todo: plus machine id
 
 var filesJSON = []byte(`{
-        "total": 3,
-        "max_score": 9.776058,
         "hits": [
             {
-                "_index": "s3data",
-                "_type": "log",
-                "_id": "AUwDvrNjjoXknblNwCGN",
-                "_score": 9.776058,
                 "_source": {
-                    "@timestamp": "2015-03-02T12:17:02Z",
-                    "customer": "Contoso",
-                    "size": "1379306",
                     "uri": "mybucket/path/1.zip"
                 }
             },
             {
-                "_index": "s3data",
-                "_type": "log",
-                "_id": "AUwDvrNjjoXknblNwCGN",
-                "_score": 9.776058,
                 "_source": {
-                    "@timestamp": "2015-03-02T12:17:02Z",
-                    "customer": "Contoso",
-                    "size": "1379306",
                     "uri": "https://s3.amazonaws.com/mybucket/path/2.zip"
                 }
             }
