@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/stretchr/testify/assert"
+	. "go-indexer/testUtils"
 	"io"
 	"strings"
 	"testing"
@@ -134,7 +135,8 @@ func TestNextIndex(t *testing.T) {
 		assert.NotEmpty(t, idx["index"]["_id"])
 		lineIds = append(lineIds, idx["index"]["_id"])
 	}
-	assert.True(t, isAllValuesUnique(lineIds))
+
+	AssertAllValuesAreUnique(t, lineIds)
 }
 
 func TestParsingError(t *testing.T) {

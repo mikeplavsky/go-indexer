@@ -86,7 +86,7 @@ func TestStartJob_DifferentMessagesUpload(t *testing.T) {
 		assert.Equal(t, "mybucket", out["bucket"], "")
 		paths = append(paths, out["path"].(string))
 	}
-	assertSetsAreEqual(t, expectedPaths, paths)
+	AssertSetsAreEqual(t, expectedPaths, paths)
 }
 
 // Sends two different messages in single queue
@@ -124,23 +124,5 @@ func TestStartJob_Paging(t *testing.T) {
 		assert.Equal(t, "mybucket", out["bucket"], "")
 		paths = append(paths, out["path"].(string))
 	}
-	assertSetsAreEqual(t, expectedPaths, paths)
-}
-
-// test utils
-// verifies that arrays with distinct values have the same values, excluding order
-// it should not modify order
-func assertSetsAreEqual(t *testing.T, expected []string, actual []string) {
-	assert.Equal(t, len(expected), len(actual), "length are not equal")
-
-	var actualSet = map[string]bool{}
-	for _, v := range actual {
-		actualSet[v] = true
-	}
-
-	for _, v := range expected {
-		if !actualSet[v] {
-			t.Errorf("%s is not found in %s", v, actual)
-		}
-	}
+	AssertSetsAreEqual(t, expectedPaths, paths)
 }
