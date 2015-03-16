@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/goamz/goamz/sqs"
 	"github.com/stretchr/testify/assert"
 	"go-indexer/go-send/sender"
 	. "go-indexer/testUtils"
@@ -11,6 +12,14 @@ import (
 )
 
 var queueName = "testQueue11" //todo: plus machine id
+
+func SetUp() *sqs.Queue {
+	queue, _ := GetCleanQueue(queueName + "0")
+	sender.NQueues = 1
+	os.Setenv("ES_QUEUE", queueName)
+	sender.Init()
+	return queue
+}
 
 var (
 	filesJSON = []byte(`{
@@ -60,10 +69,7 @@ func TestStartJob_DifferentMessagesUpload(t *testing.T) {
 		return &hits, err
 	}
 
-	queue, _ := GetCleanQueue(queueName + "0")
-	sender.NQueues = 1
-	os.Setenv("ES_QUEUE", queueName)
-	sender.Init()
+	queue := SetUp()
 	sendJob(job{})
 
 	// there is no set datatype in stdlib
@@ -101,10 +107,7 @@ func TestStartJob_Paging(t *testing.T) {
 		return &hits, err
 	}
 
-	queue, _ := GetCleanQueue(queueName + "0")
-	sender.NQueues = 1
-	os.Setenv("ES_QUEUE", queueName)
-	sender.Init()
+	queue := SetUp()
 	sendJob(job{})
 
 	// there is no set datatype in stdlib

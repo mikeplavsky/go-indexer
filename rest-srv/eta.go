@@ -20,7 +20,7 @@ func calcEta(files float64) (eta string) {
 
 }
 
-func getFilesPerSecond() (fPerSec float64) {
+var getFilesPerSecond = func() (fPerSec float64) {
 
 	cpu := runtime.NumCPU()
 	fPerSec = 2.5 / 70.0 * float64(cpu)
@@ -52,7 +52,7 @@ func getEta() (int, string) {
 
 	num := 0
 
-	for i := 0; i < runtime.NumCPU(); i++ {
+	for i := 0; i < sender.NQueues; i++ {
 
 		n, err := getQueueNum(i)
 
