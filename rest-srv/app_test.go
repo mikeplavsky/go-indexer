@@ -24,7 +24,7 @@ func TestGetJob(t *testing.T) {
 	var out map[string]interface{}
 	json.Unmarshal([]byte(ret), &out)
 
-	fmt.Println(out)
+	t.Log(out)
 	assert.Equal(t, "100KB", out["size"])
 	assert.Equal(t, "9,000", out["count"])
 }
