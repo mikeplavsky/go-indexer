@@ -8,11 +8,15 @@ import (
 	"strings"
 )
 
+var (
+	PageSize = 1000
+)
+
 func sendJob(j job) {
 	log.Println("Sending", j)
 
 	skip := 0
-	take := 1000
+	take := PageSize
 	var total int64
 	total = int64(take)
 

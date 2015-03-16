@@ -27,6 +27,28 @@ var (
             }
         ]
     }`)
+
+	filesJSON_Page1 = []byte(`{
+		"total": 2,
+        "hits": [
+            {
+                "_source": {
+                    "uri": "https://s3.amazonaws.com/mybucket/path/page1.zip"
+                }
+            }
+        ]
+    }`)
+
+	filesJSON_Page2 = []byte(`{
+		"total": 2,
+        "hits": [
+            {
+                "_source": {
+                    "uri": "https://s3.amazonaws.com/mybucket/path/page2.zip"
+                }
+            }
+        ]
+    }`)
 )
 
 // Sends two different messages in single queue
@@ -44,16 +66,56 @@ func TestStartJob_DifferentMessagesUpload(t *testing.T) {
 	sender.Init()
 	sendJob(job{})
 
-	messages := GetMessages(queue, 2)
-
 	// there is no set datatype in stdlib
 	expectedPaths := []string{"path/1.zip", "path/2.zip"}
 
-	assert.Equal(t, 2, len(messages))
+	messages := GetMessages(queue, len(expectedPaths))
+
+	assert.Equal(t, len(expectedPaths), len(messages))
 
 	paths := []string{}
-	for index := range expectedPaths {
-		msg := messages[index]
+	for _, msg := range messages {
+		var out map[string]interface{}
+		json.Unmarshal([]byte(msg.Body), &out)
+		assert.Equal(t, "mybucket", out["bucket"], "")
+		paths = append(paths, out["path"].(string))
+	}
+	assertSetsAreEqual(t, expectedPaths, paths)
+}
+
+// Sends two different messages in single queue
+// and checks that all messages has been delivered
+func TestStartJob_Paging(t *testing.T) {
+	PageSize = 1
+	getFiles = func(job job, skip int, take int) (h *elastic.SearchHits, err error) {
+		var hits elastic.SearchHits
+
+		switch skip {
+		case 0:
+			err = json.Unmarshal(filesJSON_Page1, &hits)
+			break
+		case 1:
+			err = json.Unmarshal(filesJSON_Page2, &hits)
+			break
+		}
+		return &hits, err
+	}
+
+	queue, _ := GetCleanQueue(queueName + "0")
+	sender.NQueues = 1
+	os.Setenv("ES_QUEUE", queueName)
+	sender.Init()
+	sendJob(job{})
+
+	// there is no set datatype in stdlib
+	expectedPaths := []string{"path/page1.zip", "path/page2.zip"}
+
+	messages := GetMessages(queue, len(expectedPaths))
+
+	assert.Equal(t, len(expectedPaths), len(messages))
+
+	paths := []string{}
+	for _, msg := range messages {
 		var out map[string]interface{}
 		json.Unmarshal([]byte(msg.Body), &out)
 		assert.Equal(t, "mybucket", out["bucket"], "")

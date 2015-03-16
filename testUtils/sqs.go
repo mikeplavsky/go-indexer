@@ -18,6 +18,8 @@ func GetCleanQueue(queueName string) (*sqs.Queue, error) {
 	auth, _ := aws.GetAuth("", "", "", time.Time{})
 	sqs := sqs.New(auth, aws.USEast)
 
+	//wait one second to wait all messages in flight switched to active state
+	time.Sleep(time.Duration(1) * time.Second)
 	_, err := sqs.CreateQueueWithTimeout(queueName, 1)
 	if err != nil {
 		return nil, err
