@@ -51,7 +51,7 @@ func TestValue(t *testing.T) {
 	r := strings.NewReader("one\ntwo\nthree")
 	out := callConvert(r, parseStub)
 
-	// index line between parsed lines has been inserted
+	// index line between parsed lines is inserted
 	outLineNums := []int{
 		1,
 		3,

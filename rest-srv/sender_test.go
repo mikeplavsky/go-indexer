@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"go-indexer/go-send/sender"
 	. "go-indexer/testUtils"
@@ -13,7 +12,8 @@ import (
 
 var queueName = "testQueue11" //todo: plus machine id
 
-var filesJSON = []byte(`{
+var (
+	filesJSON = []byte(`{
         "hits": [
             {
                 "_source": {
@@ -27,6 +27,7 @@ var filesJSON = []byte(`{
             }
         ]
     }`)
+)
 
 // Sends two different messages in single queue
 // and checks that all messages has been delivered
@@ -50,18 +51,31 @@ func TestStartJob_DifferentMessagesUpload(t *testing.T) {
 
 	assert.Equal(t, 2, len(messages))
 
+	paths := []string{}
 	for index := range expectedPaths {
 		msg := messages[index]
 		var out map[string]interface{}
 		json.Unmarshal([]byte(msg.Body), &out)
 		assert.Equal(t, "mybucket", out["bucket"], "")
-		contains := false
-		for k, v := range expectedPaths {
-			if v == out["path"] {
-				expectedPaths[k] = ""
-				contains = true
-			}
+		paths = append(paths, out["path"].(string))
+	}
+	assertSetsAreEqual(t, expectedPaths, paths)
+}
+
+// test utils
+// verifies that arrays with distinct values have the same values, excluding order
+// it should not modify order
+func assertSetsAreEqual(t *testing.T, expected []string, actual []string) {
+	assert.Equal(t, len(expected), len(actual), "length are not equal")
+
+	var actualSet = map[string]bool{}
+	for _, v := range actual {
+		actualSet[v] = true
+	}
+
+	for _, v := range expected {
+		if !actualSet[v] {
+			t.Errorf("%s is not found in %s", v, actual)
 		}
-		assert.Equal(t, true, contains, fmt.Sprintf("%s not found in %s", out["path"], expectedPaths))
 	}
 }
