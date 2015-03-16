@@ -5,17 +5,17 @@ import (
 	"errors"
 	"github.com/stretchr/testify/assert"
 	. "go-indexer/testUtils"
-	"io"
 	"strings"
 	"testing"
 )
 
 func callConvert(
-	r io.Reader,
+	in string,
 	parse Parse) []string {
+	r := strings.NewReader(in)
 
 	out := make(chan string)
-	go Convert("path", r, parse, out)
+	go Convert("testing", r, parse, out)
 
 	res := []string{}
 	for v := range out {
@@ -49,8 +49,7 @@ func TestValue(t *testing.T) {
 
 	}
 
-	r := strings.NewReader("one\ntwo\nthree")
-	out := callConvert(r, parseStub)
+	out := callConvert("one\ntwo\nthree", parseStub)
 
 	// index line between parsed lines is inserted
 	outLineNums := []int{
@@ -76,7 +75,7 @@ func TestValue(t *testing.T) {
 		err := json.Unmarshal([]byte(outLine), &out)
 		assert.Nil(t, err, "Unable to parse JSON: "+outLine)
 
-		assert.Equal(t, "path", out["path"], "Wrong parsing")
+		assert.Equal(t, "testing", out["path"], "Wrong parsing")
 
 		n := out["num"].(float64)
 		assert.Equal(t, inFile[n], out["line"], "Wrong parsing")
@@ -118,8 +117,7 @@ func TestNextIndex(t *testing.T) {
 		return nil, nil
 	}
 
-	r := strings.NewReader("one\ntwo\nthree")
-	out := callConvert(r, parseDummy)
+	out := callConvert("one\ntwo\nthree", parseDummy)
 
 	lineIds := []string{}
 	for _, outLineNum := range []int{0, 2, 4} {
@@ -166,8 +164,7 @@ func TestParsingError(t *testing.T) {
 
 	}
 
-	r := strings.NewReader("one\ntwo\nthree")
-	out := callConvert(r, parseStub)
+	out := callConvert("one\ntwo\nthree", parseStub)
 
 	// (3 total - 1 failed) * (1 index line + 1 content line)
 	assert.Equal(t, 4, len(out), "Wrong length")

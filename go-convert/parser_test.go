@@ -28,7 +28,7 @@ func TestParse(t *testing.T) {
 		"Trace",
 		"Exec SQL: SET_FOLDER_PROCESSING_LOCKED"}
 
-	res := callConvert(in)
+	res := callConvert(strings.Join(in, "\t"))
 	line := res[1]
 
 	var val map[string]interface{}
@@ -59,15 +59,11 @@ func TestParse(t *testing.T) {
 	}
 }
 
-func callConvert(in []string) []string {
-	r := strings.NewReader(strings.Join(in, "\t"))
+func callConvert(in string) []string {
+	r := strings.NewReader(in)
 
 	out := make(chan string)
-	go converter.Convert(
-		"testing",
-		r,
-		parse,
-		out)
+	go converter.Convert("testing", r, parse, out)
 
 	res := []string{}
 	for v := range out {
@@ -77,6 +73,8 @@ func callConvert(in []string) []string {
 		for _, l := range ls {
 			res = append(res, l)
 		}
+
 	}
+
 	return res
 }
