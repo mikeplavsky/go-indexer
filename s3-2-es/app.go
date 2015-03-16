@@ -42,10 +42,20 @@ func parseLine(
 
 	fields := strings.Split(line, "\t")
 
+	if len(fields) < 2 {
+		return nil, fmt.Errorf("line should contain size and uri")
+	}
+
 	size := fields[0]
 	uri := fields[1]
+	uri = strings.TrimPrefix(uri, "https://s3.amazonaws.com/")
+	uri = strings.TrimPrefix(uri, "s3://")
 
 	ps := strings.Split(uri, "/")
+
+	if len(ps) < 3 {
+		return nil, fmt.Errorf("uri should contain a bucket and a customer")
+	}
 
 	timestamp, err := parseTime(ps[len(ps)-1])
 
