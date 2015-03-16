@@ -62,7 +62,8 @@ func TestParseLine(t *testing.T) {
 func TestParseLineWithError(t *testing.T) {
 
 	cases := []string{
-		"1010760", //only size provided
+		"1010760", //size only
+		"buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip", //uri only
 		"1010760	Log file_20150112_135921.zip", //there is no bucket
 		"1010760	buck-et/Log file_20150112_135921.zip", //there is no customer
 		"1010760	s3://buck-et/Log file_20150112_135921.zip", //there is no customer
