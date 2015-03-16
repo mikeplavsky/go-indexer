@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
@@ -17,12 +16,11 @@ func TestGetJob(t *testing.T) {
 		}, nil
 	}
 
-	response := httptest.NewRecorder()
-	ret := getJob(job{}, response)
-	assert.Equal(t, http.StatusOK, response.Code)
+	code, body := getJob(job{})
+	assert.Equal(t, http.StatusOK, code)
 
 	var out map[string]interface{}
-	json.Unmarshal([]byte(ret), &out)
+	json.Unmarshal([]byte(body), &out)
 
 	t.Log(out)
 	assert.Equal(t, "100KB", out["size"])
@@ -33,26 +31,24 @@ func TestGetJobWithError(t *testing.T) {
 	getJobStats = func(j job) (map[string]uint64, error) {
 		return nil, fmt.Errorf("error")
 	}
-	response := httptest.NewRecorder()
-	getJob(job{}, response)
-	assert.Equal(t, http.StatusInternalServerError, response.Code, "")
+	code, _ := getJob(job{})
+	assert.Equal(t, http.StatusInternalServerError, code, "")
 }
 
 func TestCustomers(t *testing.T) {
 	getCustomers = func() ([]string, error) {
 		return []string{"foo", "bar"}, nil
 	}
-	response := httptest.NewRecorder()
-	ret := listCustomers(response)
-	assert.Equal(t, http.StatusOK, response.Code, "")
-	assert.Equal(t, "[\"foo\",\"bar\"]", ret, "")
+	code, body := listCustomers()
+	assert.Equal(t, http.StatusOK, code, "")
+	assert.Equal(t, "[\"foo\",\"bar\"]", body, "")
 }
 
 func TestCustomersWithError(t *testing.T) {
 	getCustomers = func() ([]string, error) {
 		return nil, fmt.Errorf("error")
 	}
-	response := httptest.NewRecorder()
-	listCustomers(response)
-	assert.Equal(t, http.StatusInternalServerError, response.Code, "")
+
+	code, _ := listCustomers()
+	assert.Equal(t, http.StatusInternalServerError, code, "")
 }

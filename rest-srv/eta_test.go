@@ -2,6 +2,9 @@ package main
 
 import (
 	"github.com/stretchr/testify/assert"
+	"go-indexer/go-send/sender"
+	"net/http"
+	"os"
 	"testing"
 )
 
@@ -23,6 +26,15 @@ func TestGetEta(t *testing.T) {
 
 	queue.SendMessage("dummy")
 
-	_, response := getEta()
-	assert.Equal(t, "{\"files\":1,\"queue\":\""+queueName+"\",\"time\":\"5s\"}", response)
+	code, body := getEta()
+	assert.Equal(t, http.StatusOK, code)
+	assert.Equal(t, "{\"files\":1,\"queue\":\""+queueName+"\",\"time\":\"5s\"}", body)
+}
+
+func TestGetEtaWithNonExistingQueue(t *testing.T) {
+	os.Setenv("ES_QUEUE", "NOTEXISTING")
+	sender.Init()
+
+	code, _ := getEta()
+	assert.Equal(t, http.StatusInternalServerError, code)
 }

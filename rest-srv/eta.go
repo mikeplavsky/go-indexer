@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"go-indexer/go-send/sender"
-	"net/http"
 	"runtime"
 	"strconv"
 	"time"
@@ -57,21 +55,17 @@ func getEta() (int, string) {
 		n, err := getQueueNum(i)
 
 		if err != nil {
-			return http.StatusInternalServerError,
-				err.Error()
+			return showError(err)
 		}
 
 		num += n
 	}
 
-	res := map[string]interface{}{}
+	res := map[string]interface{}{
+		"files": num,
+		"time":  calcEta(float64(num)),
+		"queue": sender.GetQueueName(),
+	}
 
-	res["files"] = num
-	res["time"] = calcEta(float64(num))
-	res["queue"] = sender.GetQueueName()
-
-	data, _ := json.Marshal(res)
-
-	return http.StatusOK, string(data)
-
+	return outputJSON(res)
 }

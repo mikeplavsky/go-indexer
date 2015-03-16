@@ -10,7 +10,7 @@ import (
 
 func TestError(t *testing.T) {
 
-	_, err := parse("", "", 0)
+	_, err := parse("testing", "", 0)
 	assert.NotNil(t, err, "parsing does not return error")
 
 }
@@ -31,17 +31,17 @@ func TestParse(t *testing.T) {
 	res := callConvert(strings.Join(in, "\t"))
 	line := res[1]
 
-	var val map[string]interface{}
-	err := json.Unmarshal([]byte(line), &val)
+	var out map[string]interface{}
+	err := json.Unmarshal([]byte(line), &out)
 
-	t.Log(val)
+	t.Log(out)
 
 	assert.Nil(t, err)
 
-	assert.Contains(t, val["@timestamp"], "2014", "wrong year")
-	assert.Equal(t, "testing#0", val["path"])
+	assert.Contains(t, out["@timestamp"], "2014-12-08", "wrong timestamp")
+	assert.Equal(t, "testing#0", out["path"])
 
-	fs := []struct {
+	filedsToVerify := []struct {
 		pos  int
 		name string
 	}{
@@ -54,8 +54,8 @@ func TestParse(t *testing.T) {
 		{8, "msg"},
 	}
 
-	for _, f := range fs {
-		assert.Equal(t, in[f.pos], val[f.name])
+	for _, f := range filedsToVerify {
+		assert.Equal(t, in[f.pos], out[f.name])
 	}
 }
 

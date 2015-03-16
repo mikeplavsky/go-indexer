@@ -66,9 +66,7 @@ func TestTruncatedWoMarker(t *testing.T) {
 
 	b := <-res
 
-	if b.count != 5 {
-		t.Error("wrong number of items")
-	}
+	assert.Equal(t, 5, b.count, "wrong number of items")
 
 }
 
@@ -108,9 +106,7 @@ func TestTruncated(t *testing.T) {
 
 	b := <-res
 
-	if b.count != 4 {
-		t.Error("wrong number of items")
-	}
+	assert.Equal(t, 4, b.count, "wrong number of items")
 
 }
 
@@ -139,9 +135,7 @@ func TestSubFolders(t *testing.T) {
 
 	b := <-res
 
-	if b.count != 2 {
-		t.Error("wrong number of items")
-	}
+	assert.Equal(t, 2, b.count, "wrong number of items")
 }
 
 func TestBucket(t *testing.T) {
@@ -174,9 +168,7 @@ func TestBucket(t *testing.T) {
 
 		b := <-res
 
-		if b.count != d.out {
-			t.Error("wrong number of items")
-		}
+		assert.Equal(t, d.out, b.count, "wrong number of items")
 
 	}
 

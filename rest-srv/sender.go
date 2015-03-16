@@ -12,8 +12,8 @@ var (
 	PageSize = 1000
 )
 
-func sendJob(j job) {
-	log.Println("Sending", j)
+func sendJob(job job) {
+	log.Println("Sending", job)
 
 	skip := 0
 	take := PageSize
@@ -22,7 +22,7 @@ func sendJob(j job) {
 
 	for int64(skip) < total {
 
-		out, err := getFiles(j, skip, take)
+		out, err := getFiles(job, skip, take)
 
 		if err != nil {
 			log.Println(err)
@@ -63,5 +63,5 @@ func sendJob(j job) {
 		}
 	}
 
-	log.Println(j, "Done")
+	log.Println(job, "Done")
 }

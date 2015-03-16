@@ -100,14 +100,6 @@ func TestValue(t *testing.T) {
 
 }
 
-func isAllValuesUnique(values []string) bool {
-	var set = map[string]bool{}
-	for _, v := range values {
-		set[v] = true
-	}
-	return len(set) == len(values)
-}
-
 func TestNextIndex(t *testing.T) {
 
 	var parseDummy = func(

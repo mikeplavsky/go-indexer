@@ -10,23 +10,21 @@ import (
 	"github.com/martini-contrib/binding"
 )
 
-func listCustomers(w http.ResponseWriter) string {
+func listCustomers() (int, string) {
 	list, err := getCustomers()
 
 	if err != nil {
-		return showError(w, err)
+		return showError(err)
 	}
 
-	JSON, _ := json.Marshal(list)
-
-	return string(JSON)
+	return outputJSON(list)
 }
 
-func getJob(job job, w http.ResponseWriter) string {
+func getJob(job job) (int, string) {
 	stats, err := getJobStats(job)
 
 	if err != nil {
-		showError(w, err)
+		return showError(err)
 	}
 
 	res := map[string]interface{}{}
@@ -34,21 +32,25 @@ func getJob(job job, w http.ResponseWriter) string {
 	res["size"] = humanize.Bytes(stats["size"])
 	res["eta"] = calcEta(float64(stats["count"]))
 
-	data, _ := json.Marshal(res)
-	return string(data)
+	return outputJSON(res)
 }
 
-func startJob(job job) string {
+func startJob(job job) (int, string) {
 	go sendJob(job)
-	return "started"
+	return http.StatusOK, "started"
 }
 
 //todo: show error stacktrace in debug localhost, show empty 500 in production
-func showError(w http.ResponseWriter, err error) string {
-	http.Error(w,
-		err.Error(),
-		http.StatusInternalServerError)
-	return ""
+func showError(err error) (int, string) {
+	return http.StatusInternalServerError, err.Error()
+}
+
+func outputJSON(v interface{}) (int, string) {
+	JSON, err := json.Marshal(v)
+	if err != nil {
+		return showError(err)
+	}
+	return http.StatusOK, string(JSON)
 }
 
 func newServer() *martini.ClassicMartini {
