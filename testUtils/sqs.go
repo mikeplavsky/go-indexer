@@ -38,6 +38,7 @@ func GetCleanQueue(queueName string) (*sqs.Queue, error) {
 		return nil, err
 	}
 
+	//todo:parallel
 	attempts := 0
 	for len(resp.Messages) > 0 && attempts < maxGetCleanQueueAttempts {
 		attempts++
@@ -75,4 +76,22 @@ func GetMessages(queue *sqs.Queue, count int) []sqs.Message {
 	}
 
 	return ret
+}
+
+func Wait(
+	f func() (interface{}, error), expected interface{}, timeout time.Duration, maxAttempts int) interface{} {
+	attempts := 0
+	for attempts < maxAttempts {
+		attempts++
+
+		objs, err := f()
+
+		if err == nil && objs == expected {
+			return objs
+		}
+		log.Println("retrying operation")
+		time.Sleep(timeout)
+	}
+
+	return nil
 }
