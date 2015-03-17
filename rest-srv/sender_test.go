@@ -37,7 +37,7 @@ var (
         ]
     }`)
 
-	filesJSON_Page1 = []byte(`{
+	filesJSONPage1 = []byte(`{
 		"total": 2,
         "hits": [
             {
@@ -48,7 +48,7 @@ var (
         ]
     }`)
 
-	filesJSON_Page2 = []byte(`{
+	filesJSONPage2 = []byte(`{
 		"total": 2,
         "hits": [
             {
@@ -98,10 +98,10 @@ func TestStartJob_Paging(t *testing.T) {
 
 		switch skip {
 		case 0:
-			err = json.Unmarshal(filesJSON_Page1, &hits)
+			err = json.Unmarshal(filesJSONPage1, &hits)
 			break
 		case 1:
-			err = json.Unmarshal(filesJSON_Page2, &hits)
+			err = json.Unmarshal(filesJSONPage2, &hits)
 			break
 		}
 		return &hits, err

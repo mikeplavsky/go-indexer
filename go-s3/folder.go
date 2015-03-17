@@ -35,6 +35,7 @@ type folder struct {
 	folder *s3.ListResp
 }
 
+// T is a shortcut for interface{}
 type T interface{}
 
 var auth = make(chan aws.Auth)

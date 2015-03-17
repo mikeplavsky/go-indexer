@@ -5,9 +5,8 @@ import (
 	"testing"
 )
 
-// test utils
-// verifies that arrays with distinct values have the same values, excluding order
-// it should not modify order
+// AssertSetsAreEqual verifies that arrays with distinct values have the same
+// values, excluding order. It does not modify both collections
 func AssertSetsAreEqual(t *testing.T, expected []string, actual []string) {
 	assert.Equal(t, len(expected), len(actual), "length are not equal")
 
@@ -23,6 +22,7 @@ func AssertSetsAreEqual(t *testing.T, expected []string, actual []string) {
 	}
 }
 
+// AssertAllValuesAreUnique check that there is no repeating item
 func AssertAllValuesAreUnique(t *testing.T, values []string) {
 	var set = map[string]bool{}
 	for _, v := range values {

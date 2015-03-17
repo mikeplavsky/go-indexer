@@ -33,12 +33,15 @@ type queue struct {
 }
 
 var queues = map[int]queue{}
+
+// NQueues is the number of target queues
 var NQueues = runtime.NumCPU()
 
 func init() {
 	Init()
 }
 
+// Init creates queues
 // todo: init queuename other way, without reading env vars on start
 func Init() {
 	for i := 0; i < NQueues; i++ {
@@ -52,10 +55,12 @@ func Init() {
 	}
 }
 
+// GetQueue returns Queue with specific ID
 func GetQueue(i int) (*sqs.Queue, error) {
 	return queues[i].q, queues[i].err
 }
 
+// Send sends given path on S3 (bucket/path) to specified queue
 func Send(s3path string, q *sqs.Queue) {
 
 	ps := strings.SplitN(s3path, "/", 2)

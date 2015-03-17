@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	// PageSize is max hits size to go-sender per goroutine
 	PageSize = 1000
 )
 
@@ -17,8 +18,7 @@ func sendJob(job job) {
 
 	skip := 0
 	take := PageSize
-	var total int64
-	total = int64(take)
+	total := int64(take)
 
 	for int64(skip) < total {
 

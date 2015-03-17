@@ -8,11 +8,12 @@ import (
 )
 
 var (
-	MaxGetCleanQueueAttempts = 100
-	MaxGetMessagesAttempts   = 100
-	DefaultRequestTimeout    = time.Duration(100) * time.Millisecond
+	maxGetCleanQueueAttempts = 100
+	maxGetMessagesAttempts   = 100
+	defaultRequestTimeout    = time.Duration(100) * time.Millisecond
 )
 
+// GetCleanQueue creates new queue if it does not exist, purges the messages
 func GetCleanQueue(queueName string) (*sqs.Queue, error) {
 	//create own ctor, not app one
 	auth, _ := aws.GetAuth("", "", "", time.Time{})
@@ -38,7 +39,7 @@ func GetCleanQueue(queueName string) (*sqs.Queue, error) {
 	}
 
 	attempts := 0
-	for len(resp.Messages) > 0 && attempts < MaxGetCleanQueueAttempts {
+	for len(resp.Messages) > 0 && attempts < maxGetCleanQueueAttempts {
 		attempts++
 		log.Printf("deleting %d messages", len(resp.Messages))
 		_, err = queue.DeleteMessageBatch(resp.Messages)
@@ -47,7 +48,7 @@ func GetCleanQueue(queueName string) (*sqs.Queue, error) {
 		}
 		resp, err = queue.ReceiveMessage(10)
 		if len(resp.Messages) == 0 {
-			time.Sleep(DefaultRequestTimeout)
+			time.Sleep(defaultRequestTimeout)
 		}
 		if err != nil {
 			return nil, err
@@ -56,19 +57,20 @@ func GetCleanQueue(queueName string) (*sqs.Queue, error) {
 	return queue, nil
 }
 
+// GetMessages returns top messages with specified count
 func GetMessages(queue *sqs.Queue, count int) []sqs.Message {
 	ret := make([]sqs.Message, count)
 
 	i := 0
 	attempts := 0
-	for i < count && attempts < MaxGetMessagesAttempts {
+	for i < count && attempts < maxGetMessagesAttempts {
 		attempts++
 		resp, _ := queue.ReceiveMessage(1)
 		if len(resp.Messages) > 0 {
 			ret[i] = resp.Messages[0]
 			i++
 		} else {
-			time.Sleep(DefaultRequestTimeout)
+			time.Sleep(defaultRequestTimeout)
 		}
 	}
 

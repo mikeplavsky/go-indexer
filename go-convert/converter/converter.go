@@ -16,10 +16,12 @@ type event struct {
 	num  int
 }
 
+// Parse is parser interface used in bulk request generation
 type Parse func(
-	path,
+	path, // file you parse
 	line string,
-	num int) (res map[string]interface{}, err error)
+	num int, // line number
+) (res map[string]interface{}, err error)
 
 func worker(
 	path string,
@@ -52,11 +54,11 @@ func worker(
 			}
 
 			idx := [2]string{}
-			lineId := id + strconv.Itoa(e.num)
+			lineID := id + strconv.Itoa(e.num)
 
 			idx[0] = fmt.Sprintf(
 				`{"index": {"_type": "log","_id":"%v"}}`,
-				lineId)
+				lineID)
 
 			if obj != nil {
 				obj["fileId"] = id
@@ -72,6 +74,7 @@ func worker(
 
 }
 
+// Convert generates bulk request for ES in parallel
 func Convert(
 	path string,
 	r io.Reader,
@@ -103,7 +106,7 @@ func Convert(
 			l,
 		}
 
-		l += 1
+		l++
 
 	}
 

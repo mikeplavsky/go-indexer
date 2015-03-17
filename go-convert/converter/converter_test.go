@@ -66,7 +66,7 @@ func TestValue(t *testing.T) {
 
 	isParsed := map[float64]bool{}
 
-	fileIds := []string{}
+	fileIDs := []string{}
 	for _, outLineNum := range outLineNums {
 		outLine := out[outLineNum]
 		t.Log(outLine)
@@ -80,17 +80,17 @@ func TestValue(t *testing.T) {
 		n := out["num"].(float64)
 		assert.Equal(t, inFile[n], out["line"], "Wrong parsing")
 
-		fileIds = append(fileIds, out["fileId"].(string))
+		fileIDs = append(fileIDs, out["fileId"].(string))
 		isParsed[n] = true
 	}
 
-	for _, fileId := range fileIds {
-		assert.NotEmpty(t, fileId)
-		assert.Equal(t, fileIds[0], fileId,
+	for _, fileID := range fileIDs {
+		assert.NotEmpty(t, fileID)
+		assert.Equal(t, fileIDs[0], fileID,
 			"lines from the same file should have the same fileID")
 	}
 
-	for lineNum, _ := range inFile {
+	for lineNum := range inFile {
 		if !isParsed[lineNum] {
 			t.Errorf(
 				"Line %v has not been parsed",
