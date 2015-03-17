@@ -73,6 +73,6 @@ func TestParseLineWithError(t *testing.T) {
 
 	for _, testCase := range cases {
 		res, err := parse("dummy", testCase, 0)
-		assert.NotNil(t, err, fmt.Sprintf("expected error, but received", res))
+		assert.NotNil(t, err, fmt.Sprintf("expected error, but received %s", res))
 	}
 }

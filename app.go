@@ -24,6 +24,8 @@ var (
 	ES_INDEXER string
 )
 
+var queueMaxWaitTimeSeconds = 10
+
 func index() error {
 
 	auth, err := aws.GetAuth("", "", "", time.Time{})
@@ -46,7 +48,7 @@ func index() error {
 	}
 
 	ps := map[string]string{
-		"WaitTimeSeconds":     "10",
+		"WaitTimeSeconds":     strconv.Itoa(queueMaxWaitTimeSeconds),
 		"MaxNumberOfMessages": "1"}
 
 	res, err := q.ReceiveMessageWithParameters(ps)
