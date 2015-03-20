@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"go-indexer/go-send/sender"
-	"gopkg.in/olivere/elastic.v1"
 	"log"
 	"strings"
+
+	"gopkg.in/olivere/elastic.v1"
 )
 
 var (

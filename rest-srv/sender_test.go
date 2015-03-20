@@ -2,13 +2,14 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/goamz/goamz/sqs"
-	"github.com/stretchr/testify/assert"
 	"go-indexer/go-send/sender"
 	. "go-indexer/testUtils"
-	"gopkg.in/olivere/elastic.v1"
 	"os"
 	"testing"
+
+	"github.com/goamz/goamz/sqs"
+	"github.com/stretchr/testify/assert"
+	"gopkg.in/olivere/elastic.v1"
 )
 
 var queueName = "testQueue11" //todo: plus machine id

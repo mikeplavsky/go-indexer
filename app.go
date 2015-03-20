@@ -96,6 +96,7 @@ func index() error {
 	}
 
 	defer f.Close()
+	defer os.Remove(f.Name())
 
 	f.Write(data)
 	f.Sync()
@@ -106,8 +107,6 @@ func index() error {
 	out, err := cvrt.CombinedOutput()
 
 	log.Println(string(out))
-
-	os.Remove(f.Name())
 
 	if err != nil {
 		return err

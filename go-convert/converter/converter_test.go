@@ -3,10 +3,11 @@ package converter
 import (
 	"encoding/json"
 	"errors"
-	"github.com/stretchr/testify/assert"
 	. "go-indexer/testUtils"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func callConvert(

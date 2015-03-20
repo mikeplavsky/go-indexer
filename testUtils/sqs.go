@@ -79,9 +79,15 @@ func GetMessages(queue *sqs.Queue, count int) []sqs.Message {
 }
 
 func Wait(
-	f func() (interface{}, error), expected interface{}, timeout time.Duration, maxAttempts int) interface{} {
+	f func() (interface{}, error),
+	expected interface{},
+	timeout time.Duration,
+	maxAttempts int) interface{} {
+
 	attempts := 0
+
 	for attempts < maxAttempts {
+
 		attempts++
 
 		objs, err := f()
@@ -89,8 +95,10 @@ func Wait(
 		if err == nil && objs == expected {
 			return objs
 		}
-		log.Println("retrying operation")
+
+		log.Println(err, objs)
 		time.Sleep(timeout)
+
 	}
 
 	return nil

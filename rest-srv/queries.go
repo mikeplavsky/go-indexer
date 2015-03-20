@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/olivere/elastic.v1"
 	"net/http"
+
+	"gopkg.in/olivere/elastic.v1"
 )
 
 var (

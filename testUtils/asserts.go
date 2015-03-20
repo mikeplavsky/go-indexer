@@ -1,8 +1,9 @@
 package sender
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // AssertSetsAreEqual verifies that arrays with distinct values have the same
