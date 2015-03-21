@@ -27,17 +27,26 @@ var (
 var queueMaxWaitTimeSeconds = 10
 
 type awsIdx interface {
-	getMessage() ([]sqs.Message, error)
+	getMessage() (*sqs.Message, error)
 	removeMessage(*sqs.Message) error
 
 	getLog(bucket string,
 		path string) ([]byte, error)
+
+	exec(string) ([]byte, error)
 }
 
 type idx struct{}
 
 func getAuth() (aws.Auth, error) {
 	return aws.GetAuth("", "", "", time.Time{})
+}
+
+func (idx) exec(c string) ([]byte, error) {
+
+	cvrt := exec.Command(c)
+	return cvrt.CombinedOutput()
+
 }
 
 func (idx) removeMessage(msg *sqs.Message) error {
@@ -78,7 +87,7 @@ func (idx) getLog(bucket, path string) ([]byte, error) {
 
 }
 
-func getQueue() (*sqs.Queue, error){
+func getQueue() (*sqs.Queue, error) {
 
 	auth, err := getAuth()
 
@@ -117,7 +126,7 @@ func (idx) getMessage() (*sqs.Message, error) {
 
 }
 
-func index(i idx) error {
+func index(i awsIdx) error {
 
 	res, err := i.getMessage()
 
@@ -166,9 +175,7 @@ func index(i idx) error {
 
 	os.Setenv("ES_FILE", f.Name())
 
-	cvrt := exec.Command(ES_INDEXER)
-	out, err := cvrt.CombinedOutput()
-
+	out, err := i.exec(ES_INDEXER)
 	log.Println(string(out))
 
 	if err != nil {
@@ -178,12 +185,17 @@ func index(i idx) error {
 	return i.removeMessage(res)
 }
 
-func main() {
+func setVars() {
 
 	ES_QUEUE = os.Getenv("ES_QUEUE")
 	ES_INDEXER = os.Getenv("ES_INDEXER")
 	ES_INDEX = os.Getenv("ES_INDEX")
 	ES_FS_PER_INDEX = os.Getenv("ES_FS_PER_INDEX")
+}
+
+func run() {
+
+	setVars()
 
 	currIdx := 0
 	perIdx, _ := strconv.Atoi(ES_FS_PER_INDEX)
@@ -207,4 +219,8 @@ func main() {
 
 	}
 
+}
+
+func main() {
+	run()
 }
