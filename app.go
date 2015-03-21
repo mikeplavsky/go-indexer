@@ -27,29 +27,76 @@ var (
 var queueMaxWaitTimeSeconds = 10
 
 type awsIdx interface {
-	getMessage() string
-	getLog() []byte
+	getMessage() ([]sqs.Message, error)
+	removeMessage(*sqs.Message) error
+
+	getLog(bucket string,
+		path string) ([]byte, error)
 }
 
-func index() error {
+type idx struct{}
 
-	auth, err := aws.GetAuth("", "", "", time.Time{})
+func getAuth() (aws.Auth, error) {
+	return aws.GetAuth("", "", "", time.Time{})
+}
+
+func (idx) removeMessage(msg *sqs.Message) error {
+
+	q, err := getQueue()
 
 	if err != nil {
 		return err
 	}
 
-	sqs := sqs.New(auth, aws.USEast)
-	q, err := sqs.GetQueue(ES_QUEUE)
+	_, err = q.DeleteMessage(msg)
+	return err
+
+}
+
+func (idx) getLog(bucket, path string) ([]byte, error) {
+
+	auth, err := getAuth()
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	s3 := s3.New(auth, aws.USEast)
 
 	if err != nil {
-		return err
+		return nil, err
+	}
+
+	b := s3.Bucket(bucket)
+	data, err := b.Get(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+
+}
+
+func getQueue() (*sqs.Queue, error){
+
+	auth, err := getAuth()
+
+	if err != nil {
+		return nil, err
+	}
+
+	sqs := sqs.New(auth, aws.USEast)
+	return sqs.GetQueue(ES_QUEUE)
+
+}
+
+func (idx) getMessage() (*sqs.Message, error) {
+
+	q, err := getQueue()
+
+	if err != nil {
+		return nil, err
 	}
 
 	ps := map[string]string{
@@ -59,14 +106,26 @@ func index() error {
 	res, err := q.ReceiveMessageWithParameters(ps)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(res.Messages) == 0 {
-		return errors.New("No messages")
+		return nil, errors.New("No messages")
 	}
 
-	raw := res.Messages[0].Body
+	return &res.Messages[0], nil
+
+}
+
+func index(i idx) error {
+
+	res, err := i.getMessage()
+
+	if err != nil {
+		return err
+	}
+
+	raw := res.Body
 
 	var msg map[string]interface{}
 	err = json.Unmarshal([]byte(raw), &msg)
@@ -78,8 +137,7 @@ func index() error {
 	bucket := msg["bucket"].(string)
 	path := msg["path"].(string)
 
-	b := s3.Bucket(bucket)
-	data, err := b.Get(path)
+	data, err := i.getLog(bucket, path)
 
 	if err != nil {
 		return err
@@ -117,9 +175,7 @@ func index() error {
 		return err
 	}
 
-	q.DeleteMessage(&res.Messages[0])
-	return nil
-
+	return i.removeMessage(res)
 }
 
 func main() {
@@ -145,7 +201,7 @@ func main() {
 
 		os.Setenv("ES_INDEX", idxName)
 
-		if err := index(); err != nil {
+		if err := index(idx{}); err != nil {
 			log.Println(err)
 		}
 
