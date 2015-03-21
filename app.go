@@ -26,6 +26,11 @@ var (
 
 var queueMaxWaitTimeSeconds = 10
 
+type awsIdx interface {
+	getMessage() string
+	getLog() []byte
+}
+
 func index() error {
 
 	auth, err := aws.GetAuth("", "", "", time.Time{})
