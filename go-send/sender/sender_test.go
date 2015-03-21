@@ -2,9 +2,10 @@ package sender
 
 import (
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	. "go-indexer/testUtils"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var queueName = "testQueue11" //todo: plus machine id
