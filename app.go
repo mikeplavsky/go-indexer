@@ -193,18 +193,38 @@ func setVars() {
 	ES_FS_PER_INDEX = os.Getenv("ES_FS_PER_INDEX")
 }
 
+func nextIdx() <-chan int {
+
+	res := make(chan int)
+
+	go func() {
+
+		currIdx := 0
+		perIdx, _ := strconv.Atoi(ES_FS_PER_INDEX)
+
+		for i := 1; ; i++ {
+
+			res <- currIdx
+
+			if i%perIdx == 0 && i != 0 {
+				currIdx += 1
+			}
+
+		}
+	}()
+
+	return res
+
+}
+
 func run() {
 
 	setVars()
+	i := nextIdx()
 
 	currIdx := 0
-	perIdx, _ := strconv.Atoi(ES_FS_PER_INDEX)
 
-	for i := 0; ; i++ {
-
-		if i%perIdx == 0 && i != 0 {
-			currIdx += 1
-		}
+	for {
 
 		idxName := fmt.Sprintf(
 			"test%v_%v",
@@ -214,8 +234,13 @@ func run() {
 		os.Setenv("ES_INDEX", idxName)
 
 		if err := index(idx{}); err != nil {
+
 			log.Println(err)
+			continue
+
 		}
+
+		currIdx = <-i
 
 	}
 

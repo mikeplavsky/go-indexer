@@ -59,6 +59,21 @@ func (i ti) removeMessage(m *sqs.Message) error {
 	return errors.New("removeMessage not implemented")
 }
 
+func TestNextIdx(t *testing.T) {
+
+	ES_FS_PER_INDEX = "4"
+
+	res := nextIdx()
+
+	for _, i := range []int{
+		0, 0, 0, 0,
+		1, 1, 1, 1,
+		2, 2, 2, 2,
+		3, 3, 3, 3} {
+		assert.Equal(t, i, <-res)
+	}
+}
+
 func TestEnv(t *testing.T) {
 
 	os.Setenv("ES_INDEXER", "indexer1")
