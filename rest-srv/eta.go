@@ -26,7 +26,7 @@ var getFilesPerSecond = func() (fPerSec float64) {
 	return
 }
 
-func getQueueNum(i int) (int, error) {
+var getQueueNum = func(i int) (int, error) {
 
 	q, err := sender.GetQueue(i)
 
@@ -46,11 +46,15 @@ func getQueueNum(i int) (int, error) {
 
 }
 
+var nQueues = func() int {
+	return sender.NQueues
+}
+
 func getEta() (int, string) {
 
 	num := 0
 
-	for i := 0; i < sender.NQueues; i++ {
+	for i := 0; i < nQueues(); i++ {
 
 		n, err := getQueueNum(i)
 

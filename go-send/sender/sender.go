@@ -38,7 +38,7 @@ var queues = map[int]queue{}
 var NQueues = runtime.NumCPU()
 
 func init() {
-	Init()
+	//Init()
 }
 
 // Init creates queues

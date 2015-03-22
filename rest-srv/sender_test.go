@@ -159,8 +159,8 @@ func TestSendPaging(t *testing.T) {
 
 			msg := fmt.Sprintf(
 				`{"uri":"https://s3.amazonaws.com/%v/%v/%v"}`,
-                                skip,
-                                take,
+				skip,
+				take,
 				<-nextId)
 
 			raw := json.RawMessage(msg)
