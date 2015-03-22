@@ -2,128 +2,133 @@ package main
 
 import (
 	"encoding/json"
-	"go-indexer/go-send/sender"
-	. "go-indexer/testUtils"
-	"os"
+	"errors"
+	"fmt"
 	"testing"
 
-	"github.com/goamz/goamz/sqs"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/olivere/elastic.v1"
 )
 
-var queueName = "testQueue11" //todo: plus machine id
-
-func SetUp() *sqs.Queue {
-	queue, _ := GetCleanQueue(queueName + "0")
-	sender.NQueues = 1
-	os.Setenv("ES_QUEUE", queueName)
-	sender.Init()
-	return queue
+type tq struct {
+	s func(int, string)
+	n int
 }
 
-var (
-	filesJSON = []byte(`{
-        "hits": [
-            {
-                "_source": {
-                    "uri": "mybucket/path/1.zip"
-                }
-            },
-            {
-                "_source": {
-                    "uri": "https://s3.amazonaws.com/mybucket/path/2.zip"
-                }
-            }
-        ]
-    }`)
-
-	filesJSONPage1 = []byte(`{
-		"total": 2,
-        "hits": [
-            {
-                "_source": {
-                    "uri": "https://s3.amazonaws.com/mybucket/path/page1.zip"
-                }
-            }
-        ]
-    }`)
-
-	filesJSONPage2 = []byte(`{
-		"total": 2,
-        "hits": [
-            {
-                "_source": {
-                    "uri": "https://s3.amazonaws.com/mybucket/path/page2.zip"
-                }
-            }
-        ]
-    }`)
-)
-
-// Sends two different messages in single queue
-// and checks that all messages has been delivered
-func TestStartJob_DifferentMessagesUpload(t *testing.T) {
-	getFiles = func(job job, skip int, take int) (h *elastic.SearchHits, err error) {
-		var hits elastic.SearchHits
-		err = json.Unmarshal(filesJSON, &hits)
-		return &hits, err
+func (t tq) send(i int, s string) {
+	if t.s != nil {
+		t.s(i, s)
 	}
-
-	queue := SetUp()
-	sendJob(job{})
-
-	// there is no set datatype in stdlib
-	expectedPaths := []string{"path/1.zip", "path/2.zip"}
-
-	messages := GetMessages(queue, len(expectedPaths))
-
-	assert.Equal(t, len(expectedPaths), len(messages))
-
-	paths := []string{}
-	for _, msg := range messages {
-		var out map[string]interface{}
-		json.Unmarshal([]byte(msg.Body), &out)
-		assert.Equal(t, "mybucket", out["bucket"], "")
-		paths = append(paths, out["path"].(string))
-	}
-	AssertSetsAreEqual(t, expectedPaths, paths)
 }
 
-// Sends two different messages in single queue
-// and checks that all messages has been delivered
-func TestStartJob_Paging(t *testing.T) {
-	PageSize = 1
-	getFiles = func(job job, skip int, take int) (h *elastic.SearchHits, err error) {
-		var hits elastic.SearchHits
+func (t tq) qNum() int {
+	return t.n
+}
 
-		switch skip {
-		case 0:
-			err = json.Unmarshal(filesJSONPage1, &hits)
-			break
-		case 1:
-			err = json.Unmarshal(filesJSONPage2, &hits)
-			break
+func TestSendJobError(t *testing.T) {
+
+	getFiles = func(job,
+		int,
+		int) (*elastic.SearchHits, error) {
+		return nil, errors.New("elastic error")
+	}
+
+	err := sendJobImpl(job{}, tq{n: 1})
+
+	assert.Error(t, err)
+}
+
+func TestSendJobZero(t *testing.T) {
+
+	getFiles = func(job,
+		int,
+		int) (*elastic.SearchHits, error) {
+
+		hits := elastic.SearchHits{}
+		return &hits, nil
+	}
+
+	send := func(int, string) {
+		assert.False(t, true)
+	}
+
+	err := sendJobImpl(job{}, tq{s: send, n: 1})
+
+	assert.NoError(t, err)
+}
+
+func TestSend(t *testing.T) {
+
+	mNum := 9
+	qNum := 4
+
+	getFiles = func(job,
+		int,
+		int) (*elastic.SearchHits, error) {
+
+		hits := elastic.SearchHits{}
+
+		for i := 0; i < mNum; i++ {
+
+			msg := fmt.Sprintf(
+				`{"uri":"https://s3.amazonaws.com/%v"}`,
+				i)
+
+			raw := json.RawMessage(msg)
+
+			hits.Hits = append(
+				hits.Hits,
+				&elastic.SearchHit{
+					Source: &raw})
+
 		}
-		return &hits, err
+
+		return &hits, nil
 	}
 
-	queue := SetUp()
-	sendJob(job{})
-
-	// there is no set datatype in stdlib
-	expectedPaths := []string{"path/page1.zip", "path/page2.zip"}
-
-	messages := GetMessages(queue, len(expectedPaths))
-
-	assert.Equal(t, len(expectedPaths), len(messages))
-
-	paths := []string{}
-	for _, msg := range messages {
-		var out map[string]interface{}
-		json.Unmarshal([]byte(msg.Body), &out)
-		assert.Equal(t, "mybucket", out["bucket"], "")
-		paths = append(paths, out["path"].(string))
+	type r struct {
+		q int
+		m string
 	}
-	AssertSetsAreEqual(t, expectedPaths, paths)
+
+	res := make(chan r, mNum*qNum)
+
+	send := func(q int, m string) {
+		res <- r{q, m}
+	}
+
+	tq := tq{s: send, n: qNum}
+
+	err := sendJobImpl(job{}, tq)
+	close(res)
+
+	assert.NoError(t, err)
+	f := map[int]map[string]bool{}
+
+	for r := range res {
+
+		t.Log(r)
+
+		if _, ok := f[r.q]; !ok {
+			f[r.q] = map[string]bool{}
+		}
+
+		f[r.q][r.m] = true
+	}
+
+	t.Log(f)
+
+	assert.Equal(t, 3, len(f[0]))
+
+	for q := 1; q < qNum; q++ {
+
+		t.Log(f[q])
+		assert.Equal(t, 2, len(f[q]))
+
+	}
+
+	assert.True(t, f[0]["4"])
+	assert.True(t, f[1]["1"])
+	assert.True(t, f[3]["7"])
+
 }
