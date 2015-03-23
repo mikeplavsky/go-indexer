@@ -9,9 +9,10 @@ docker run -ti \
 ./create_loaders.sh
 
 ./start_stack.sh
-./start_loaders.sh
 
 ./run_s3.sh
 ./run_rest.sh
 ./run_kibana.sh
 ./run_nginx.sh
+
+./start_loaders.sh
