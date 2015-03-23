@@ -60,9 +60,9 @@ func TestValue(t *testing.T) {
 
 	inFile := map[float64]string{
 		//line number -> line content
-		0: "one",
-		1: "two",
-		2: "three",
+		1: "one",
+		2: "two",
+		3: "three",
 	}
 
 	isParsed := map[float64]bool{}

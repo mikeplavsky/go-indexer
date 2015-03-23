@@ -40,7 +40,7 @@ func TestParse(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Contains(t, out["@timestamp"], "2014-12-08", "wrong timestamp")
-	assert.Equal(t, "testing#0", out["path"])
+	assert.Equal(t, "testing#1", out["path"])
 
 	filedsToVerify := []struct {
 		pos  int

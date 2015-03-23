@@ -126,7 +126,7 @@ angular.module('myApp', ['cui'])
     })
     .controller('AboutBoxCtrl', function ($scope, cuiAboutBox) {
         var aboutBox = cuiAboutBox({
-            applicationName: 'Logs Indexer'
+            applicationName: 'Logs Indexer v0.2.3'
         });
         $scope.showAboutBox = aboutBox.modal.show;
     });

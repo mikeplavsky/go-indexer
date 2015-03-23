@@ -97,7 +97,7 @@ func Convert(
 
 	scanner := bufio.NewScanner(r)
 
-	l := 0
+	l := 1
 
 	for scanner.Scan() {
 
