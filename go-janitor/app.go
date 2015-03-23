@@ -54,6 +54,7 @@ func retryCall(
 }
 
 func deleteQueue(
+	res chan<- bool,
 	qUrl string,
 	ec *ec2.EC2,
 	sqs *sqs.SQS) {
@@ -69,12 +70,8 @@ func deleteQueue(
 
 	if err != nil {
 
-		fmt.Println(err)
-
-		s := err.Error()
-
 		if !strings.Contains(
-			s,
+			err.Error(),
 			"InvalidInstanceID.NotFound") {
 			return
 		}
@@ -85,16 +82,14 @@ func deleteQueue(
 			return
 		}
 
-		_, err = q.Delete()
+		retryCall(
+			func() (T, error) {
+				return q.Delete()
+			})
 
-		if err != nil {
-			return
-		}
-
-		fmt.Print(".")
-		return
 	}
 
+	res <- true
 	return
 
 }
@@ -108,15 +103,32 @@ func main() {
 
 	ec := ec2.New(auth, aws.USEast)
 
+	r := make(chan bool)
 	var w sync.WaitGroup
+
+	go func() {
+
+		l := len(res.QueueUrl)
+                fmt.Printf("Queues:%v\n",l)
+
+		for i := 0; ; i++ {
+
+			<-r
+			fmt.Print(".")
+
+			w.Done()
+		}
+
+	}()
 
 	for _, i := range res.QueueUrl {
 
 		w.Add(1)
-		go deleteQueue(i, ec, sqs)
+		go deleteQueue(r, i, ec, sqs)
 
 	}
 
 	w.Wait()
+        fmt.Println("\n")
 
 }
