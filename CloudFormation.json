@@ -1,5 +1,5 @@
 {
-    "Description": "Stack for LogManagement project",
+    "Description": "Spot Stack for LogManagement project",
 
     "Parameters": {
         "InstanceType": {
