@@ -10,10 +10,9 @@
             "ConstraintDescription": "must be a valid EC2 instance type."
         },
         "SpotPrice": {
-            "Description": "Spot price",
-            "Type": "String",
-            "Default": "2.8",
-            "ConstraintDescription": "can not be higher than 4 times On-Demand Price"
+            "Description": "Spot Price can not be higher than 4 times On-Demand Price",
+            "Type": "Number",
+            "Default": "2.8"
         }
     },
 
