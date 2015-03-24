@@ -9,6 +9,18 @@
             "AllowedValues": [ "r3.2xlarge", "r3.4xlarge", "r3.8xlarge" ],
             "ConstraintDescription": "must be a valid EC2 instance type."
         },
+        "AvailabilityZone": {
+            "Description": "Choose Availability Zone with the least price",
+            "Type": "String",
+            "Default": "us-east-1c",
+            "AllowedValues": [ 
+                "us-east-1a", 
+                "us-east-1b", 
+                "us-east-1c",
+                "us-east-1d",
+                "us-east-1e"],
+            "ConstraintDescription": "must be a valid availability zone"
+        },
         "SpotPrice": {
             "Description": "Spot Price can not be higher than 4 times On-Demand Price",
             "Type": "Number",
@@ -20,7 +32,7 @@
         "Indexer": {
             "Type": "AWS::AutoScaling::AutoScalingGroup",
             "Properties": {
-                "AvailabilityZones": [ "us-east-1c" ],
+                "AvailabilityZones": [ { "Ref": "AvailabilityZone" } ],
                 "LaunchConfigurationName": { "Ref": "LaunchConfig" },
                 "MinSize": "1",
                 "MaxSize": "1",
