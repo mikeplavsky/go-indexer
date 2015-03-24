@@ -8,6 +8,12 @@
             "Default": "r3.2xlarge",
             "AllowedValues": [ "r3.2xlarge", "r3.4xlarge", "r3.8xlarge" ],
             "ConstraintDescription": "must be a valid EC2 instance type."
+        },
+        "SpotPrice": {
+            "Description": "Spot price",
+            "Type": "String",
+            "Default": "2.8",
+            "ConstraintDescription": "can not be higher than 4 times On-Demand Price"
         }
     },
 
@@ -57,7 +63,7 @@
                 "SecurityGroups": [ "sg-f8ebb992" ],
                 "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
                 "InstanceType": { "Ref": "InstanceType" },
-                "SpotPrice": "2.8",
+                "SpotPrice": { "Ref": "SpotPrice" },
                 "UserData": {
                     "Fn::Base64": {
                         "Fn::Join": [
