@@ -12,7 +12,7 @@
         "SpotPrice": {
             "Description": "Spot Price can not be higher than 4 times On-Demand Price",
             "Type": "Number",
-            "Default": "2.8"
+            "Default": 2.8
         }
     },
 
