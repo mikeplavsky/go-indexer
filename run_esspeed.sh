@@ -1,6 +1,6 @@
 docker rm -f esspeed
 
-docker run \
+docker run -d \
 -e ES_INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id) \
 -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
 -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \

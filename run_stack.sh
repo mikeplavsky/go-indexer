@@ -9,6 +9,7 @@ docker run -ti \
 ./create_loaders.sh
 
 ./start_stack.sh
+./run_esspeed.sh
 
 ./run_s3.sh
 ./run_rest.sh
