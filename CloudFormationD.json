@@ -58,7 +58,7 @@
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
                 "KeyName": { "Ref": "KeyPair" },
-                "ImageId": "ami-3277565a",
+                "ImageId": "ami-2e536746",
                 "SecurityGroups": [ "sg-f8ebb992" ],
                 "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
                 "InstanceType": { "Ref": "InstanceType" },
