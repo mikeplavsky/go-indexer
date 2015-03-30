@@ -8,6 +8,11 @@
             "Default": "r3.2xlarge",
             "AllowedValues": [ "r3.2xlarge", "r3.4xlarge", "r3.8xlarge" ],
             "ConstraintDescription": "must be a valid EC2 instance type."
+        },
+        "KeyPair" : {
+            "Description" : "EC2 Key Pair for starting instance",
+            "Type" : "AWS::EC2::KeyPair::KeyName",
+            "Default": "ESKeyPair"
         }
     },
 
@@ -52,7 +57,7 @@
         "LaunchConfig": {
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
-                "KeyName": "ESKeyPair",
+                "KeyName": { "Ref": "KeyPair" },
                 "ImageId": "ami-2e536746",
                 "SecurityGroups": [ "sg-f8ebb992" ],
                 "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
