@@ -76,7 +76,12 @@
                                 "\n",
                                 "aws s3 cp s3://logmanagement/go-indexer.zip /tmp/\n",
                                 "unzip /tmp/go-indexer.zip -d /etc/go-indexer/\n",
-                                "cd /etc/go-indexer/ && docker build --no-cache -t go_indexer . && ./run_stack.sh\n"
+                                "cd /etc/go-indexer/\n",
+                                "while ! docker build --no-cache -t go_indexer .\n",
+                                "do\n",
+                                "sleep 1\n",
+                                "done\n",
+                                "./run_stack.sh\n"
                             ]
                         ]
                     }
