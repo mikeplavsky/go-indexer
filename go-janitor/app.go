@@ -109,7 +109,7 @@ func main() {
 	go func() {
 
 		l := len(res.QueueUrl)
-                fmt.Printf("Queues:%v\n",l)
+		fmt.Printf("Queues:%v\n", l)
 
 		for i := 0; ; i++ {
 
@@ -129,6 +129,6 @@ func main() {
 	}
 
 	w.Wait()
-        fmt.Println("\n")
+	fmt.Println("\n")
 
 }

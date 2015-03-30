@@ -3,7 +3,7 @@ ES_QUEUE=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 
 docker run -ti \
 -e ES_QUEUE=$ES_QUEUE \
---rm go_indexer go-send c
+--name=queues go_indexer go-send c
 
 ./create_stack.sh
 ./create_loaders.sh

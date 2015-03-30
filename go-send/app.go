@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/codegangsta/cli"
 
@@ -15,13 +16,24 @@ import (
 
 func createQueue(qn string) {
 
-	sqs := sender.GetSqs()
+	for {
 
-	_, err := sqs.CreateQueue(qn)
+		log.Println("Creating queue:", qn)
 
-	if err != nil {
-		log.Println(err)
+		sqs := sender.GetSqs()
+
+		_, err := sqs.CreateQueue(qn)
+
+		if err != nil {
+
+			log.Println(err)
+			time.Sleep(time.Second * 2)
+
+			continue
+		}
+
 		return
+
 	}
 
 }
