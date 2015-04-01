@@ -44,6 +44,42 @@ func sendJob(job job) {
 	sendJobImpl(job, q{})
 }
 
+func saveJob(j job) {
+
+	const (
+		idx  = "jobs"
+		idxT = "job"
+	)
+
+	c, _ := newConnection()
+	ex, _ := c.IndexExists(idx).Do()
+
+	if !ex {
+
+		fmt.Println("saving", j)
+		_, err := c.CreateIndex(idx).Do()
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	}
+
+	_, err := c.Index().
+		Index(idx).
+		Type(idxT).
+		BodyJson(job{
+		Customer: "BMW",
+		From:     "A",
+		To:       "B"}).
+		Do()
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+}
+
 func sendJobImpl(job job, q queue) error {
 
 	skip := 0
