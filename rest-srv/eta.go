@@ -51,6 +51,7 @@ var nQueues = func() int {
 }
 
 func getEta() (int, string) {
+	return outputJSON(true)
 
 	num := 0
 

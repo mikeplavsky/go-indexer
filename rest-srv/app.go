@@ -8,7 +8,6 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
-	"go-indexer/go-send/sender"
 )
 
 func listCustomers() (int, string) {
@@ -72,7 +71,7 @@ func main() {
 	num := runtime.NumCPU()
 	runtime.GOMAXPROCS(num)
 
-	sender.Init()
+	//sender.Init()
 
 	m := newServer()
 	m.Run()

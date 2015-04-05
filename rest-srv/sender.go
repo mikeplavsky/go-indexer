@@ -6,6 +6,7 @@ import (
 	"log"
 	"strings"
 	"sync"
+	"time"
 
 	"gopkg.in/olivere/elastic.v1"
 )
@@ -38,13 +39,16 @@ func (q) qNum() int {
 	return sender.NQueues
 }
 
-func sendJob(job job) {
+func sendJob(j job) {
 
-	log.Println("Sending", job)
-	sendJobImpl(job, q{})
+	log.Println("Sending", j)
+
+	go saveJob(j)
+	//sendJobImpl(j, q{})
+
 }
 
-func saveJob(j job) {
+func saveJob(j job) error {
 
 	const (
 		idx  = "jobs"
@@ -56,27 +60,44 @@ func saveJob(j job) {
 
 	if !ex {
 
-		fmt.Println("saving", j)
 		_, err := c.CreateIndex(idx).Do()
 
 		if err != nil {
-			fmt.Println(err)
+			return err
 		}
 
+	}
+
+	_, sts := getJob(j)
+
+	var jSts = map[string]interface{}{}
+	json.Unmarshal([]byte(sts), &jSts)
+
+	type savedJob struct {
+		Saved time.Time
+		job
+		Count, Size, Eta interface{}
+	}
+
+	s := savedJob{
+		Saved: time.Now().UTC(),
+		job:   j,
+		Count: jSts["count"],
+		Size:  jSts["size"],
+		Eta:   jSts["eta"],
 	}
 
 	_, err := c.Index().
 		Index(idx).
 		Type(idxT).
-		BodyJson(job{
-		Customer: "BMW",
-		From:     "A",
-		To:       "B"}).
+		BodyJson(s).
 		Do()
 
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
+
+	return nil
 
 }
 
