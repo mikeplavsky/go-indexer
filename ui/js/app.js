@@ -124,7 +124,10 @@ angular.module('myApp', ['cui'])
             cuiLoading(
                 srv.query(job)
                     .then(function (res) {
+
                         $scope.refreshEta();
+                        $interval($scope.refreshJobs, 10000, 1)
+
                     },
                     function (err) {
 			if(Array.isArray(err)){

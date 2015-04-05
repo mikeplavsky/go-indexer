@@ -12,10 +12,10 @@
     </thead>
     <tbody>
         <tr ng-repeat="job in jobsCollection">
-            <td>{{job.Created}}</td>
-            <td>{{job.Customer}}</td>
-            <td>{{job.From}}</td>
-            <td>{{job.To}}</td>
+            <td>{{job.Created | date:'medium'}}</td>
+            <td>{{job.Customer | limitTo: 8}}</td>
+            <td>{{job.From | date}}</td>
+            <td>{{job.To | date}}</td>
             <td>{{job.Count}}</td>
             <td>{{job.Size}}</td>
             <td>{{job.Eta}}</td>
