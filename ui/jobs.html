@@ -1,8 +1,8 @@
 <form name="jobs" class='cui-form-stacked' novalidate>
 
-<table st-table="JobsCollection" class="cui-table">
+<table st-table="jobs" class="cui-table">
     <thead>
-        <th>Started</th>
+        <th st-sort="Created">Started</th>
         <th>Customer</th>
         <th>From</th>
         <th>To</th>
@@ -10,6 +10,17 @@
         <th>Size</th>
         <th>Eta</th>
     </thead>
+    <tbody>
+        <tr ng-repeat="job in jobsCollection">
+            <td>{{job.Created}}</td>
+            <td>{{job.Customer}}</td>
+            <td>{{job.From}}</td>
+            <td>{{job.To}}</td>
+            <td>{{job.Count}}</td>
+            <td>{{job.Size}}</td>
+            <td>{{job.Eta}}</td>
+        </tr>
+    </tbody>
 </table>
 
 </form>

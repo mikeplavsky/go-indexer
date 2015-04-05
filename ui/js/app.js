@@ -11,6 +11,19 @@ angular.module('myApp', ['cui'])
         $scope.eta = {}
         $scope.job.customers = []
 
+        jobsSvc = cuiDataSourceService('api/jobs');
+        
+        $scope.refreshJobs = function(){
+
+            jobsSvc.query()
+            .then(
+                function(jobs){
+                    $scope.jobsCollection = jobs;
+                }
+            );
+        };
+
+        $scope.refreshJobs()
 
         etaSvc = cuiDataSourceService('api/eta');
 
