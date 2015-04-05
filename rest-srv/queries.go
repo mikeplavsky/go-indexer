@@ -126,6 +126,43 @@ var getJobStats = func(j job) (map[string]uint64, error) {
 	return nil, fmt.Errorf("no hits")
 }
 
+func getJobs() (int, string) {
+
+	conn, err := newConnection()
+
+	if err != nil {
+		return showError(err)
+	}
+
+	out, err := conn.Search().
+		Index("jobs").
+		Debug(debug).
+		Pretty(debug).
+		Do()
+
+	if err != nil {
+		return showError(err)
+	}
+
+	if out.Hits == nil {
+		return outputJSON([]interface{}{})
+	}
+
+	res := []map[string]interface{}{}
+
+	for _, h := range out.Hits.Hits {
+
+		j := map[string]interface{}{}
+		json.Unmarshal(*h.Source, &j)
+
+		res = append(res, j)
+
+	}
+
+	return outputJSON(res)
+
+}
+
 var getFiles = func(j job, skip int, take int) (hits *elastic.SearchHits, err error) {
 
 	conn, err := newConnection()

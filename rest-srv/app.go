@@ -58,6 +58,7 @@ func newServer() *martini.ClassicMartini {
 	m.Use(martini.Logger())
 
 	m.Get("/job", binding.Bind(job{}), getJob)
+	m.Get("/jobs", getJobs)
 	m.Get("/eta", getEta)
 	m.Get("/customers", listCustomers)
 	m.Post("/job", binding.Bind(job{}), startJob)

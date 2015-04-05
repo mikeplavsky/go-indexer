@@ -1,5 +1,5 @@
 /*!
- * CUI 2.6.0-rc.1
+ * CUI 2.6.0-rc.2
  *
  * © 2015 Dell Inc.
  * ALL RIGHTS RESERVED.
@@ -14,14 +14,14 @@
     "major": "2",
     "minor": "6",
     "patch": "0",
-    "release": "rc.1",
-    "full": "2.6.0-rc.1",
-    "releaseDate": "1/15/2015"
+    "release": "rc.2",
+    "full": "2.6.0-rc.2",
+    "releaseDate": "3/18/2015"
   };
 
   cui = angular.module('cui', ["cui.controls.alert", "cui.controls.badge", "cui.controls.breadcrumb", "cui.controls.button", "cui.controls.calendar", "cui.controls.checkbox", "cui.controls.collapse", "cui.controls.combobox", "cui.controls.dataGrid", "cui.controls.datePicker", "cui.controls.dropDownButton", "cui.controls.dropDownList", "cui.controls.icon", "cui.controls.masthead", "cui.controls.memo", "cui.controls.menu", "cui.controls.navigationList", "cui.controls.pane", "cui.controls.progressBar", "cui.controls.radio", "cui.controls.richTextEditor", "cui.controls.spinner", "cui.controls.splitButton", "cui.controls.table", "cui.controls.tabset", "cui.controls.textarea", "cui.controls.textbox", "cui.controls.time", "cui.controls.tip", "cui.controls.tooltip", "cui.controls.tree", "cui.controls.uiSelect", "cui.modules.aboutBox", "cui.modules.applicationFrame", "cui.modules.masterDetail", "cui.modules.startScreen", "cui.modules.wizard", "cui.modules.wizard", "cui.services.alertService", "cui.services.dataSource", "cui.services.dialog", "cui.services.loading", "cui.services.modal", "cui.services.modal", "cui.services.modal", "cui.services.modal", "cui.services.position", "cui.services.transition"]);
 
-  angular.module('cui.base', ['cui.templates', 'smartTable.table', 'pascalprecht.translate', 'keyboard', 'dateParser', 'ui.select', 'ngSanitize']).value('baseTemplatePath', '__cui/').config(function($translateProvider) {
+  angular.module('cui.base', ['cui.templates', 'smartTable.table', 'smart-table', 'pascalprecht.translate', 'keyboard', 'dateParser', 'ui.select', 'ngSanitize']).value('baseTemplatePath', '__cui/').config(function($translateProvider) {
     $translateProvider.translations('en', {
       "CUI_LOADING_TEXT": "Loading, please wait...",
       "CUI_DATAGRID_NO_DATA": "No data entries exist",
@@ -589,185 +589,6 @@
 
   /**
     @ngdoc directive
-    @module cui.controls
-    @name calendar
-    @description The Calendar lets users choose a specific date. It is particularly useful for navigation (as in Outlook, for example).
-  
-  > The Calendar is primarily used with the Date Picker.
-  
-    @controlType input
-    @restrict E
-    @param {date|string} ngModel This accepts a javascript `date` object, or a string that can be parsed to a date.
-    
-    @example
-    <h3>Calendar</h3>
-  <example>
-    <file name='index.html'>
-      <cui-calendar ng-model='selectedDate'></cui-calendar>
-      <br><br>
-      <cui-button ng-click='selectedDate = "1/1/14"'>selectedDate = "1/1/14"</cui-button>
-      <cui-button ng-click='setDate()'>selectedDate = "1/2/13"</cui-button>
-      <cui-button ng-click='selectedDate = null'>selectedDate = null</cui-button>
-      <br><br>
-      <span ng-if='selectedDate'>
-        <code>selectedDate: {{selectedDate}}</code> ({{readableDate}})
-      </span>
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function($scope, $filter) {
-          $scope.setDate = function() {
-            $scope.selectedDate = new Date('1/2/13');
-          }
-  
-          $scope.$watch('selectedDate', function(d) {
-            $scope.readableDate = $filter('date')(new Date(d), 'fullDate');
-          });
-        });
-    </file>
-  </example>
-   */
-
-  module = angular.module('cui.controls.calendar', ['cui.base']);
-
-  module.service('cuiCalendarUtils', function() {
-    this.datesAreEqualToMonth = function(d1, d2) {
-      return d1 && d2 && (d1.getYear() === d2.getYear()) && (d1.getMonth() === d2.getMonth());
-    };
-    this.datesAreEqualToDay = function(d1, d2) {
-      return d1 && d2 && (d1.getYear() === d2.getYear()) && (d1.getMonth() === d2.getMonth()) && (d1.getDate() === d2.getDate());
-    };
-    this.generateMonth = function(date, selectedDate) {
-      var d, dateIterator, month, startingDay, today, week, _i, _j;
-      startingDay = (function() {
-        var firstDayOfMonth, month, offset, ret, year;
-        year = date.getFullYear();
-        month = date.getMonth();
-        firstDayOfMonth = new Date(year, month, 1);
-        ret = new Date(firstDayOfMonth);
-        offset = firstDayOfMonth.getDay();
-        if (offset === 0) {
-          offset = 7;
-        }
-        ret.setDate(ret.getDate() - offset);
-        return ret;
-      })();
-      today = new Date();
-      dateIterator = new Date(startingDay);
-      month = [];
-      for (_i = 0; _i <= 5; _i++) {
-        week = [];
-        for (_j = 0; _j <= 6; _j++) {
-          d = new Date(dateIterator);
-          week.push({
-            date: d,
-            isSelected: this.datesAreEqualToDay(d, selectedDate),
-            isInMonth: this.datesAreEqualToMonth(d, date),
-            today: this.datesAreEqualToDay(d, today)
-          });
-          dateIterator.setDate(dateIterator.getDate() + 1);
-        }
-        month.push(week);
-      }
-      return month;
-    };
-    this.nextMonth = function(date) {
-      if (date.getMonth() === 11) {
-        return new Date(date.getFullYear() + 1, 0);
-      } else {
-        return new Date(date.getFullYear(), date.getMonth() + 1);
-      }
-    };
-    this.previousMonth = function(date) {
-      if (date.getMonth() === 0) {
-        return new Date(date.getFullYear() - 1, 11);
-      } else {
-        return new Date(date.getFullYear(), date.getMonth() - 1);
-      }
-    };
-    this.nextYear = function(date) {
-      var d;
-      d = new Date(date);
-      d.setFullYear(d.getFullYear() + 1);
-      return d;
-    };
-    this.previousYear = function(date) {
-      var d;
-      d = new Date(date);
-      d.setFullYear(d.getFullYear() - 1);
-      return d;
-    };
-    return this;
-  });
-
-  module.directive('cuiCalendar', function(baseTemplatePath, cuiCalendarUtils) {
-    return {
-      templateUrl: "" + baseTemplatePath + "calendar.html",
-      restrict: 'EA',
-      require: ['cuiCalendar', '^ngModel'],
-      scope: {
-        dateFilter: '=?',
-        modelCtrl: '=?'
-      },
-      controllerAs: 'calendarCtrl',
-      controller: function($scope) {
-        this.refreshView = function() {
-          return $scope.month = cuiCalendarUtils.generateMonth($scope.monthDate, $scope.viewValueDate);
-        };
-        this.nextMonth = function() {
-          $scope.monthDate = cuiCalendarUtils.nextMonth($scope.monthDate);
-          return this.refreshView();
-        };
-        this.previousMonth = function() {
-          $scope.monthDate = cuiCalendarUtils.previousMonth($scope.monthDate);
-          return this.refreshView();
-        };
-        this.nextYear = function() {
-          $scope.monthDate = cuiCalendarUtils.nextYear($scope.monthDate);
-          return this.refreshView();
-        };
-        this.previousYear = function() {
-          $scope.monthDate = cuiCalendarUtils.previousYear($scope.monthDate);
-          return this.refreshView();
-        };
-        return this;
-      },
-      link: function(scope, element, attrs, _arg) {
-        var calendarCtrl, getViewValueDate, modelCtrl;
-        calendarCtrl = _arg[0], modelCtrl = _arg[1];
-        scope.today = new Date();
-        scope.setDate = function(date) {
-          var currentDate;
-          currentDate = modelCtrl.$viewValue;
-          if (angular.isDate(currentDate)) {
-            date.setHours(currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds(), currentDate.getMilliseconds());
-          }
-          modelCtrl.$setViewValue(date);
-          scope.viewValueDate = getViewValueDate();
-          scope.monthDate = scope.viewValueDate;
-          return calendarCtrl.refreshView();
-        };
-        getViewValueDate = function() {
-          if (modelCtrl != null ? modelCtrl.$viewValue : void 0) {
-            return new Date(modelCtrl != null ? modelCtrl.$viewValue : void 0);
-          } else {
-            return null;
-          }
-        };
-        return modelCtrl.$render = function() {
-          scope.viewValueDate = getViewValueDate();
-          if (scope.viewValueDate || (scope.monthDate == null)) {
-            scope.monthDate = scope.viewValueDate || scope.today;
-          }
-          return calendarCtrl.refreshView();
-        };
-      }
-    };
-  });
-
-
-  /**
-    @ngdoc directive
     @name checkbox
   
     @description Checkboxes let users select one or more options in a set of related options. A single check box lets users toggle an option off and on.
@@ -1239,6 +1060,185 @@
   });
 
 
+  /**
+    @ngdoc directive
+    @module cui.controls
+    @name calendar
+    @description The Calendar lets users choose a specific date. It is particularly useful for navigation (as in Outlook, for example).
+  
+  > The Calendar is primarily used with the Date Picker.
+  
+    @controlType input
+    @restrict E
+    @param {date|string} ngModel This accepts a javascript `date` object, or a string that can be parsed to a date.
+    
+    @example
+    <h3>Calendar</h3>
+  <example>
+    <file name='index.html'>
+      <cui-calendar ng-model='selectedDate'></cui-calendar>
+      <br><br>
+      <cui-button ng-click='selectedDate = "1/1/14"'>selectedDate = "1/1/14"</cui-button>
+      <cui-button ng-click='setDate()'>selectedDate = "1/2/13"</cui-button>
+      <cui-button ng-click='selectedDate = null'>selectedDate = null</cui-button>
+      <br><br>
+      <span ng-if='selectedDate'>
+        <code>selectedDate: {{selectedDate}}</code> ({{readableDate}})
+      </span>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function($scope, $filter) {
+          $scope.setDate = function() {
+            $scope.selectedDate = new Date('1/2/13');
+          }
+  
+          $scope.$watch('selectedDate', function(d) {
+            $scope.readableDate = $filter('date')(new Date(d), 'fullDate');
+          });
+        });
+    </file>
+  </example>
+   */
+
+  module = angular.module('cui.controls.calendar', ['cui.base']);
+
+  module.service('cuiCalendarUtils', function() {
+    this.datesAreEqualToMonth = function(d1, d2) {
+      return d1 && d2 && (d1.getYear() === d2.getYear()) && (d1.getMonth() === d2.getMonth());
+    };
+    this.datesAreEqualToDay = function(d1, d2) {
+      return d1 && d2 && (d1.getYear() === d2.getYear()) && (d1.getMonth() === d2.getMonth()) && (d1.getDate() === d2.getDate());
+    };
+    this.generateMonth = function(date, selectedDate) {
+      var d, dateIterator, month, startingDay, today, week, _i, _j;
+      startingDay = (function() {
+        var firstDayOfMonth, month, offset, ret, year;
+        year = date.getFullYear();
+        month = date.getMonth();
+        firstDayOfMonth = new Date(year, month, 1);
+        ret = new Date(firstDayOfMonth);
+        offset = firstDayOfMonth.getDay();
+        if (offset === 0) {
+          offset = 7;
+        }
+        ret.setDate(ret.getDate() - offset);
+        return ret;
+      })();
+      today = new Date();
+      dateIterator = new Date(startingDay);
+      month = [];
+      for (_i = 0; _i <= 5; _i++) {
+        week = [];
+        for (_j = 0; _j <= 6; _j++) {
+          d = new Date(dateIterator);
+          week.push({
+            date: d,
+            isSelected: this.datesAreEqualToDay(d, selectedDate),
+            isInMonth: this.datesAreEqualToMonth(d, date),
+            today: this.datesAreEqualToDay(d, today)
+          });
+          dateIterator.setDate(dateIterator.getDate() + 1);
+        }
+        month.push(week);
+      }
+      return month;
+    };
+    this.nextMonth = function(date) {
+      if (date.getMonth() === 11) {
+        return new Date(date.getFullYear() + 1, 0);
+      } else {
+        return new Date(date.getFullYear(), date.getMonth() + 1);
+      }
+    };
+    this.previousMonth = function(date) {
+      if (date.getMonth() === 0) {
+        return new Date(date.getFullYear() - 1, 11);
+      } else {
+        return new Date(date.getFullYear(), date.getMonth() - 1);
+      }
+    };
+    this.nextYear = function(date) {
+      var d;
+      d = new Date(date);
+      d.setFullYear(d.getFullYear() + 1);
+      return d;
+    };
+    this.previousYear = function(date) {
+      var d;
+      d = new Date(date);
+      d.setFullYear(d.getFullYear() - 1);
+      return d;
+    };
+    return this;
+  });
+
+  module.directive('cuiCalendar', function(baseTemplatePath, cuiCalendarUtils) {
+    return {
+      templateUrl: "" + baseTemplatePath + "calendar.html",
+      restrict: 'EA',
+      require: ['cuiCalendar', '^ngModel'],
+      scope: {
+        dateFilter: '=?',
+        modelCtrl: '=?'
+      },
+      controllerAs: 'calendarCtrl',
+      controller: function($scope) {
+        this.refreshView = function() {
+          return $scope.month = cuiCalendarUtils.generateMonth($scope.monthDate, $scope.viewValueDate);
+        };
+        this.nextMonth = function() {
+          $scope.monthDate = cuiCalendarUtils.nextMonth($scope.monthDate);
+          return this.refreshView();
+        };
+        this.previousMonth = function() {
+          $scope.monthDate = cuiCalendarUtils.previousMonth($scope.monthDate);
+          return this.refreshView();
+        };
+        this.nextYear = function() {
+          $scope.monthDate = cuiCalendarUtils.nextYear($scope.monthDate);
+          return this.refreshView();
+        };
+        this.previousYear = function() {
+          $scope.monthDate = cuiCalendarUtils.previousYear($scope.monthDate);
+          return this.refreshView();
+        };
+        return this;
+      },
+      link: function(scope, element, attrs, _arg) {
+        var calendarCtrl, getViewValueDate, modelCtrl;
+        calendarCtrl = _arg[0], modelCtrl = _arg[1];
+        scope.today = new Date();
+        scope.setDate = function(date) {
+          var currentDate;
+          currentDate = modelCtrl.$viewValue;
+          if (angular.isDate(currentDate)) {
+            date.setHours(currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds(), currentDate.getMilliseconds());
+          }
+          modelCtrl.$setViewValue(date);
+          scope.viewValueDate = getViewValueDate();
+          scope.monthDate = scope.viewValueDate;
+          return calendarCtrl.refreshView();
+        };
+        getViewValueDate = function() {
+          if (modelCtrl != null ? modelCtrl.$viewValue : void 0) {
+            return new Date(modelCtrl != null ? modelCtrl.$viewValue : void 0);
+          } else {
+            return null;
+          }
+        };
+        return modelCtrl.$render = function() {
+          scope.viewValueDate = getViewValueDate();
+          if (scope.viewValueDate || (scope.monthDate == null)) {
+            scope.monthDate = scope.viewValueDate || scope.today;
+          }
+          return calendarCtrl.refreshView();
+        };
+      }
+    };
+  });
+
+
   /*
   
     Internal directive --
@@ -1336,368 +1336,7 @@
   });
 
 
-  /**
-    @ngdoc directive
-    @name combobox
-  
-    @description A text field with a drop down list containing possible values. The drop down list is filtered based on the text currently entered in the text field.
-  
-    @module cui.controls
-    @src controls/comboBox/comboBox.coffee
-    @controlType input
-    @restrict E
-  
-    @param {string} ngModel - The text in the text field within the combo box.
-  
-    @param {array} items - An array of `item`s containing `label` properties. For example:
-  
-      [
-        {
-          label: 'Item 1'
-        },
-        {
-          label: 'Item 2'
-        },
-        {
-          label: 'Item 3'
-        }
-      ]
-  
-    @param {boolean=} ngDisabled - Set to true to disable the drop down button.
-  
-    @param {string=} placeholder - The placeholder text for the text field.
-    
-    @param {string} name - Required attribute that is used to set aria attributes.
-  
-    @example
-    <h3>Basic combo box</h3>
-  <example name='basicComboBox'>
-    <file name='index.html'>
-      <cui-combobox
-        ng-model='name'
-        items='names'
-        cui-type='primary'
-        placeholder='Enter a CUI dev'>
-      </cui-combobox>
-  
-      Their role: {{getDesc(name) || 'Not a CUI developer'}}.
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function($scope) {
-          $scope.getDesc = function(name) {
-            for(var i = 0; i < $scope.names.length; i++) {
-              var el = $scope.names[i];
-              if(el.label === name) {
-                return el.description;
-              }
-            }
-            return null;
-          }
-          $scope.names = [{
-            label: 'Alexander Harding',
-            description: 'CUI Intern developer'
-          }, {
-            label: 'Nick Radford',
-            description: 'CUI Lead developer'
-          }, {
-            label: 'Anthony Schultz',
-            description: 'CUI Developer'
-          }, {
-            label: 'James Krot',
-            description: 'CUI Developer'
-          }, {
-            label: 'John Mancine',
-            description: 'Lead Architect'
-          }];
-        })
-    </file>
-    <file name='styles.css'>
-      body {
-        height: 200px;
-      }
-    </file>
-  </example>
-  
-    @example
-    <h3>Disabled combo box</h3>
-  <example name='disabledComboBox'>
-    <file name='index.html'>
-      <cui-combobox
-        ng-disabled=true
-        placeholder="I'm disabled!">
-      </cui-combobox>
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function(){});
-    </file>
-  </example>
-  
-    @example
-    <h3>Combo box with external data</h3>
-  <example name='countriesComboBox'>
-    <file name='index.html'>
-      <cui-combobox
-        items='items'
-        ng-disabled='disabled'
-        ng-model='item'
-        placeholder='Choose a country...'>
-      </cui-combobox>
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function($scope, cuiDataSourceService){
-          $scope.items = []
-  
-          countries = cuiDataSourceService('countries.json')
-  
-          countries.all().then(function(data){
-            $scope.items = data
-          }, function(err) {
-            $scope.item = 'No countries found.';
-            $scope.disabled = true;
-          })
-        });
-    </file>
-    <file name='styles.css'>
-      body {
-        height: 250px;
-      }
-    </file>
-    <file name='countries.json'>
-      [{"label":"Andorra"},{"label":"United Arab Emirates"},{"label":"Afghanistan"},{"label":"Antigua and Barbuda"},{"label":"Anguilla"},{"label":"Albania"},{"label":"Armenia"},{"label":"Angola"},{"label":"Antarctica"},{"label":"Argentina"},{"label":"American Samoa"},{"label":"Austria"},{"label":"Australia"},{"label":"Aruba"},{"label":"Åland"},{"label":"Azerbaijan"},{"label":"Bosnia and Herzegovina"},{"label":"Barbados"},{"label":"Bangladesh"},{"label":"Belgium"},{"label":"Burkina Faso"},{"label":"Bulgaria"},{"label":"Bahrain"},{"label":"Burundi"},{"label":"Benin"},{"label":"Saint Barthélemy"},{"label":"Bermuda"},{"label":"Brunei"},{"label":"Bolivia"},{"label":"Bonaire"},{"label":"Brazil"},{"label":"Bahamas"},{"label":"Bhutan"},{"label":"Bouvet Island"},{"label":"Botswana"},{"label":"Belarus"},{"label":"Belize"},{"label":"Canada"},{"label":"Cocos [Keeling] Islands"},{"label":"Democratic Republic of the Congo"},{"label":"Central African Republic"},{"label":"Republic of the Congo"},{"label":"Switzerland"},{"label":"Ivory Coast"},{"label":"Cook Islands"},{"label":"Chile"},{"label":"Cameroon"},{"label":"China"},{"label":"Colombia"},{"label":"Costa Rica"},{"label":"Cuba"},{"label":"Cape Verde"},{"label":"Curacao"},{"label":"Christmas Island"},{"label":"Cyprus"},{"label":"Czechia"},{"label":"Germany"},{"label":"Djibouti"},{"label":"Denmark"},{"label":"Dominica"},{"label":"Dominican Republic"},{"label":"Algeria"},{"label":"Ecuador"},{"label":"Estonia"},{"label":"Egypt"},{"label":"Western Sahara"},{"label":"Eritrea"},{"label":"Spain"},{"label":"Ethiopia"},{"label":"Finland"},{"label":"Fiji"},{"label":"Falkland Islands"},{"label":"Micronesia"},{"label":"Faroe Islands"},{"label":"France"},{"label":"Gabon"},{"label":"United Kingdom"},{"label":"Grenada"},{"label":"Georgia"},{"label":"French Guiana"},{"label":"Guernsey"},{"label":"Ghana"},{"label":"Gibraltar"},{"label":"Greenland"},{"label":"Gambia"},{"label":"Guinea"},{"label":"Guadeloupe"},{"label":"Equatorial Guinea"},{"label":"Greece"},{"label":"South Georgia and the South Sandwich Islands"},{"label":"Guatemala"},{"label":"Guam"},{"label":"Guinea-Bissau"},{"label":"Guyana"},{"label":"Hong Kong"},{"label":"Heard Island and McDonald Islands"},{"label":"Honduras"},{"label":"Croatia"},{"label":"Haiti"},{"label":"Hungary"},{"label":"Indonesia"},{"label":"Ireland"},{"label":"Israel"},{"label":"Isle of Man"},{"label":"India"},{"label":"British Indian Ocean Territory"},{"label":"Iraq"},{"label":"Iran"},{"label":"Iceland"},{"label":"Italy"},{"label":"Jersey"},{"label":"Jamaica"},{"label":"Jordan"},{"label":"Japan"},{"label":"Kenya"},{"label":"Kyrgyzstan"},{"label":"Cambodia"},{"label":"Kiribati"},{"label":"Comoros"},{"label":"Saint Kitts and Nevis"},{"label":"North Korea"},{"label":"South Korea"},{"label":"Kuwait"},{"label":"Cayman Islands"},{"label":"Kazakhstan"},{"label":"Laos"},{"label":"Lebanon"},{"label":"Saint Lucia"},{"label":"Liechtenstein"},{"label":"Sri Lanka"},{"label":"Liberia"},{"label":"Lesotho"},{"label":"Lithuania"},{"label":"Luxembourg"},{"label":"Latvia"},{"label":"Libya"},{"label":"Morocco"},{"label":"Monaco"},{"label":"Moldova"},{"label":"Montenegro"},{"label":"Saint Martin"},{"label":"Madagascar"},{"label":"Marshall Islands"},{"label":"Macedonia"},{"label":"Mali"},{"label":"Myanmar [Burma]"},{"label":"Mongolia"},{"label":"Macao"},{"label":"Northern Mariana Islands"},{"label":"Martinique"},{"label":"Mauritania"},{"label":"Montserrat"},{"label":"Malta"},{"label":"Mauritius"},{"label":"Maldives"},{"label":"Malawi"},{"label":"Mexico"},{"label":"Malaysia"},{"label":"Mozambique"},{"label":"Namibia"},{"label":"New Caledonia"},{"label":"Niger"},{"label":"Norfolk Island"},{"label":"Nigeria"},{"label":"Nicaragua"},{"label":"Netherlands"},{"label":"Norway"},{"label":"Nepal"},{"label":"Nauru"},{"label":"Niue"},{"label":"New Zealand"},{"label":"Oman"},{"label":"Panama"},{"label":"Peru"},{"label":"French Polynesia"},{"label":"Papua New Guinea"},{"label":"Philippines"},{"label":"Pakistan"},{"label":"Poland"},{"label":"Saint Pierre and Miquelon"},{"label":"Pitcairn Islands"},{"label":"Puerto Rico"},{"label":"Palestine"},{"label":"Portugal"},{"label":"Palau"},{"label":"Paraguay"},{"label":"Qatar"},{"label":"Réunion"},{"label":"Romania"},{"label":"Serbia"},{"label":"Russia"},{"label":"Rwanda"},{"label":"Saudi Arabia"},{"label":"Solomon Islands"},{"label":"Seychelles"},{"label":"Sudan"},{"label":"Sweden"},{"label":"Singapore"},{"label":"Saint Helena"},{"label":"Slovenia"},{"label":"Svalbard and Jan Mayen"},{"label":"Slovakia"},{"label":"Sierra Leone"},{"label":"San Marino"},{"label":"Senegal"},{"label":"Somalia"},{"label":"Suriname"},{"label":"South Sudan"},{"label":"São Tomé and Príncipe"},{"label":"El Salvador"},{"label":"Sint Maarten"},{"label":"Syria"},{"label":"Swaziland"},{"label":"Turks and Caicos Islands"},{"label":"Chad"},{"label":"French Southern Territories"},{"label":"Togo"},{"label":"Thailand"},{"label":"Tajikistan"},{"label":"Tokelau"},{"label":"East Timor"},{"label":"Turkmenistan"},{"label":"Tunisia"},{"label":"Tonga"},{"label":"Turkey"},{"label":"Trinidad and Tobago"},{"label":"Tuvalu"},{"label":"Taiwan"},{"label":"Tanzania"},{"label":"Ukraine"},{"label":"Uganda"},{"label":"U.S. Minor Outlying Islands"},{"label":"United States"},{"label":"Uruguay"},{"label":"Uzbekistan"},{"label":"Vatican City"},{"label":"Saint Vincent and the Grenadines"},{"label":"Venezuela"},{"label":"British Virgin Islands"},{"label":"U.S. Virgin Islands"},{"label":"Vietnam"},{"label":"Vanuatu"},{"label":"Wallis and Futuna"},{"label":"Samoa"},{"label":"Kosovo"},{"label":"Yemen"},{"label":"Mayotte"},{"label":"South Africa"},{"label":"Zambia"},{"label":"Zimbabwe"}]
-    </file>
-  </example>
-   */
-
-  module = angular.module('cui.controls.combobox', ['cui.base']);
-
-  (function() {
-    var func;
-    func = function(baseTemplatePath, $filter, $log) {
-      return {
-        templateUrl: "" + baseTemplatePath + "combobox.html",
-        restrict: 'EA',
-        require: '?ngModel',
-        scope: {
-          name: '@',
-          items: '=?',
-          ngModel: '=?',
-          ngDisabled: '='
-        },
-        compile: function(element, attrs) {
-          var group, input, label;
-          input = element.find('input');
-          if (attrs.name != null) {
-            input.attr('name', attrs.name);
-            if (attrs.label != null) {
-              label = "<label id='cui-label-" + attrs.name + "'>" + attrs.label + "</label>";
-              element.prepend(label);
-            } else {
-              group = element.parent();
-              label = group.find('label');
-              label.attr('id', "cui-label-" + attrs.name);
-            }
-          } else {
-            $log.cuiError({
-              cuiErrorType: 'name',
-              cuiErrorCtrl: 'cui-combobox',
-              cuiErrorElIdentity: 'UNKNOWN'
-            });
-          }
-          if (attrs.placeholder != null) {
-            input.attr('placeholder', attrs.placeholder);
-          }
-          return function(scope, iElement, iAttrs, ngModelCtrl) {
-            var filterItems, focusField, menu, scrollIntoView;
-            if (iAttrs.ngModel == null) {
-              $log.cuiError({
-                cuiErrorType: 'ngmodel',
-                cuiErrorCtrl: 'cui-combobox',
-                cuiErrorElIdentity: iAttrs.name || iAttrs.id || 'UNKNOWN'
-              });
-              return;
-            }
-            if (scope.items == null) {
-              scope.items = [];
-            }
-            scope.currentIndex = scope.selectedIndex || 0;
-            scope.$watch('items', function(val) {
-              if (val.length > 0) {
-                return scope.selectedItems = scope.items;
-              } else {
-                return scope.selectedItems = [
-                  {
-                    label: 'No results found.'
-                  }
-                ];
-              }
-            });
-            scrollIntoView = function() {
-              var idx, scrollingElement;
-              if (scope.currentIndex === -1) {
-                idx = 0;
-              } else {
-                idx = scope.currentIndex;
-              }
-              element = iElement[0].querySelectorAll('.cui-menu-item')[idx];
-              scrollingElement = iElement[0].querySelector('.cui-menu');
-              if (element.offsetTop <= scrollingElement.scrollTop) {
-                scrollingElement.scrollTop = element.offsetTop;
-              }
-              if (element.offsetTop + element.offsetHeight >= scrollingElement.scrollTop + scrollingElement.offsetHeight) {
-                return scrollingElement.scrollTop = element.offsetTop + element.offsetHeight - scrollingElement.offsetHeight;
-              }
-            };
-            filterItems = function(inputValue) {
-              scope.selectedItems = $filter('filter')(scope.items, inputValue);
-              scope.currentIndex = -1;
-              if (scope.selectedItems.length === 0) {
-                return scope.closeMenu();
-              }
-            };
-            scope.select = function(index) {
-              var inputValue, k, originalIndex, v, _ref, _ref1;
-              if (index >= 0) {
-                _ref = scope.items;
-                for (k in _ref) {
-                  v = _ref[k];
-                  if (v.label === scope.selectedItems[index].label) {
-                    originalIndex = k - 0;
-                    scope.selectedIndex = originalIndex;
-                    scope.currentIndex = originalIndex;
-                  }
-                }
-                ngModelCtrl.$setViewValue(scope.items[originalIndex].label);
-              } else {
-                inputValue = iElement.find('input').val();
-                _ref1 = scope.items;
-                for (k in _ref1) {
-                  v = _ref1[k];
-                  if (v.label === inputValue) {
-                    originalIndex = k - 0;
-                  }
-                }
-                if (originalIndex) {
-                  scope.selectedIndex = originalIndex;
-                  scope.currentIndex = originalIndex;
-                  ngModelCtrl.$setViewValue(scope.items[originalIndex].label);
-                } else {
-                  ngModelCtrl.$setViewValue(inputValue);
-                }
-              }
-              return scope.closeMenu();
-            };
-            scope.toggleMenu = function(event) {
-              scope.$broadcast('cui:toggle:');
-              scrollIntoView();
-              if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-              return focusField();
-            };
-            scope.openMenu = function(event) {
-              scope.$broadcast('cui:open:');
-              scrollIntoView();
-              if (event) {
-                event.preventDefault();
-                return event.stopPropagation();
-              }
-            };
-            scope.closeMenu = function() {
-              scope.selectedItems = scope.items;
-              return scope.$broadcast('cui:close:');
-            };
-            focusField = function() {
-              return iElement.find('input')[0].focus();
-            };
-            menu = iElement[0].querySelector('.cui-menu');
-            ngModelCtrl.$formatters.push(function(inputValue) {
-              if (inputValue && !angular.element(menu).hasClass('cui-menu-showing')) {
-                scope.openMenu();
-              }
-              scope.selectedIndex = -1;
-              filterItems(inputValue);
-              if (ngModelCtrl.$dirty) {
-                ngModelCtrl.$setViewValue(inputValue);
-              }
-              return inputValue;
-            });
-            ngModelCtrl.$parsers.unshift(function(inputValue) {
-              var k, v, _ref;
-              if (scope.currentIndex >= 0) {
-                _ref = scope.items;
-                for (k in _ref) {
-                  v = _ref[k];
-                  if (v.label === inputValue) {
-                    scope.selectedIndex = k - 0;
-                    scope.currentIndex = k - 0;
-                  }
-                }
-              }
-              return inputValue;
-            });
-            return iElement.bind('keydown keypress', function(event) {
-              if (event.altKey && event.which === 40) {
-                scope.openMenu();
-                return;
-              }
-              if (event.altKey && event.which === 38) {
-                scope.closeMenu();
-                return;
-              }
-              if (scope.selectedItems.length > 0) {
-                switch (event.which) {
-                  case 40:
-                    scope.$apply(function() {
-                      if (scope.currentIndex < scope.selectedItems.length - 1) {
-                        scope.currentIndex++;
-                        return scrollIntoView();
-                      }
-                    });
-                    return event.preventDefault();
-                  case 38:
-                    scope.$apply(function() {
-                      if (scope.currentIndex > 0) {
-                        scope.currentIndex--;
-                        return scrollIntoView();
-                      }
-                    });
-                    return event.preventDefault();
-                  case 34:
-                  case 35:
-                    scope.$apply(function() {
-                      scope.currentIndex = scope.selectedItems.length - 1;
-                      return scrollIntoView();
-                    });
-                    return event.preventDefault();
-                  case 33:
-                  case 36:
-                    scope.$apply(function() {
-                      scope.currentIndex = 0;
-                      return scrollIntoView();
-                    });
-                    return event.preventDefault();
-                  case 13:
-                    scope.$apply(function() {
-                      return scope.select(scope.currentIndex);
-                    });
-                    return event.preventDefault();
-                }
-              }
-            });
-          };
-        }
-      };
-    };
-    module.directive('cuiCombobox', func);
-    return module.directive('cuiComboBox', func);
-  })();
-
-
-  /**
+  /*
     @ngdoc directive
     @module cui.controls
     @name dataGrid
@@ -2136,6 +1775,361 @@
       }
     };
   });
+
+
+  /**
+    @ngdoc directive
+    @name combobox
+  
+    @description A text field with a drop down list containing possible values. The drop down list is filtered based on the text currently entered in the text field.
+  
+    @module cui.controls
+    @src controls/comboBox/comboBox.coffee
+    @controlType input
+    @restrict E
+  
+    @param {string} ngModel - The text in the text field within the combo box.
+  
+    @param {array} items - An array of `item`s containing `label` properties. For example:
+  
+      [
+        {
+          label: 'Item 1'
+        },
+        {
+          label: 'Item 2'
+        },
+        {
+          label: 'Item 3'
+        }
+      ]
+  
+    @param {boolean=} ngDisabled - Set to true to disable the drop down button.
+  
+    @param {string=} placeholder - The placeholder text for the text field.
+    
+    @param {string} name - Required attribute that is used to set aria attributes.
+  
+    @example
+    <h3>Basic combo box</h3>
+  <example name='basicComboBox'>
+    <file name='index.html'>
+      <cui-combobox
+        ng-model='name'
+        items='names'
+        cui-type='primary'
+        placeholder='Enter a CUI dev'>
+      </cui-combobox>
+  
+      Their role: {{getDesc(name) || 'Not a CUI developer'}}.
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function($scope) {
+          $scope.getDesc = function(name) {
+            for(var i = 0; i < $scope.names.length; i++) {
+              var el = $scope.names[i];
+              if(el.label === name) {
+                return el.description;
+              }
+            }
+            return null;
+          }
+          $scope.names = [{
+            label: 'Alexander Harding',
+            description: 'CUI Developer'
+          }, {
+            label: 'Anthony Schultz',
+            description: 'CUI Developer'
+          }, {
+            label: 'John Mancine',
+            description: 'Lead Architect'
+          }];
+        })
+    </file>
+    <file name='styles.css'>
+      body {
+        height: 200px;
+      }
+    </file>
+  </example>
+  
+    @example
+    <h3>Disabled combo box</h3>
+  <example name='disabledComboBox'>
+    <file name='index.html'>
+      <cui-combobox
+        ng-disabled=true
+        placeholder="I'm disabled!">
+      </cui-combobox>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function(){});
+    </file>
+  </example>
+  
+    @example
+    <h3>Combo box with external data</h3>
+  <example name='countriesComboBox'>
+    <file name='index.html'>
+      <cui-combobox
+        items='items'
+        ng-disabled='disabled'
+        ng-model='item'
+        placeholder='Choose a country...'>
+      </cui-combobox>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function($scope, cuiDataSourceService){
+          $scope.items = []
+  
+          countries = cuiDataSourceService('countries.json')
+  
+          countries.all().then(function(data){
+            $scope.items = data
+          }, function(err) {
+            $scope.item = 'No countries found.';
+            $scope.disabled = true;
+          })
+        });
+    </file>
+    <file name='styles.css'>
+      body {
+        height: 250px;
+      }
+    </file>
+    <file name='countries.json'>
+      [{"label":"Andorra"},{"label":"United Arab Emirates"},{"label":"Afghanistan"},{"label":"Antigua and Barbuda"},{"label":"Anguilla"},{"label":"Albania"},{"label":"Armenia"},{"label":"Angola"},{"label":"Antarctica"},{"label":"Argentina"},{"label":"American Samoa"},{"label":"Austria"},{"label":"Australia"},{"label":"Aruba"},{"label":"Åland"},{"label":"Azerbaijan"},{"label":"Bosnia and Herzegovina"},{"label":"Barbados"},{"label":"Bangladesh"},{"label":"Belgium"},{"label":"Burkina Faso"},{"label":"Bulgaria"},{"label":"Bahrain"},{"label":"Burundi"},{"label":"Benin"},{"label":"Saint Barthélemy"},{"label":"Bermuda"},{"label":"Brunei"},{"label":"Bolivia"},{"label":"Bonaire"},{"label":"Brazil"},{"label":"Bahamas"},{"label":"Bhutan"},{"label":"Bouvet Island"},{"label":"Botswana"},{"label":"Belarus"},{"label":"Belize"},{"label":"Canada"},{"label":"Cocos [Keeling] Islands"},{"label":"Democratic Republic of the Congo"},{"label":"Central African Republic"},{"label":"Republic of the Congo"},{"label":"Switzerland"},{"label":"Ivory Coast"},{"label":"Cook Islands"},{"label":"Chile"},{"label":"Cameroon"},{"label":"China"},{"label":"Colombia"},{"label":"Costa Rica"},{"label":"Cuba"},{"label":"Cape Verde"},{"label":"Curacao"},{"label":"Christmas Island"},{"label":"Cyprus"},{"label":"Czechia"},{"label":"Germany"},{"label":"Djibouti"},{"label":"Denmark"},{"label":"Dominica"},{"label":"Dominican Republic"},{"label":"Algeria"},{"label":"Ecuador"},{"label":"Estonia"},{"label":"Egypt"},{"label":"Western Sahara"},{"label":"Eritrea"},{"label":"Spain"},{"label":"Ethiopia"},{"label":"Finland"},{"label":"Fiji"},{"label":"Falkland Islands"},{"label":"Micronesia"},{"label":"Faroe Islands"},{"label":"France"},{"label":"Gabon"},{"label":"United Kingdom"},{"label":"Grenada"},{"label":"Georgia"},{"label":"French Guiana"},{"label":"Guernsey"},{"label":"Ghana"},{"label":"Gibraltar"},{"label":"Greenland"},{"label":"Gambia"},{"label":"Guinea"},{"label":"Guadeloupe"},{"label":"Equatorial Guinea"},{"label":"Greece"},{"label":"South Georgia and the South Sandwich Islands"},{"label":"Guatemala"},{"label":"Guam"},{"label":"Guinea-Bissau"},{"label":"Guyana"},{"label":"Hong Kong"},{"label":"Heard Island and McDonald Islands"},{"label":"Honduras"},{"label":"Croatia"},{"label":"Haiti"},{"label":"Hungary"},{"label":"Indonesia"},{"label":"Ireland"},{"label":"Israel"},{"label":"Isle of Man"},{"label":"India"},{"label":"British Indian Ocean Territory"},{"label":"Iraq"},{"label":"Iran"},{"label":"Iceland"},{"label":"Italy"},{"label":"Jersey"},{"label":"Jamaica"},{"label":"Jordan"},{"label":"Japan"},{"label":"Kenya"},{"label":"Kyrgyzstan"},{"label":"Cambodia"},{"label":"Kiribati"},{"label":"Comoros"},{"label":"Saint Kitts and Nevis"},{"label":"North Korea"},{"label":"South Korea"},{"label":"Kuwait"},{"label":"Cayman Islands"},{"label":"Kazakhstan"},{"label":"Laos"},{"label":"Lebanon"},{"label":"Saint Lucia"},{"label":"Liechtenstein"},{"label":"Sri Lanka"},{"label":"Liberia"},{"label":"Lesotho"},{"label":"Lithuania"},{"label":"Luxembourg"},{"label":"Latvia"},{"label":"Libya"},{"label":"Morocco"},{"label":"Monaco"},{"label":"Moldova"},{"label":"Montenegro"},{"label":"Saint Martin"},{"label":"Madagascar"},{"label":"Marshall Islands"},{"label":"Macedonia"},{"label":"Mali"},{"label":"Myanmar [Burma]"},{"label":"Mongolia"},{"label":"Macao"},{"label":"Northern Mariana Islands"},{"label":"Martinique"},{"label":"Mauritania"},{"label":"Montserrat"},{"label":"Malta"},{"label":"Mauritius"},{"label":"Maldives"},{"label":"Malawi"},{"label":"Mexico"},{"label":"Malaysia"},{"label":"Mozambique"},{"label":"Namibia"},{"label":"New Caledonia"},{"label":"Niger"},{"label":"Norfolk Island"},{"label":"Nigeria"},{"label":"Nicaragua"},{"label":"Netherlands"},{"label":"Norway"},{"label":"Nepal"},{"label":"Nauru"},{"label":"Niue"},{"label":"New Zealand"},{"label":"Oman"},{"label":"Panama"},{"label":"Peru"},{"label":"French Polynesia"},{"label":"Papua New Guinea"},{"label":"Philippines"},{"label":"Pakistan"},{"label":"Poland"},{"label":"Saint Pierre and Miquelon"},{"label":"Pitcairn Islands"},{"label":"Puerto Rico"},{"label":"Palestine"},{"label":"Portugal"},{"label":"Palau"},{"label":"Paraguay"},{"label":"Qatar"},{"label":"Réunion"},{"label":"Romania"},{"label":"Serbia"},{"label":"Russia"},{"label":"Rwanda"},{"label":"Saudi Arabia"},{"label":"Solomon Islands"},{"label":"Seychelles"},{"label":"Sudan"},{"label":"Sweden"},{"label":"Singapore"},{"label":"Saint Helena"},{"label":"Slovenia"},{"label":"Svalbard and Jan Mayen"},{"label":"Slovakia"},{"label":"Sierra Leone"},{"label":"San Marino"},{"label":"Senegal"},{"label":"Somalia"},{"label":"Suriname"},{"label":"South Sudan"},{"label":"São Tomé and Príncipe"},{"label":"El Salvador"},{"label":"Sint Maarten"},{"label":"Syria"},{"label":"Swaziland"},{"label":"Turks and Caicos Islands"},{"label":"Chad"},{"label":"French Southern Territories"},{"label":"Togo"},{"label":"Thailand"},{"label":"Tajikistan"},{"label":"Tokelau"},{"label":"East Timor"},{"label":"Turkmenistan"},{"label":"Tunisia"},{"label":"Tonga"},{"label":"Turkey"},{"label":"Trinidad and Tobago"},{"label":"Tuvalu"},{"label":"Taiwan"},{"label":"Tanzania"},{"label":"Ukraine"},{"label":"Uganda"},{"label":"U.S. Minor Outlying Islands"},{"label":"United States"},{"label":"Uruguay"},{"label":"Uzbekistan"},{"label":"Vatican City"},{"label":"Saint Vincent and the Grenadines"},{"label":"Venezuela"},{"label":"British Virgin Islands"},{"label":"U.S. Virgin Islands"},{"label":"Vietnam"},{"label":"Vanuatu"},{"label":"Wallis and Futuna"},{"label":"Samoa"},{"label":"Kosovo"},{"label":"Yemen"},{"label":"Mayotte"},{"label":"South Africa"},{"label":"Zambia"},{"label":"Zimbabwe"}]
+    </file>
+  </example>
+   */
+
+  module = angular.module('cui.controls.combobox', ['cui.base']);
+
+  (function() {
+    var func;
+    func = function(baseTemplatePath, $filter, $log) {
+      return {
+        templateUrl: "" + baseTemplatePath + "combobox.html",
+        restrict: 'EA',
+        require: '?ngModel',
+        scope: {
+          name: '@',
+          items: '=?',
+          ngModel: '=?',
+          ngDisabled: '='
+        },
+        compile: function(element, attrs) {
+          var group, input, label;
+          input = element.find('input');
+          if (attrs.name != null) {
+            input.attr('name', attrs.name);
+            if (attrs.label != null) {
+              label = "<label id='cui-label-" + attrs.name + "'>" + attrs.label + "</label>";
+              element.prepend(label);
+            } else {
+              group = element.parent();
+              label = group.find('label');
+              label.attr('id', "cui-label-" + attrs.name);
+            }
+          } else {
+            $log.cuiError({
+              cuiErrorType: 'name',
+              cuiErrorCtrl: 'cui-combobox',
+              cuiErrorElIdentity: 'UNKNOWN'
+            });
+          }
+          if (attrs.placeholder != null) {
+            input.attr('placeholder', attrs.placeholder);
+          }
+          return function(scope, iElement, iAttrs, ngModelCtrl) {
+            var filterItems, focusField, menu, scrollIntoView;
+            if (iAttrs.ngModel == null) {
+              $log.cuiError({
+                cuiErrorType: 'ngmodel',
+                cuiErrorCtrl: 'cui-combobox',
+                cuiErrorElIdentity: iAttrs.name || iAttrs.id || 'UNKNOWN'
+              });
+              return;
+            }
+            if (scope.items == null) {
+              scope.items = [];
+            }
+            scope.currentIndex = scope.selectedIndex || 0;
+            scope.$watch('items', function(val) {
+              if (val.length > 0) {
+                return scope.selectedItems = scope.items;
+              } else {
+                return scope.selectedItems = [
+                  {
+                    label: 'No results found.'
+                  }
+                ];
+              }
+            });
+            scrollIntoView = function() {
+              var idx, scrollingElement;
+              if (scope.currentIndex === -1) {
+                idx = 0;
+              } else {
+                idx = scope.currentIndex;
+              }
+              element = iElement[0].querySelectorAll('.cui-menu-item')[idx];
+              scrollingElement = iElement[0].querySelector('.cui-menu');
+              if (element.offsetTop <= scrollingElement.scrollTop) {
+                scrollingElement.scrollTop = element.offsetTop;
+              }
+              if (element.offsetTop + element.offsetHeight >= scrollingElement.scrollTop + scrollingElement.offsetHeight) {
+                return scrollingElement.scrollTop = element.offsetTop + element.offsetHeight - scrollingElement.offsetHeight;
+              }
+            };
+            filterItems = function(inputValue) {
+              scope.selectedItems = $filter('filter')(scope.items, inputValue);
+              scope.currentIndex = -1;
+              if (scope.selectedItems.length === 0) {
+                return scope.closeMenu();
+              }
+            };
+            scope.select = function(index) {
+              var inputValue, k, originalIndex, v, _ref, _ref1;
+              if (index >= 0) {
+                _ref = scope.items;
+                for (k in _ref) {
+                  v = _ref[k];
+                  if (v.label === scope.selectedItems[index].label) {
+                    originalIndex = k - 0;
+                    scope.selectedIndex = originalIndex;
+                    scope.currentIndex = originalIndex;
+                  }
+                }
+                ngModelCtrl.$setViewValue(scope.items[originalIndex].label);
+              } else {
+                inputValue = iElement.find('input').val();
+                _ref1 = scope.items;
+                for (k in _ref1) {
+                  v = _ref1[k];
+                  if (v.label === inputValue) {
+                    originalIndex = k - 0;
+                  }
+                }
+                if (originalIndex) {
+                  scope.selectedIndex = originalIndex;
+                  scope.currentIndex = originalIndex;
+                  ngModelCtrl.$setViewValue(scope.items[originalIndex].label);
+                } else {
+                  ngModelCtrl.$setViewValue(inputValue);
+                }
+              }
+              return scope.closeMenu();
+            };
+            scope.toggleMenu = function(event) {
+              scope.$broadcast('cui:toggle:');
+              scrollIntoView();
+              if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              return focusField();
+            };
+            scope.openMenu = function(event) {
+              scope.$broadcast('cui:open:');
+              scrollIntoView();
+              if (event) {
+                event.preventDefault();
+                return event.stopPropagation();
+              }
+            };
+            scope.closeMenu = function() {
+              scope.selectedItems = scope.items;
+              return scope.$broadcast('cui:close:');
+            };
+            focusField = function() {
+              return iElement.find('input')[0].focus();
+            };
+            menu = iElement[0].querySelector('.cui-menu');
+            ngModelCtrl.$formatters.push(function(inputValue) {
+              if (inputValue && !angular.element(menu).hasClass('cui-menu-showing')) {
+                scope.openMenu();
+              }
+              scope.selectedIndex = -1;
+              filterItems(inputValue);
+              if (ngModelCtrl.$dirty) {
+                ngModelCtrl.$setViewValue(inputValue);
+              }
+              return inputValue;
+            });
+            ngModelCtrl.$parsers.unshift(function(inputValue) {
+              var k, v, _ref;
+              if (scope.currentIndex >= 0) {
+                _ref = scope.items;
+                for (k in _ref) {
+                  v = _ref[k];
+                  if (v.label === inputValue) {
+                    scope.selectedIndex = k - 0;
+                    scope.currentIndex = k - 0;
+                  }
+                }
+              }
+              return inputValue;
+            });
+            return iElement.bind('keydown keypress', function(event) {
+              if (event.altKey && event.which === 40) {
+                scope.openMenu();
+                return;
+              }
+              if (event.altKey && event.which === 38) {
+                scope.closeMenu();
+                return;
+              }
+              if (scope.selectedItems.length > 0) {
+                switch (event.which) {
+                  case 40:
+                    scope.$apply(function() {
+                      if (scope.currentIndex < scope.selectedItems.length - 1) {
+                        scope.currentIndex++;
+                        return scrollIntoView();
+                      }
+                    });
+                    return event.preventDefault();
+                  case 38:
+                    scope.$apply(function() {
+                      if (scope.currentIndex > 0) {
+                        scope.currentIndex--;
+                        return scrollIntoView();
+                      }
+                    });
+                    return event.preventDefault();
+                  case 34:
+                  case 35:
+                    scope.$apply(function() {
+                      scope.currentIndex = scope.selectedItems.length - 1;
+                      return scrollIntoView();
+                    });
+                    return event.preventDefault();
+                  case 33:
+                  case 36:
+                    scope.$apply(function() {
+                      scope.currentIndex = 0;
+                      return scrollIntoView();
+                    });
+                    return event.preventDefault();
+                  case 13:
+                    scope.$apply(function() {
+                      return scope.select(scope.currentIndex);
+                    });
+                    return event.preventDefault();
+                }
+              }
+            });
+          };
+        }
+      };
+    };
+    module.directive('cuiCombobox', func);
+    return module.directive('cuiComboBox', func);
+  })();
 
 
   /**
@@ -3086,7 +3080,7 @@
   
   <example name='masthead'>
     <file name='index.html'>
-      <cui-masthead application-name='Active System Manager' application-subname='Admin panel' show-controls=true>
+      <cui-masthead application-name='Active System Manager' application-subname='Admin panel' show-controls=true application-logo="http://plnkr.co/img/plunker.png">
         <!-- Masthead controls -->
         <cui-drop-down-button label='Drop down button' icon="dashboard">
           <ul cui-keyboard-menu>
@@ -4939,92 +4933,6 @@
 
   /**
     @ngdoc directive
-    @name spinner
-    
-    @description The Spinner loads a loading spinner based on size and color specifications.
-    
-    @module cui.controls
-    @src controls/spinner/spinner.coffee
-    @controlType presentational
-    
-    @restrict E
-    
-    @param {string=} size CSS property for height and width. Can be in terms of `px`, `%`, `em`, etc.
-    @param {string=} color Sets the color for the spinner. Valid colors:
-  
-    ** `'blue'`
-    ** `'white'`
-    ** `'black'`
-    
-    @example
-    <h3>Inline Spinner</h3>
-  <example name='inlineSpinner'>
-    <file name='index.html'>
-      <h2>
-        ♪
-        <em>Like a record, baby, right round round round</em>
-        ♫
-        <cui-spinner></cui-spinner>
-      </h2>
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function() {})
-    </file>
-  </example>
-  
-    @example
-    <h3>Other spinners on different backgrounds</h3>
-  <example name='otherSpinners'>
-    <file name='index.html'>
-      <div class='blue'>
-        <cui-spinner size='32px' color='white'></cui-spinner>
-      </div>
-      <cui-spinner size='32px' color='black'></cui-spinner>
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function() {})
-    </file>
-    <file name='styles.css'>
-      .blue {
-        background-color: #0085c3;
-        padding: 25px;
-        margin-right: 25px;
-        display: inline-block;
-      }
-    </file>
-  </example>
-   */
-
-  module = angular.module('cui.controls.spinner', ['cui.base']);
-
-  module.directive('cuiSpinner', function() {
-    return {
-      restrict: 'EA',
-      scope: {
-        size: '@',
-        color: '@'
-      },
-      link: function(scope, element) {
-        if (scope.color == null) {
-          scope.color = 'blue';
-        }
-        element.addClass('cui-spinner');
-        element.addClass("cui-spinner-color-" + scope.color);
-        if (scope.size != null) {
-          return element.css({
-            height: scope.size,
-            width: scope.size
-          });
-        }
-      }
-    };
-  });
-
-
-  /**
-    @ngdoc directive
     @name splitButton
   
     @description The Split button provides a combination of a Button and a Menu. Because the Drop down button
@@ -5204,50 +5112,176 @@
 
   /**
     @ngdoc directive
+    @name spinner
+    
+    @description The Spinner loads a loading spinner based on size and color specifications.
+    
+    @module cui.controls
+    @src controls/spinner/spinner.coffee
+    @controlType presentational
+    
+    @restrict E
+    
+    @param {string=} size CSS property for height and width. Can be in terms of `px`, `%`, `em`, etc.
+    @param {string=} color Sets the color for the spinner. Valid colors:
+  
+    ** `'blue'`
+    ** `'white'`
+    ** `'black'`
+    
+    @example
+    <h3>Inline Spinner</h3>
+  <example name='inlineSpinner'>
+    <file name='index.html'>
+      <h2>
+        ♪
+        <em>Like a record, baby, right round round round</em>
+        ♫
+        <cui-spinner></cui-spinner>
+      </h2>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function() {})
+    </file>
+  </example>
+  
+    @example
+    <h3>Other spinners on different backgrounds</h3>
+  <example name='otherSpinners'>
+    <file name='index.html'>
+      <div class='blue'>
+        <cui-spinner size='32px' color='white'></cui-spinner>
+      </div>
+      <cui-spinner size='32px' color='black'></cui-spinner>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function() {})
+    </file>
+    <file name='styles.css'>
+      .blue {
+        background-color: #0085c3;
+        padding: 25px;
+        margin-right: 25px;
+        display: inline-block;
+      }
+    </file>
+  </example>
+   */
+
+  module = angular.module('cui.controls.spinner', ['cui.base']);
+
+  module.directive('cuiSpinner', function() {
+    return {
+      restrict: 'EA',
+      scope: {
+        size: '@',
+        color: '@'
+      },
+      link: function(scope, element) {
+        if (scope.color == null) {
+          scope.color = 'blue';
+        }
+        element.addClass('cui-spinner');
+        element.addClass("cui-spinner-color-" + scope.color);
+        if (scope.size != null) {
+          return element.css({
+            height: scope.size,
+            width: scope.size
+          });
+        }
+      }
+    };
+  });
+
+
+  /**
+    @ngdoc directive
     @name table
   
-    @description Tables display much of the content in enterprise applications. For more information, please see the documentation of Smart-Table, the angular module that we wrap.
-    
+    @new true
+  
+    @description Tables display much of the content in enterprise applications. This new iteration of CUI's tabular data handling now supports local and remote data OOTB.
+  
+  We have examples of sorting, filtering, pagination, infinite scrolling, fixed headers, and row expanding/collapsing below.
+  
+  For more information, please see the documentation of [Smart-Table](http://lorenzofox3.github.io/smart-table-website/), the angular module that we expose.
+  
+  Also check out the Master Detail component that uses Table.
+  
     @module cui.controls
     @src controls/table/table.coffee
     @controlType tabular
   
-    @restrict E
+    @restrict Other
   
-    @param {object} rows - The actual data placed on the table. See the [Smart-Table documentation](http://lorenzofox3.github.io/smart-table-website/) for more information.
-    @param {object=} columns - The configuration/settings for each of the columns. See the [Smart-Table documentation](http://lorenzofox3.github.io/smart-table-website/) for more information.
-    @param {object=} config - The global settings for the table. See the [Smart-Table documentation](http://lorenzofox3.github.io/smart-table-website/) for more information.
-    
     @example
-    <h3>Static table</h3>
+    <h3>Static table (with preset data)</h3>
   <example name='table'>
     <file name='index.html'>
-      <cui-table rows="rowCollection" columns="columnCollection"></cui-table>
+      <table st-table="rowCollection" class="cui-table">
+        <thead>
+        <tr>
+          <th>first name</th>
+          <th>last name</th>
+          <th>birth date</th>
+          <th>balance</th>
+          <th>email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in rowCollection">
+          <td>{{row.firstName}}</td>
+          <td>{{row.lastName}}</td>
+          <td>{{row.birthDate | date:'mediumDate'}}</td>
+          <td>{{row.balance}}</td>
+          <td>{{row.email}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui']).controller('AppCtrl', function($scope) {
+        $scope.rowCollection = [
+          {firstName: 'Laurent', lastName: 'Renard', birthDate: new Date('1987-05-21'), balance: 102, email: 'whatever@gmail.com'},
+          {firstName: 'Blandine', lastName: 'Faivre', birthDate: new Date('1987-04-25'), balance: -2323.22, email: 'oufblandou@gmail.com'},
+          {firstName: 'Francoise', lastName: 'Frere', birthDate: new Date('1955-08-27'), balance: 42343, email: 'raymondef@gmail.com'}
+        ];
+      });
+    </file>
+  </example>
+  
+    @example
+    <h3>Static table (with remote data)</h3>
+  <example name='table'>
+    <file name='index.html'>
+      <table st-table="displayedCollection" st-safe-src="rowCollection" class="cui-table cui-table-striped" style='width: 100%'>
+        <thead>
+          <tr>
+            <th></th>
+            <th st-sort='mars'>Mars</th>
+            <th st-sort='earth'>Earth</th>
+            <th st-sort='ratio'>Ratio (Mars/Earth)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in displayedCollection">
+            <td><strong>{{row.prop.name}}</strong> <span ng-if='row.prop.unit'>({{row.prop.unit}})</span></td>
+            <td>{{row.mars}}</td>
+            <td>{{row.earth}}</td>
+            <td>{{row.ratio}}</td>
+          </tr>
+        </tbody>
+      </table>
     </file>
     <file name='app.js'>
       angular.module('app', ['cui'])
-        .controller('AppCtrl', function($scope, cuiDataSourceService) {
-          // Data from http://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html
-          $scope.columnCollection = [{
-            label: '',
-            cellTemplateUrl: 'custom.html'
-          }, {
-            label: 'Mars',
-            map: 'mars'
-          }, {
-            label: 'Earth',
-            map: 'earth'
-          }, {
-            label: 'Ratio (Mars/Earth)',
-            map: 'ratio'
-          }]
-          cuiDataSourceService('data.json').all().then(function(data) {
-            $scope.rowCollection = data
-          });
-        })
-    </file>
-    <file name='custom.html'>
-      <strong>{{dataRow.prop.name}}</strong> <span ng-if='dataRow.prop.unit'>({{dataRow.prop.unit}})</span>
+        .controller('AppCtrl', function($scope, $http, cuiLoading) {
+          cuiLoading($http.get('data.json').then(function(response) {
+            $scope.rowCollection = response.data;
+          }));
+      });
     </file>
     <file name='data.json'>
       [{"prop":{"name":"Mass","unit":"10^24 kg"},"mars":0.64174,"earth":5.9726,"ratio":0.107},{"prop":{"name":"Volume","unit":"10^10 km^3"},"mars":16.318,"earth":108.321,"ratio":0.151},{"prop":{"name":"Equatorial Radius","unit":"km"},"mars":3396.2,"earth":6378.1,"ratio":0.532},{"prop":{"name":"Polar radius","unit":"km"},"mars":3376.2,"earth":6356.8,"ratio":0.531},{"prop":{"name":"Volumetric mean radius","unit":"km"},"mars":3389.5,"earth":6371,"ratio":0.532},{"prop":{"name":"Core radius","unit":"km"},"mars":1700,"earth":3485,"ratio":0.488},{"prop":{"name":"Ellipticity","unit":"Flattening"},"mars":0.00589,"earth":0.00335,"ratio":1.76},{"prop":{"name":"Mean density","unit":"km/m^3"},"mars":3933,"earth":5514,"ratio":0.713},{"prop":{"name":"Surface gravity","unit":"m/s^2"},"mars":3.71,"earth":9.8,"ratio":0.379},{"prop":{"name":"Surface acceleration","unit":"m/s^2"},"mars":3.69,"earth":9.78,"ratio":0.377},{"prop":{"name":"Escape velocity","unit":"km/s"},"mars":5.03,"earth":11.19,"ratio":0.45},{"prop":{"name":"GM","unit":"x 10^6 km^3/s^2"},"mars":0.04283,"earth":0.3986,"ratio":0.107},{"prop":{"name":"Bond albedo","unit":""},"mars":0.25,"earth":0.306,"ratio":0.817},{"prop":{"name":"Visual geometric albedo","unit":""},"mars":0.17,"earth":0.367,"ratio":0.463},{"prop":{"name":"Visual magnitude","unit":"V(1,0)"},"mars":-1.52,"earth":-3.86,"ratio":null},{"prop":{"name":"Solar irradiance","unit":"W/m^2"},"mars":589.2,"earth":1267.6,"ratio":0.431},{"prop":{"name":"Black-body temperature","unit":"K"},"mars":210.1,"earth":254.3,"ratio":0.826},{"prop":{"name":"Topographic range","unit":"km"},"mars":30,"earth":20,"ratio":1.5},{"prop":{"name":"Moment of inertia","unit":"I/MR^2"},"mars":0.366,"earth":0.3308,"ratio":1.106},{"prop":{"name":"J_2","unit":"x 10^-6"},"mars":1960.45,"earth":1082.63,"ratio":1.811},{"prop":{"name":"Number of natural satellites","unit":""},"mars":2,"earth":1,"ratio":null},{"prop":{"name":"Planetary ring system","unit":""},"mars":false,"earth":false,"ratio":null}]
@@ -5255,76 +5289,422 @@
   </example>
   
     @example
-    <h3>Generated table</h3>
-  <example name='staticTable'>
+    <h3>Remote data on table</h3>
+  <example name='table'>
     <file name='index.html'>
-      <cui-table rows="rowCollection"
-                 columns="columnCollection"
-                 config="globalConfig">
-      </cui-table>
+      <table st-table="rowCollection" st-pipe="callServer" class="cui-table cui-table-striped" style="width: 100%">
+        <thead>
+        <tr>
+            <th></th>
+            <th st-sort="id">ID</th>
+            <th st-sort="type">Type</th>
+            <th st-sort="location">Location</th>
+            <th st-sort="ip">IP Address</th>
+            <th st-sort="servicetag">Service Tag</th>
+            <th st-sort="online">Online</th>
+        </tr>
+        <tr>
+            <th colspan="7">
+                <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="row in rowCollection">
+            <td select-id="row" selections="selectedIds"></td>
+            <td>{{row.id}}</td>
+            <td>{{row.type}}</td>
+            <td>{{row.location}}</td>
+            <td>{{row.ip}}</td>
+            <td>{{row.servicetag}}</td>
+            <td><cui-icon icon="{{row.online && 'ok' || 'warning-sign'}}" color="{{row.online && 'green' || 'red'}}"></cui-icon></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7" class="text-center">
+              <div class='selected-servers'>{{selectedIds.length}} of {{responseCount}} servers selected.</div>
+              <div st-items-by-page="20" st-pagination st-template="pagination-tmpl.html"></div>
+            </td>
+          </tr>
+        </tfoot>
+    </table>
+    </file>
+    <file name='pagination-tmpl.html'>
+      <nav ng-if="pages.length >= 2">
+        <ul class="pagination">
+          <li ng-if='currentPage !== 1'><a ng-click="selectPage(1)"><cui-icon icon='double-angle-left'></cui-icon></a>
+          </li><li ng-repeat="page in pages" ng-class="{active: page==currentPage}"><a ng-click="selectPage(page)">{{page}}</a>
+          </li><li ng-if='currentPage !== numPages'><a ng-click="selectPage(numPages)"><cui-icon icon='double-angle-right'></cui-icon></a></li>
+        </ul>
+      </nav>
     </file>
     <file name='app.js'>
-      angular.module('app', ['cui'])
+      angular.module('app', ['cui', 'smart-table'])
+        .controller('AppCtrl', function($scope, $http, cuiLoading) {
+          $scope.selectedIds = [];
+  
+          $scope.rowCollection = [];
+  
+          $scope.callServer = function getData(tableState) {
+            var limit = tableState.pagination.number || 10;
+            var params = {
+              limit: limit,
+              offset: tableState.pagination.start,
+              search: tableState.search.predicateObject && tableState.search.predicateObject['$']
+            };
+            if (angular.isDefined(tableState.sort.reverse)) {
+              params.sortCol = tableState.sort.predicate;
+              params.sortDir = tableState.sort.reverse ? 'asc' : 'desc';
+            }
+            cuiLoading($http.get('http://ce.software.dell.com/api/server/', {params: params}).success(function(response) {
+              $scope.rowCollection = response.data;
+              tableState.pagination.numberOfPages = Math.ceil(response.count / limit);
+              $scope.responseCount = response.count;
+            }));
+          }
+  
+        });
+    </file>
+    <file name='styles.css'>
+      .selected-servers {
+        position: absolute;
+        padding: 5px;
+      }
+    </file>
+    <file name='selected.js'>
+      angular.module('app')
+        .directive('selectId', function() {
+        return {
+          require: '^stTable',
+          template: '<cui-checkbox ng-model="selected" name="{{$id}}"></cui-checkbox>',
+          scope: {
+            row: '=selectId',
+            selections: '='
+          },
+          link: function(scope, element, attr, ctrl) {
+            if (scope.selections.indexOf(scope.row.id) !== -1) {
+              scope.selected = true;
+            }
+            scope.$watch('selected', function(s) {
+              element.parent().removeClass('selected');
+              if (s) {
+                if (scope.selections.indexOf(scope.row.id) === -1) {
+                  scope.selections.push(scope.row.id);
+                }
+                element.parent().addClass('selected');
+              } else if (s === false) {
+                scope.selections.splice(scope.selections.indexOf(scope.row.id), 1);
+              }
+            });
+          }
+        };
+      });
+    </file>
+  </example>
+  
+    @example
+    <h3>Expanding/collapsing rows</h3>
+  <example name='table'>
+    <file name='index.html'>
+      <table st-table="displayed" class="cui-table" style="width:100%">
+        <thead>
+        <tr>
+          <th st-sort="firstName">First name</th>
+          <th st-sort="lastName">Last name</th>
+          <th st-sort="birthDate">Age</th>
+          <th st-sort="balance">Balance ($USD)</th>
+          <th>E-mail</th>
+        </tr>
+        <tr>
+          <th>
+            <input st-search="firstName" placeholder="search for firstname" class="input-sm form-control" type="search"/>
+          </th>
+          <th colspan="4">
+            <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat-start="row in displayed" cui-row-master="row.open" ng-class-even="'cui-row-even'">
+          <td>{{row.firstName | uppercase}}</td>
+          <td>{{row.lastName}}</td>
+          <td>{{row.age}}</td>
+          <td>{{row.balance | currency}}</td>
+          <td><a ng-href="mailto:{{row.email}}">email</a></td>
+        </tr>
+        <tr ng-repeat-end class="cui-grid-details" ng-class-even="'cui-row-even'">
+          <td colspan="5">
+            <cui-row-slave cui-collapse="!row.open"  cui-collapse-skip-initial="true">
+              <cui-button>Hello</cui-button>
+            </st-row-slave>
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" class="text-center">
+              <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui', 'smart-table'])
         .controller('AppCtrl', function($scope) {
-          var servers = ['PowerEdge R320', 'PowerEdge R210 II', 'PowerEdge R420', 'PowerEdge R910', 'PowerEdge R720xd'];
   
-          var ram = [2, 4, 8, 16, 32, 64, 128];
-  
-          function genIP() {
-            return '192.168.' +
-              (Math.floor(Math.random() * 3) + 100) + '.' +
-              Math.floor(Math.random() * 256)
-          }
-  
-          function genServiceTag() {
-            ret = '';
-            for(i = 0; i < 8; i++)
-              ret += String.fromCharCode(65 + Math.floor(Math.random() * 8));
-            return ret;
-          }
+          var
+            nameList = ['Pierre', 'Pol', 'Jacques', 'Robert', 'Elisa'],
+            familyName = ['Dupont', 'Germain', 'Delcourt', 'bjip', 'Menez'];
   
           function createRandomItem() {
             var
-              isOnline = Math.random() > .1,
-              icon =  isOnline ? 'ok-sign' : 'warning-sign',
-              iconColor = isOnline ? 'green' : 'red',
-              ip = genIP(),
-              serviceTag = genServiceTag();
+              firstName = nameList[Math.floor(Math.random() * 4)],
+              lastName = familyName[Math.floor(Math.random() * 4)],
+              age = Math.floor(Math.random() * 100),
+              email = firstName + lastName + '@whatever.com',
+              balance = Math.random() * 3000;
   
-            return{
-              ip: ip,
-              icon: icon,
-              iconColor: iconColor,
-              serviceTag: serviceTag,
-              model: servers[ Math.floor(Math.random() * servers.length) ],
-              memory: ram[ Math.floor(Math.random() * ram.length) ] + ' GB'
+            return {
+              firstName: firstName,
+              lastName: lastName,
+              age: age,
+              email: email,
+              balance: balance
             };
           }
   
-          $scope.rowCollection = [];
-          for (var j = 0; j < 200; j++) {
-            $scope.rowCollection.push(createRandomItem());
+  
+          $scope.displayed = [];
+          for (var j = 0; j < 50; j++) {
+            $scope.displayed.push(createRandomItem());
+          }
+        });
+    </file>
+  </example>
+  
+    @example
+    <h3>Fixed headers table</h3>
+  <example name='table'>
+    <file name='index.html'>
+      <table st-table="displayed" class="cui-table cui-table-striped cui-table-fixed-header">
+        <thead>
+        <tr>
+          <th st-ratio="20" st-sort="firstName">first name</th>
+          <th st-ratio="20" st-sort="lastName">last name</th>
+          <th st-ratio="10" st-sort="age">age</th>
+          <th st-ratio="30" st-sort="email">email</th>
+          <th st-ratio="20" st-sort="balance">balance</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="row in displayed">
+          <td st-ratio="20">{{row.firstName}}</td>
+          <td st-ratio="20">{{row.lastName | uppercase}}</td>
+          <td st-ratio="10">{{row.age}}</td>
+          <td st-ratio="30">{{row.email}}</td>
+          <td st-ratio="20">{{row.balance | currency}}</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <td colspan="5" class="text-center">
+            <div st-items-by-page="20" st-pagination=""></div>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui', 'smart-table'])
+        .controller('AppCtrl', function($scope) {
+  
+          var
+            nameList = ['Pierre', 'Pol', 'Jacques', 'Robert', 'Elisa'],
+            familyName = ['Dupont', 'Germain', 'Delcourt', 'bjip', 'Menez'];
+  
+          function createRandomItem() {
+            var
+              firstName = nameList[Math.floor(Math.random() * 4)],
+              lastName = familyName[Math.floor(Math.random() * 4)],
+              age = Math.floor(Math.random() * 100),
+              email = firstName + lastName + '@whatever.com',
+              balance = Math.random() * 3000;
+  
+            return {
+              firstName: firstName,
+              lastName: lastName,
+              age: age,
+              email: email,
+              balance: balance
+            };
           }
   
-          $scope.columnCollection = [
-            {label: 'Status', cellTemplateUrl: 'cellIcon.html'},
-            {label: 'IP Address', map: 'ip'},
-            {label: 'Service Tag', map: 'serviceTag'},
-            {label: 'Model', map: 'model'},
-            {label: 'Memory', map: 'memory'}
-          ];
   
-          $scope.globalConfig = {
-            selectionMode: 'multiple',
-            isPaginationEnabled: true,
-            isGlobalSearchActivated: true,
-            itemsByPage: 12,
-            maxSize: 8
-          };
+          $scope.displayed = [];
+          for (var j = 0; j < 50; j++) {
+            $scope.displayed.push(createRandomItem());
+          }
         })
+        .directive('stRatio', function() {
+          return {
+            link: function(scope, element, attr) {
+              var ratio = +(attr.stRatio);
+  
+              element.css('width', ratio + '%');
+  
+            }
+          };
+        });
     </file>
-    <file name='cellIcon.html'>
-      <cui-icon icon='{{dataRow.icon}}' color='{{dataRow.iconColor}}'></cui-icon>
+    <file name='styles.css'>
+    .cui-table {
+      height: 500px;
+    }
+    </file>
+  </example>
+  
+    @example
+    <h3>Infinite scrolling table</h3>
+  <example name='table'>
+    <file name='index.html'>
+      <table st-table="rowCollection" st-pipe="callServer" class="cui-table cui-table-striped cui-table-fixed-header">
+        <thead>
+          <tr>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Age</th>
+            <th>Balance ($USD)</th>
+            <th>E-mail</th>
+          </tr>
+        </thead>
+        <tbody my-pagination-scroll>
+        <tr ng-repeat="row in rowCollection">
+            <td>{{row.firstName | uppercase}}</td>
+            <td>{{row.lastName}}</td>
+            <td>{{row.age}}</td>
+            <td>{{row.balance | currency}}</td>
+            <td><a ng-href="mailto:{{row.email}}">email</a></td>
+        </tr>
+        </tbody>
+      </table>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui', 'smart-table'])
+        .controller('AppCtrl', function($scope, $timeout, cuiLoading) {
+          var nameList = ['Pierre', 'Pol', 'Jacques', 'Robert', 'Elisa'];
+          var familyName = ['Dupont', 'Germain', 'Delcourt', 'bjip', 'Menez'];
+  
+          $scope.rowCollection = [];
+  
+          function createRandomItem() {
+            var
+              firstName = nameList[Math.floor(Math.random() * 4)],
+              lastName = familyName[Math.floor(Math.random() * 4)],
+              age = Math.floor(Math.random() * 100),
+              email = firstName + lastName + '@whatever.com',
+              balance = Math.random() * 3000;
+  
+            return {
+              firstName: firstName,
+              lastName: lastName,
+              age: age,
+              email: email,
+              balance: balance
+            };
+          }
+  
+          function getAPage() {
+            var data = [];
+            for (var j = 0; j < 20; j++) {
+              data.push(createRandomItem());
+            }
+            return data;
+          }
+  
+          var lastStart = 0;
+          var maxNodes = 40;
+  
+          $scope.callServer = function getData(tableState) {
+  
+            //here you could create a query string from tableState
+            //fake ajax call
+  
+            cuiLoading($timeout(function() {
+  
+              //if we reset (like after a search or an order)
+              if (tableState.pagination.start === 0) {
+                $scope.rowCollection = getAPage();
+              } else {
+                //we load more
+                $scope.rowCollection = $scope.rowCollection.concat(getAPage());
+  
+                //remove first nodes if needed
+                if (lastStart < tableState.pagination.start && $scope.rowCollection.length > maxNodes) {
+                  //remove the first nodes
+                  $scope.rowCollection.splice(0, 20);
+                }
+              }
+  
+              lastStart = tableState.pagination.start;
+            }, 1000));
+  
+          };
+  
+          $scope.rowCollection = getAPage();
+  
+        });
+    </file>
+    <file name='styles.css'>
+      table.cui-table {
+        height: 500px;
+        width: 100%;
+      }
+    </file>
+    <file name='myPaginationScroll.js'>
+      angular.module('smart-table')
+        .directive('myPaginationScroll', ['$timeout', function(timeout) {
+          return {
+            require: '^stTable',
+            link: function(scope, element, attr, ctrl) {
+              var itemByPage = 20;
+              var pagination = ctrl.tableState().pagination;
+              var lengthThreshold = 50;
+              var timeThreshold = 400;
+              var handler = function() {
+                //call next page
+                ctrl.slice(pagination.start + itemByPage, itemByPage);
+              };
+              var promise = null;
+              var lastRemaining = 9999;
+              var container = angular.element(element);
+  
+              container.bind('scroll', function() {
+                var remaining = container[0].scrollHeight - (container[0].clientHeight + container[0].scrollTop);
+  
+                //if we have reached the threshold and we scroll down
+                if (remaining < lengthThreshold && (remaining - lastRemaining) < 0) {
+  
+                  //if there is already a timer running which has no expired yet we have to cancel it and restart the timer
+                  if (promise !== null) {
+                    timeout.cancel(promise);
+                  }
+                  promise = timeout(function() {
+                    handler();
+  
+                    //scroll a bit up
+                    container[0].scrollTop -= 500;
+  
+                    promise = null;
+                  }, timeThreshold);
+                }
+                lastRemaining = remaining;
+              });
+            }
+  
+          };
+        }]);
     </file>
   </example>
    */
@@ -5350,6 +5730,35 @@
           }
         }, 0);
       }
+    };
+  });
+
+  module.directive('cuiRowMaster', function() {
+    return {
+      scope: {
+        cuiRowMaster: '='
+      },
+      link: function(scope, element, attrs) {
+        element.on('click', function() {
+          scope.cuiRowMaster = !scope.cuiRowMaster;
+          return scope.$apply();
+        });
+        return scope.$watch('cuiRowMaster', function(open) {
+          if (open) {
+            return element.addClass('active');
+          } else {
+            return element.removeClass('active');
+          }
+        });
+      }
+    };
+  });
+
+  module.directive('cuiRowSlave', function() {
+    return {
+      restrict: 'EA',
+      transclude: true,
+      template: '<div ng-transclude class="cui-row-slave-wrap"></div>'
     };
   });
 
@@ -6099,6 +6508,222 @@
 
   /**
     @ngdoc directive
+    @name tooltip
+  
+    @description The Tooltip is an easy way to have text or icons have a styled tooltip window.
+    
+    @module cui.controls
+    @src controls/tooltip/tooltip.coffee
+    @controlType presentational
+    @deprecated 2.7.0
+    @useInstead Please consider using <a href='../tip'>Tip</a> instead.
+    
+    @restrict E
+    @transclude The content that will show up in the tooltip window
+    
+    @param {string=} position Describes where to put the tool tip, this is added as a class to the tooltip, default is bottom.  EX: top, bottom, left, right
+    
+    @param {string=} text Text for the tooltip to be bound to. (This __or__ `icon` is required.)
+    
+    @param {string=} icon Icon for the tooltip instead of text. (This __or__ `text` is required.)
+    
+    @param {string=} size Sets the size of the icon.
+    
+    @param {string=} cuiStyle Sets the style attribute for the span or cui icon so you can style these inline.
+  
+  If you put a style attribute on the cui-tooltip itself it would affect the tooltip as well.
+  
+    @param {object=} trigger Accepts an object of the methods you want to call.
+  
+  ```javascript
+  {
+    hover: true,
+    click: false
+  }
+  ```
+  
+  This is also the default hover being true and click being false.
+    
+    @example
+    <h3>Tooltip bound to text</h3>
+  <example name='textTooltip'>
+    <file name='index.html'>
+      <p>
+        <cui-tooltip position="bottom" text="Bottom" cui-style="font-weight:bold">
+          <strongTooltip header</strong> This is the bottom placement.
+        </cui-tooltip> next there is a
+      </p>
+      <p>
+        <cui-tooltip position="right" text="Right" cui-style="font-weight:bold">
+          <span style="color: #CE1126">
+            <cui-icon icon="exclamation-sign"></cui-icon> This is the right placement.
+          </span>
+        </cui-tooltip>, after that it is a
+      </p>
+      <p>
+        <cui-tooltip position="left" text="Left" cui-style="font-weight:bold">
+          This is the left placement.
+        </cui-tooltip> and finally
+      </p>
+      <p>
+        <cui-tooltip position="top" text="Top" cui-style="font-weight:bold">
+          <strong>Tooltip header</strong>
+          <br>
+          This is the top placement.
+        </cui-tooltip> is the last placement.
+      </p>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function() {})
+    </file>
+    <file name='styles.css'>
+      body {
+        text-align: center;
+      }
+    </file>
+  </example>
+    
+    @example
+    <h3>Tooltip bound to icon</h3>
+    <cui-alert cui-type='warning' dismissable=false>
+      <span>Be careful with padding on your icons. Because padding is factored into the width and height returned, the tooltip may become off-centered.</span>
+      <p>Also, keep in mind that text transforms do not change the height and width of an element, so be careful when positioning right and bottom tooltips on text that has text-shadow or box-shadow.</p>
+    </cui-alert>
+  <example name='iconTooltip'>
+    <file name='index.html'>
+      <cui-tooltip position="left" icon='chevron-sign-left' trigger="{hover: false, click: true}" size="20px">
+        This is the left placement.
+      </cui-tooltip>
+  
+      <cui-tooltip position="top" icon='chevron-sign-up' trigger="{hover: false, click: true}" size="20px">
+        <strong>Tooltip header</strong>
+        <p>This is the top placement.</p>
+      </cui-tooltip>
+  
+      <cui-tooltip position="bottom" icon='chevron-sign-down' trigger="{hover: false, click: true}" size="20px">
+        <strong>Tooltip header</strong>
+        <p>This is the bottom placement.</p>
+      </cui-tooltip>
+  
+      <cui-tooltip position="right" icon='chevron-sign-right' trigger="{hover: false, click: true}" size="20px">
+        <span style="color: #CE1126">
+          <cui-icon icon="exclamation-sign"></cui-icon>
+          This is the right placement.
+        </span>
+      </cui-tooltip>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function() {})
+    </file>
+    <file name='styles.css'>
+      body {
+        text-align: center;
+        height: 300px;
+        margin-top: 145px;
+      }
+    </file>
+  </example>
+    
+    @example
+    <h3>Tooltip manual triggering</h3>
+  <example name='iconTooltip'>
+    <file name='index.html'>
+      <cui-button ng-click='toggleButton()'>Toggle Me</cui-button>
+  
+      <cui-tooltip id="toggleOnly"
+                   position="top"
+                   text="I only toggle via the button."
+                   cui-style="font-weight:bold"
+                   trigger="{hover: false, click: false}">
+        <span style="color: #CE1126">
+          <cui-icon icon="exclamation-sign"></cui-icon>
+          This is the right placement.
+        </span>
+      </cui-tooltip>
+    </file>
+    <file name='app.js'>
+      angular.module('app', ['cui'])
+        .controller('AppCtrl', function($scope) {
+          $scope.toggleButton = function() {
+            // This creates an angular element which has JQuery Lite functions such as toggleClass.  Many other ways to do this such as Jquery etc.
+            triggerElement = angular.element(document.querySelector("#toggleOnly .cui-tooltip-box"));
+            triggerElement.toggleClass("on");
+            // Publicly Accessible Function will reposition all the tooltips.
+            $scope.$broadcast('repositionBox');
+          }
+        })
+    </file>
+    <file name='styles.css'>
+      body {
+        height: 110px;
+        margin-top: 60px;
+      }
+    </file>
+  </example>
+   */
+
+  module = angular.module('cui.controls.tooltip', ['cui.base']);
+
+  module.directive('cuiTooltip', function(baseTemplatePath, cuiPositionService) {
+    return {
+      templateUrl: "" + baseTemplatePath + "tooltip.html",
+      restrict: 'EA',
+      transclude: true,
+      scope: {
+        position: '@',
+        text: '@',
+        icon: '@',
+        size: '@',
+        cuiStyle: '@',
+        trigger: '=?'
+      },
+      link: function(scope, element) {
+        var boxElement;
+        if (scope.position == null) {
+          scope.position = 'bottom';
+        }
+        boxElement = angular.element(element[0].querySelectorAll('.cui-tooltip-box'));
+        if (!scope.trigger) {
+          scope.trigger = {
+            hover: true,
+            click: false
+          };
+        }
+        scope.toggleTooltip = function(triggerMethod) {
+          if (triggerMethod === 'click' && scope.trigger.click === true) {
+            scope.showTooltip = !scope.showTooltip;
+          } else if (triggerMethod === 'hover' && scope.trigger.hover === true) {
+            scope.showTooltip = !scope.showTooltip;
+          } else {
+            return;
+          }
+          if (scope.showTooltip) {
+            boxElement.addClass('on');
+          } else {
+            boxElement.removeClass('on');
+          }
+          return scope.$broadcast('repositionBox');
+        };
+        return scope.$on('repositionBox', function() {
+          var anchorElement, anchorPosition, attachedPosition, obj;
+          anchorElement = scope.text ? element[0].querySelectorAll('.cui-tooltip-text') : element[0].querySelectorAll('.cui-tooltip-icon');
+          anchorPosition = cuiPositionService.getPositionValue(anchorElement);
+          attachedPosition = cuiPositionService.getPositionValue(boxElement);
+          obj = cuiPositionService.getRelativePositionValue(anchorPosition, attachedPosition, scope.position, 10);
+          return scope.positionStyle = {
+            top: obj.top,
+            left: obj.left
+          };
+        });
+      }
+    };
+  });
+
+
+  /**
+    @ngdoc directive
     @name tip
     @controlType actionable
    
@@ -6451,222 +7076,6 @@
 
   /**
     @ngdoc directive
-    @name tooltip
-  
-    @description The Tooltip is an easy way to have text or icons have a styled tooltip window.
-    
-    @module cui.controls
-    @src controls/tooltip/tooltip.coffee
-    @controlType presentational
-    @deprecated 2.7.0
-    @useInstead Please consider using <a href='../tip'>Tip</a> instead.
-    
-    @restrict E
-    @transclude The content that will show up in the tooltip window
-    
-    @param {string=} position Describes where to put the tool tip, this is added as a class to the tooltip, default is bottom.  EX: top, bottom, left, right
-    
-    @param {string=} text Text for the tooltip to be bound to. (This __or__ `icon` is required.)
-    
-    @param {string=} icon Icon for the tooltip instead of text. (This __or__ `text` is required.)
-    
-    @param {string=} size Sets the size of the icon.
-    
-    @param {string=} cuiStyle Sets the style attribute for the span or cui icon so you can style these inline.
-  
-  If you put a style attribute on the cui-tooltip itself it would affect the tooltip as well.
-  
-    @param {object=} trigger Accepts an object of the methods you want to call.
-  
-  ```javascript
-  {
-    hover: true,
-    click: false
-  }
-  ```
-  
-  This is also the default hover being true and click being false.
-    
-    @example
-    <h3>Tooltip bound to text</h3>
-  <example name='textTooltip'>
-    <file name='index.html'>
-      <p>
-        <cui-tooltip position="bottom" text="Bottom" cui-style="font-weight:bold">
-          <strongTooltip header</strong> This is the bottom placement.
-        </cui-tooltip> next there is a
-      </p>
-      <p>
-        <cui-tooltip position="right" text="Right" cui-style="font-weight:bold">
-          <span style="color: #CE1126">
-            <cui-icon icon="exclamation-sign"></cui-icon> This is the right placement.
-          </span>
-        </cui-tooltip>, after that it is a
-      </p>
-      <p>
-        <cui-tooltip position="left" text="Left" cui-style="font-weight:bold">
-          This is the left placement.
-        </cui-tooltip> and finally
-      </p>
-      <p>
-        <cui-tooltip position="top" text="Top" cui-style="font-weight:bold">
-          <strong>Tooltip header</strong>
-          <br>
-          This is the top placement.
-        </cui-tooltip> is the last placement.
-      </p>
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function() {})
-    </file>
-    <file name='styles.css'>
-      body {
-        text-align: center;
-      }
-    </file>
-  </example>
-    
-    @example
-    <h3>Tooltip bound to icon</h3>
-    <cui-alert cui-type='warning' dismissable=false>
-      <span>Be careful with padding on your icons. Because padding is factored into the width and height returned, the tooltip may become off-centered.</span>
-      <p>Also, keep in mind that text transforms do not change the height and width of an element, so be careful when positioning right and bottom tooltips on text that has text-shadow or box-shadow.</p>
-    </cui-alert>
-  <example name='iconTooltip'>
-    <file name='index.html'>
-      <cui-tooltip position="left" icon='chevron-sign-left' trigger="{hover: false, click: true}" size="20px">
-        This is the left placement.
-      </cui-tooltip>
-  
-      <cui-tooltip position="top" icon='chevron-sign-up' trigger="{hover: false, click: true}" size="20px">
-        <strong>Tooltip header</strong>
-        <p>This is the top placement.</p>
-      </cui-tooltip>
-  
-      <cui-tooltip position="bottom" icon='chevron-sign-down' trigger="{hover: false, click: true}" size="20px">
-        <strong>Tooltip header</strong>
-        <p>This is the bottom placement.</p>
-      </cui-tooltip>
-  
-      <cui-tooltip position="right" icon='chevron-sign-right' trigger="{hover: false, click: true}" size="20px">
-        <span style="color: #CE1126">
-          <cui-icon icon="exclamation-sign"></cui-icon>
-          This is the right placement.
-        </span>
-      </cui-tooltip>
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function() {})
-    </file>
-    <file name='styles.css'>
-      body {
-        text-align: center;
-        height: 300px;
-        margin-top: 145px;
-      }
-    </file>
-  </example>
-    
-    @example
-    <h3>Tooltip manual triggering</h3>
-  <example name='iconTooltip'>
-    <file name='index.html'>
-      <cui-button ng-click='toggleButton()'>Toggle Me</cui-button>
-  
-      <cui-tooltip id="toggleOnly"
-                   position="top"
-                   text="I only toggle via the button."
-                   cui-style="font-weight:bold"
-                   trigger="{hover: false, click: false}">
-        <span style="color: #CE1126">
-          <cui-icon icon="exclamation-sign"></cui-icon>
-          This is the right placement.
-        </span>
-      </cui-tooltip>
-    </file>
-    <file name='app.js'>
-      angular.module('app', ['cui'])
-        .controller('AppCtrl', function($scope) {
-          $scope.toggleButton = function() {
-            // This creates an angular element which has JQuery Lite functions such as toggleClass.  Many other ways to do this such as Jquery etc.
-            triggerElement = angular.element(document.querySelector("#toggleOnly .cui-tooltip-box"));
-            triggerElement.toggleClass("on");
-            // Publicly Accessible Function will reposition all the tooltips.
-            $scope.$broadcast('repositionBox');
-          }
-        })
-    </file>
-    <file name='styles.css'>
-      body {
-        height: 110px;
-        margin-top: 60px;
-      }
-    </file>
-  </example>
-   */
-
-  module = angular.module('cui.controls.tooltip', ['cui.base']);
-
-  module.directive('cuiTooltip', function(baseTemplatePath, cuiPositionService) {
-    return {
-      templateUrl: "" + baseTemplatePath + "tooltip.html",
-      restrict: 'EA',
-      transclude: true,
-      scope: {
-        position: '@',
-        text: '@',
-        icon: '@',
-        size: '@',
-        cuiStyle: '@',
-        trigger: '=?'
-      },
-      link: function(scope, element) {
-        var boxElement;
-        if (scope.position == null) {
-          scope.position = 'bottom';
-        }
-        boxElement = angular.element(element[0].querySelectorAll('.cui-tooltip-box'));
-        if (!scope.trigger) {
-          scope.trigger = {
-            hover: true,
-            click: false
-          };
-        }
-        scope.toggleTooltip = function(triggerMethod) {
-          if (triggerMethod === 'click' && scope.trigger.click === true) {
-            scope.showTooltip = !scope.showTooltip;
-          } else if (triggerMethod === 'hover' && scope.trigger.hover === true) {
-            scope.showTooltip = !scope.showTooltip;
-          } else {
-            return;
-          }
-          if (scope.showTooltip) {
-            boxElement.addClass('on');
-          } else {
-            boxElement.removeClass('on');
-          }
-          return scope.$broadcast('repositionBox');
-        };
-        return scope.$on('repositionBox', function() {
-          var anchorElement, anchorPosition, attachedPosition, obj;
-          anchorElement = scope.text ? element[0].querySelectorAll('.cui-tooltip-text') : element[0].querySelectorAll('.cui-tooltip-icon');
-          anchorPosition = cuiPositionService.getPositionValue(anchorElement);
-          attachedPosition = cuiPositionService.getPositionValue(boxElement);
-          obj = cuiPositionService.getRelativePositionValue(anchorPosition, attachedPosition, scope.position, 10);
-          return scope.positionStyle = {
-            top: obj.top,
-            left: obj.left
-          };
-        });
-      }
-    };
-  });
-
-
-  /**
-    @ngdoc directive
     @name tree
     @description The tree is used for navigation in filesystems and general nested items.
     @module cui.controls
@@ -6869,7 +7278,6 @@
 
   /**
     @ngdoc directive
-    @new true
     @module ui.select
     @name uiSelect
     @description The UI Select directive is a 3rd party dropdown/multi-select Angular component. It allows for very complex use-cases in applications.
@@ -7901,21 +8309,53 @@
     <file name='index.html'>
       <cui-master-detail ng-class="{'cui-collapse-detail': masterdetail.collapsed}">
         <cui-master-view>
-          <input class="cui-textbox" ng-model='dataGrid.searchQuery' placeholder='Search'>
-          <cui-data-grid config='dataGrid' selected='selected'></cui-data-grid>
+          <table st-table="rowCollection" st-pipe="callServer" class="cui-table cui-table-striped" style="width: 100%">
+            <thead>
+            <tr>
+                <th st-sort="id">ID</th>
+                <th st-sort="type">Type</th>
+                <th st-sort="location">Location</th>
+                <th st-sort="ip">IP Address</th>
+                <th st-sort="servicetag">Service Tag</th>
+                <th st-sort="online">Online</th>
+            </tr>
+            <tr>
+                <th colspan="7">
+                    <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="row in rowCollection" ng-click="select(row)" ng-class="{'cui-selected-row': masterdetail.selected == row}">
+                <td>{{row.id}}</td>
+                <td>{{row.type}}</td>
+                <td>{{row.location}}</td>
+                <td>{{row.ip}}</td>
+                <td>{{row.servicetag}}</td>
+                <td><cui-icon icon="{{row.online && 'ok' || 'warning-sign'}}" color="{{row.online && 'green' || 'red'}}"></cui-icon></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="7" class="text-center">
+                  <div st-items-by-page="20" st-pagination></div>
+                </td>
+              </tr>
+            </tfoot>
+        </table>
         </cui-master-view>
   
         <cui-detail-view>
           <div class='cui-collapse-detail-button' ng-click='masterdetail.collapsed = !masterdetail.collapsed'></div>
           <div class='cui-detail-header'>
-            <cui-icon ng-if='selected' icon="{{selected.online && 'ok' || 'warning-sign'}}" color="{{selected.online && 'green' || 'red'}}"></cui-icon>
-            <span class='cui-detail-light'>Server:</span> <strong>{{selected.ip || 'None'}}</strong> <span class='cui-detail-light'>Service Tag:</span> <strong>#{{selected.servicetag || 'None'}}</strong>
+            <cui-icon ng-if='masterdetail.selected' icon="{{masterdetail.selected.online && 'ok' || 'warning-sign'}}" color="{{masterdetail.selected.online && 'green' || 'red'}}"></cui-icon>
+            <span class='cui-detail-light'>Server:</span> <strong>{{masterdetail.selected.ip || 'None'}}</strong> <span class='cui-detail-light'>Service Tag:</span> <strong>#{{selected.servicetag || 'None'}}</strong>
           </div>
           <div class='cui-detail-content'>
             <cui-button cui-type='primary' type='button'>A Button</cui-button>
             <h3>More information</h3>
             <table class='cui-detail-table'>
-              <tr ng-repeat="(k,v) in selected">
+              <tr ng-repeat="(k,v) in masterdetail.selected">
                 <td class='cui-half label'>{{k}}</td>
                 <td class='cui-half value'>{{v}}</td>
               </tr>
@@ -7927,11 +8367,19 @@
   
     <file name='app.js'>
       angular.module('app', ['cui'])
-        .controller('AppCtrl', function($scope) {
+        .controller('AppCtrl', function($scope, cuiLoading, $http) {
           $scope.masterdetail = { collapsed: true };
+  
+          $scope.select = function(row) {
+            if (row === $scope.masterdetail.selected) {
+              $scope.masterdetail.selected = null;
+            } else {
+              $scope.masterdetail.selected = row;
+            }
+          }
           
           // // Use this if you want the detail view to open automatically upon clicking a row
-          $scope.$watch('selected', function(newS, oldS) {
+          $scope.$watch('masterdetail.selected', function(newS, oldS) {
             if (!oldS && newS) {
               $scope.masterdetail.collapsed = false;
             } else if (oldS && !newS) {
@@ -7940,23 +8388,26 @@
               $scope.masterdetail.collapsed = false;
             }
           });
-          $scope.dataGrid = {
-            id: 'id',
-            pageSize: 15,
-            searchable: false,
-            url: "http://ce.software.dell.com/api/server",
-            columns: [{
-              label: 'Status',
-              map: 'online',
-              cellTemplate: '<cui-icon icon="{{row.online && \'ok\' || \'warning-sign\'}}" color="{{row.online && \'green\' || \'red\'}}"></cui-icon>'
-            }, {
-              label: 'Type',
-              map: 'type'
-            }, {
-              label: 'Location',
-              map: 'location'
-            }]
-          };
+  
+          $scope.rowCollection = [];
+  
+          $scope.callServer = function getData(tableState) {
+            var limit = tableState.pagination.number || 10;
+            var params = {
+              limit: limit,
+              offset: tableState.pagination.start,
+              search: tableState.search.predicateObject && tableState.search.predicateObject['$']
+            };
+            if (angular.isDefined(tableState.sort.reverse)) {
+              params.sortCol = tableState.sort.predicate;
+              params.sortDir = tableState.sort.reverse ? 'asc' : 'desc';
+            }
+            cuiLoading($http.get('http://ce.software.dell.com/api/server/', {params: params}).success(function(response) {
+              $scope.rowCollection = response.data;
+              tableState.pagination.numberOfPages = Math.ceil(response.count / limit);
+              $scope.responseCount = response.count;
+            }));
+          }
       });
     </file>
   </example>
@@ -7967,20 +8418,54 @@
     <file name='index.html'>
       <cui-master-detail ng-class="{'cui-collapse-detail': masterdetail.collapsed}">
         <cui-master-view>
-          <input class="cui-textbox" ng-model='dataGrid.searchQuery' placeholder='Search'>
-          <cui-data-grid config='dataGrid' checked='checked'></cui-data-grid>
+          <table st-table="rowCollection" st-pipe="callServer" class="cui-table cui-table-striped" style="width: 100%">
+            <thead>
+            <tr>
+                <th></th>
+                <th st-sort="id">ID</th>
+                <th st-sort="type">Type</th>
+                <th st-sort="location">Location</th>
+                <th st-sort="ip">IP Address</th>
+                <th st-sort="servicetag">Service Tag</th>
+                <th st-sort="online">Online</th>
+            </tr>
+            <tr>
+                <th colspan="7">
+                    <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="row in rowCollection">
+                <td select-id="row" selections="selectedIds"></td>
+                <td>{{row.id}}</td>
+                <td>{{row.type}}</td>
+                <td>{{row.location}}</td>
+                <td>{{row.ip}}</td>
+                <td>{{row.servicetag}}</td>
+                <td><cui-icon icon="{{row.online && 'ok' || 'warning-sign'}}" color="{{row.online && 'green' || 'red'}}"></cui-icon></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="7" class="text-center">
+                  <div st-items-by-page="20" st-pagination></div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
         </cui-master-view>
   
         <cui-detail-view>
           <div class='cui-collapse-detail-button' ng-click='masterdetail.collapsed = !masterdetail.collapsed'></div>
           <div class='cui-detail-header'>
-            <span class='cui-detail-light'>Servers selected:</span> <strong>{{checked.length}}</strong></span>
+            <span class='cui-detail-light'>Servers selected:</span> <strong>{{selectedIds.length}}</strong></span>
           </div>
           <div class='cui-detail-content'>
             <cui-button cui-type='primary' type='button'>A Button</cui-button>
             <h3>Server IDs checked:</h3>
             <ol>
-              <li ng-repeat='server in checked'>{{server.id}}</li>
+              <li ng-repeat='server in selectedIds'>{{server}}</li>
             </ol>
           </div>
         </cui-detail-view>
@@ -7989,29 +8474,64 @@
   
     <file name='app.js'>
       angular.module('app', ['cui'])
-        .controller('AppCtrl', function($scope) {
+        .controller('AppCtrl', function($scope, cuiLoading, $http) {
           $scope.masterdetail = { collapsed: true };
-          
+              
+          $scope.selectedIds = [];
+  
+          $scope.rowCollection = [];
+  
+          $scope.callServer = function getData(tableState) {
+            var limit = tableState.pagination.number || 10;
+            var params = {
+              limit: limit,
+              offset: tableState.pagination.start,
+              search: tableState.search.predicateObject && tableState.search.predicateObject['$']
+            };
+            if (angular.isDefined(tableState.sort.reverse)) {
+              params.sortCol = tableState.sort.predicate;
+              params.sortDir = tableState.sort.reverse ? 'asc' : 'desc';
+            }
+            cuiLoading($http.get('http://ce.software.dell.com/api/server/', {params: params}).success(function(response) {
+              $scope.rowCollection = response.data;
+              tableState.pagination.numberOfPages = Math.ceil(response.count / limit);
+              $scope.responseCount = response.count;
+            }));
+          }
+  
           // // Use this if you want the detail view to open automatically upon clicking a row
-          $scope.$watch('checked.length', function(l) {
+          $scope.$watch('selectedIds.length', function(l) {
             $scope.masterdetail.collapsed = !l;
           });
-          $scope.dataGrid = {
-            id: 'id',
-            pageSize: 15,
-            searchable: false,
-            selection: false,
-            displayChecks: true,
-            url: "http://ce.software.dell.com/api/server",
-            columns: [{
-              label: 'Status',
-              map: 'online',
-              cellTemplate: '<cui-icon icon="{{row.online && \'ok\' || \'warning-sign\'}}" color="{{row.online && \'green\' || \'red\'}}"></cui-icon>'
-            }, {
-              label: 'Type',
-              map: 'type'
-            }]
-          };
+      });
+    </file>
+    <file name='selected.js'>
+      angular.module('app')
+        .directive('selectId', function() {
+        return {
+          require: '^stTable',
+          template: '<cui-checkbox ng-model="selected" name="{{$id}}"></cui-checkbox>',
+          scope: {
+            row: '=selectId',
+            selections: '='
+          },
+          link: function(scope, element, attr, ctrl) {
+            if (scope.selections.indexOf(scope.row.id) !== -1) {
+              scope.selected = true;
+            }
+            scope.$watch('selected', function(s) {
+              element.parent().removeClass('selected');
+              if (s) {
+                if (scope.selections.indexOf(scope.row.id) === -1) {
+                  scope.selections.push(scope.row.id);
+                }
+                element.parent().addClass('selected');
+              } else if (s === false) {
+                scope.selections.splice(scope.selections.indexOf(scope.row.id), 1);
+              }
+            });
+          }
+        };
       });
     </file>
   </example>
@@ -9747,7 +10267,7 @@
   ```javascript
   AppController = function(cuiLoading, cuiDataSourceService) {
     var endpoint = cuiDataSourceService('/api/servers')
-    cuiLoadingService(endpoint.all().then(function(data) {
+    cuiLoading(endpoint.all().then(function(data) {
       // Display data to user
     }));
   }
@@ -10296,17 +10816,17 @@ $templateCache.put("__cui/breadcrumb.html","<ul class=cui-breadcrumb><li ng-repe
 $templateCache.put("__cui/badge.html","<div ng-transclude class=\"cui-badge cui-badge-type-{{cuiType}}\"></div>");
 $templateCache.put("__cui/button-link.html","<button ng-transclude></button>");
 $templateCache.put("__cui/button.html","<button><div class=cui-button-overlay ng-transclude></div></button>");
-$templateCache.put("__cui/calendar.html","<div class=cui-calendar><div class=cui-calendar-header><div class=cui-calendar-left><div class=cui-calendar-arrow ng-click=calendarCtrl.previousYear() ng-attr-title=\"{{ \'CUI_CALENDAR_PREVIOUS_YEAR\' | translate }}\"><cui-icon icon=double-angle-left></cui-icon></div><div class=cui-calendar-arrow ng-click=calendarCtrl.previousMonth() ng-attr-title=\"{{ \'CUI_CALENDAR_PREVIOUS_MONTH\' | translate }}\"><cui-icon icon=angle-left></cui-icon></div></div>{{ monthDate | date:\'MMMM yyyy\' }}<div class=cui-calendar-right><div class=cui-calendar-arrow ng-click=calendarCtrl.nextMonth() ng-attr-title=\"{{ \'CUI_CALENDAR_NEXT_MONTH\' | translate }}\"><cui-icon icon=angle-right></cui-icon></div><div class=cui-calendar-arrow ng-click=calendarCtrl.nextYear() ng-attr-title=\"{{ \'CUI_CALENDAR_NEXT_YEAR\' | translate }}\"><cui-icon icon=double-angle-right></cui-icon></div></div></div><div class=cui-calendar-month><div class=\"cui-calendar-day-of-week cui-calendar-week\" ng-repeat=\"week in month | limitTo:1\"><div class=cui-calendar-short ng-repeat=\"day in week\" ng-attr-title=\"{{ day.date | date:\'EEEE\' }}\">{{ day.date | date:\'EEE\' }}</div></div><div class=cui-calendar-week ng-repeat=\"week in month\"><div class=cui-calendar-day ng-repeat=\"day in week\" ng-click=setDate(day.date) ng-class=\"{&quot;cui-calendar-selected&quot;: day.isSelected,\n                      &quot;cui-calendar-not-in-month&quot;: !day.isInMonth,\n                      &quot;cui-calendar-today&quot;: day.today}\" ng-attr-title=\"{{ day.date | date:\'fullDate\' }}\">{{ day.date | date:\'d\' }}</div></div></div><div class=cui-calendar-footer ng-click=setDate(today) ng-attr-title=\"{{ \'CUI_CALENDAR_TODAY\' | translate }}\">{{ today | date:\'fullDate\' }}</div></div>");
 $templateCache.put("__cui/checkbox.html","<label class=cui-checkbox role=checkbox><input type=checkbox ng-model=ngModel ng-required=ngRequired ng-disabled=\"ngDisabled\"> <span tabindex=0 ng-transclude></span></label>");
 $templateCache.put("__cui/checkboxgroup.html","<div><label class=cui-checkbox ng-repeat=\"(key, option) in checkItems\"><input type=checkbox ng-model=ngModel ng-disabled=\"ngDisabled\"> <span tabindex=0 ng-bind=label></span></label></div>");
-$templateCache.put("__cui/combobox.html","<div class=cui-combobox><input type=text class=cui-textbox ng-model=ngModel placeholder=\"\" ng-disabled=ngDisabled ng-click=openMenu($event) role=combobox aria-owns=cui-menu-{{name}} aria-labeledby=\"cui-label-{{name}}\"><cui-button cui-type=transparent ng-click=toggleMenu($event) ng-disabled=ngDisabled aria-controls=cui-menu-{{name}}><cui-icon icon=caret-down></cui-icon></cui-button><div id=cui-menu-{{name}} class=\"cui-menu-wrap cui-menu-anchor-left\"><div cui-menu><cui-menu-item ng-repeat=\"item in selectedItems\" ng-click=select($index) ng-class=\"{\'cui-combo-current\': $index === currentIndex, \'cui-combo-selected\': $index === selectedIndex }\">{{ item.label }}</cui-menu-item></div></div></div>");
+$templateCache.put("__cui/calendar.html","<div class=cui-calendar><div class=cui-calendar-header><div class=cui-calendar-left><div class=cui-calendar-arrow ng-click=calendarCtrl.previousYear() ng-attr-title=\"{{ \'CUI_CALENDAR_PREVIOUS_YEAR\' | translate }}\"><cui-icon icon=double-angle-left></cui-icon></div><div class=cui-calendar-arrow ng-click=calendarCtrl.previousMonth() ng-attr-title=\"{{ \'CUI_CALENDAR_PREVIOUS_MONTH\' | translate }}\"><cui-icon icon=angle-left></cui-icon></div></div>{{ monthDate | date:\'MMMM yyyy\' }}<div class=cui-calendar-right><div class=cui-calendar-arrow ng-click=calendarCtrl.nextMonth() ng-attr-title=\"{{ \'CUI_CALENDAR_NEXT_MONTH\' | translate }}\"><cui-icon icon=angle-right></cui-icon></div><div class=cui-calendar-arrow ng-click=calendarCtrl.nextYear() ng-attr-title=\"{{ \'CUI_CALENDAR_NEXT_YEAR\' | translate }}\"><cui-icon icon=double-angle-right></cui-icon></div></div></div><div class=cui-calendar-month><div class=\"cui-calendar-day-of-week cui-calendar-week\" ng-repeat=\"week in month | limitTo:1\"><div class=cui-calendar-short ng-repeat=\"day in week\" ng-attr-title=\"{{ day.date | date:\'EEEE\' }}\">{{ day.date | date:\'EEE\' }}</div></div><div class=cui-calendar-week ng-repeat=\"week in month\"><div class=cui-calendar-day ng-repeat=\"day in week\" ng-click=setDate(day.date) ng-class=\"{&quot;cui-calendar-selected&quot;: day.isSelected,\n                      &quot;cui-calendar-not-in-month&quot;: !day.isInMonth,\n                      &quot;cui-calendar-today&quot;: day.today}\" ng-attr-title=\"{{ day.date | date:\'fullDate\' }}\">{{ day.date | date:\'d\' }}</div></div></div><div class=cui-calendar-footer ng-click=setDate(today) ng-attr-title=\"{{ \'CUI_CALENDAR_TODAY\' | translate }}\">{{ today | date:\'fullDate\' }}</div></div>");
 $templateCache.put("__cui/dataGrid.html","<div class=\"cui-data-grid cui-table\"><table><thead><tr><td ng-if=\"config.searchable !== false\" colspan={{config.columns.length}}><cui-textbox ng-model=config.searchQuery placeholder=\"{{ \'CUI_DATAGRID_SEARCH_PLACEHOLDER\' | translate}}\"></cui-textbox></td></tr><tr class=cui-table-text-align><th ng-if=config.displayChecks></th><th ng-repeat=\"column in config.columns\" ng-click=toggleSort(column) class={{column.className}}><span ng-class=\"\n            { \'sort-ascent\': config.sortCol === column.map && config.sortDir === \'asc\',\n             \'sort-descent\': config.sortCol === column.map && config.sortDir === \'desc\'}\">{{column.label || column.map}}</span></th></tr></thead><tbody><tr ng-repeat=\"row in dataGetter(response)\" ng-class=\"{selected: selected[config.id] === row[config.id], checked: isChecked(row)}\" class=cui-table-text-align ng-click=\"datagrid.updateRowStatus($event, row)\"><td ng-if=config.displayChecks><cui-icon tabindex=0 icon=\"{{isChecked(row) && \'check\' || \'check-empty\'}}\" ng-click=toggleChecked(row) class=cui-data-grid-check></cui-icon></td><td ng-repeat=\"column in config.columns\" class=\"cui-data-grid-cell {{column.className}}\">{{ row[column.map] }}</td></tr></tbody><tfoot><tr ng-if=\"dataGetter(response).length === 0\"><td colspan=\"{{config.displayChecks && config.columns.length+1 || config.columns.length}}\" class=no-rows translate=CUI_DATAGRID_NO_DATA></td></tr><tr><td colspan=\"{{config.displayChecks && config.columns.length+1 || config.columns.length}}\"><div class=pagination ng-if=showPaginator><ul><li ng-if=\"pages[0].number !== 1\" ng-click=\"config.currentPageNumber = config.currentPageNumber - 1\">&lt;</li><li ng-repeat=\"page in pages\" ng-class=\"{active: config.currentPageNumber === page.number}\" ng-click=\"config.currentPageNumber = page.number\"><a>{{page.number}}</a></li><li ng-if=\"pages[pages.length-1].number !== totalPages\" ng-click=\"config.currentPageNumber = config.currentPageNumber + 1\">&gt;</li></ul></div></td></tr></tfoot></table></div>");
+$templateCache.put("__cui/combobox.html","<div class=cui-combobox><input type=text class=cui-textbox ng-model=ngModel placeholder=\"\" ng-disabled=ngDisabled ng-click=openMenu($event) role=combobox aria-owns=cui-menu-{{name}} aria-labeledby=\"cui-label-{{name}}\"><cui-button cui-type=transparent ng-click=toggleMenu($event) ng-disabled=ngDisabled aria-controls=cui-menu-{{name}}><cui-icon icon=caret-down></cui-icon></cui-button><div id=cui-menu-{{name}} class=\"cui-menu-wrap cui-menu-anchor-left\"><div cui-menu><cui-menu-item ng-repeat=\"item in selectedItems\" ng-click=select($index) ng-class=\"{\'cui-combo-current\': $index === currentIndex, \'cui-combo-selected\': $index === selectedIndex }\">{{ item.label }}</cui-menu-item></div></div></div>");
 $templateCache.put("__cui/datePicker-calendar.html","<cui-calendar class=cui-date-picker-calendar ng-model=model></cui-calendar>");
 $templateCache.put("__cui/datePicker-time.html","<cui-time ng-model=model></cui-time>");
 $templateCache.put("__cui/dropDownButton.html","<div class=cui-drop-down-button><cui-button><cui-icon ng-if=icon class=cui-drop-down-button-icon icon={{icon}}></cui-icon>{{label}}<cui-icon icon=caret-down></cui-icon></cui-button></div>");
 $templateCache.put("__cui/dropDownList.html","<select class=cui-drop-down-list ng-transclude></select>");
 $templateCache.put("__cui/icon.html","<i class=\"cui-icon cui-icon-color-{{color}}\" ng-style=\"{&quot;font-size&quot;: size}\"></i>");
-$templateCache.put("__cui/masthead.html","<header class=cui-masthead ng-class=\"{fixed: fixed}\"><cui-icon class=dell-logo icon=dell-halo color=white size=47px></cui-icon><div class=cui-masthead-break></div><h1 class=cui-application-title><a ng-href={{applicationHref}} class=cui-application-title-link ng-if=\"!applicationLogo && applicationHref\"><span class=cui-application-name>{{name}}</span></a> <span class=cui-application-name ng-if=\"!applicationLogo && !applicationHref\">{{name}}</span> <a ng-href={{applicationHref}} class=cui-application-title-link ng-if=\"applicationLogo && applicationHref\"><span class=cui-application-name><img class=cui-application-logo ng-src=applicationLogo></span></a> <span class=cui-application-name ng-if=\"applicationLogo && !applicationHref\"><img class=cui-application-logo ng-src=applicationLogo></span> <span class=cui-application-subname ng-if=subname>{{subname}}</span></h1><span ng-show=showControls><div class=cui-hidden-lg><span class=cui-navigation-drawer ng-show=showNavigationDrawer ng-click=$parent.toggleNavigation()><cui-icon icon=angle-right></cui-icon></span> <span class=cui-drawer ng-class=\"{&quot;cui-drawer-showing&quot;: drawerShowing}\" ng-show=showControls ng-click=toggleDrawer()><cui-icon icon=ellipsis-vertical></cui-icon></span></div><div ng-transclude class=\"cui-masthead-controls horizontal-list\" ng-class=\"{&quot;cui-masthead-drawer-showing&quot;: drawerShowing}\"></div></span></header>");
+$templateCache.put("__cui/masthead.html","<header class=cui-masthead ng-class=\"{fixed: fixed}\"><cui-icon class=dell-logo icon=dell-halo color=white size=47px></cui-icon><div class=cui-masthead-break></div><h1 class=cui-application-title><a ng-href={{applicationHref}} class=cui-application-title-link ng-if=\"!applicationLogo && applicationHref\"><span class=cui-application-name>{{name}}</span></a> <span class=cui-application-name ng-if=\"!applicationLogo && !applicationHref\">{{name}}</span> <a ng-href={{applicationHref}} class=cui-application-title-link ng-if=\"applicationLogo && applicationHref\"><span class=cui-application-name><img class=cui-application-logo ng-src={{applicationLogo}}></span></a> <span class=cui-application-name ng-if=\"applicationLogo && !applicationHref\"><img class=cui-application-logo ng-src={{applicationLogo}}></span> <span class=cui-application-subname ng-if=subname>{{subname}}</span></h1><span ng-show=showControls><div class=cui-hidden-lg><span class=cui-navigation-drawer ng-show=showNavigationDrawer ng-click=$parent.toggleNavigation()><cui-icon icon=angle-right></cui-icon></span> <span class=cui-drawer ng-class=\"{&quot;cui-drawer-showing&quot;: drawerShowing}\" ng-show=showControls ng-click=toggleDrawer()><cui-icon icon=ellipsis-vertical></cui-icon></span></div><div ng-transclude class=\"cui-masthead-controls horizontal-list\" ng-class=\"{&quot;cui-masthead-drawer-showing&quot;: drawerShowing}\"></div></span></header>");
 $templateCache.put("__cui/memo.html","<span>{{message}}</span>");
 $templateCache.put("__cui/menu.html","<div class=cui-menu ng-transclude ng-class=\"{&quot;cui-menu-showing&quot;: isShowing}\"></div>");
 $templateCache.put("__cui/menuItem.html","<div class=cui-menu-item ng-transclude></div>");
@@ -10325,8 +10845,8 @@ $templateCache.put("__cui/tabset.html","<div class=cui-tabset><ul class=\"cui-ta
 $templateCache.put("__cui/textarea.html","<textarea class=cui-textarea></textarea>");
 $templateCache.put("__cui/textbox.html","<input class=cui-textbox>");
 $templateCache.put("__cui/time.html","<div class=cui-time><div class=cui-time-hour><div class=cui-time-angle-up ng-attr-title=\"{{ \'CUI_TIME_HOUR_INCREMENT\' | translate:timeCtrl.options }}\" ng-click=timeCtrl.changeHour(timeCtrl.options.hourIncrement)><cui-icon icon=angle-up></cui-icon></div><div class=cui-time-hour-text ng-if=showMeridian>{{model || lastValidDate | date:\'h\'}}</div><div class=cui-time-hour-text ng-if=!showMeridian>{{model || lastValidDate | date:\'H\'}}</div><div class=cui-time-angle-down ng-attr-title=\"{{ \'CUI_TIME_HOUR_DECREMENT\' | translate:timeCtrl.options }}\" ng-click=timeCtrl.changeHour(-timeCtrl.options.hourIncrement)><cui-icon icon=angle-down></cui-icon></div></div><div class=cui-time-colon><spam>:</spam></div><div class=cui-time-minute><div class=cui-time-angle-up ng-attr-title=\"{{ \'CUI_TIME_MINUTE_INCREMENT\' | translate:timeCtrl.options }}\" ng-click=timeCtrl.changeMinute(timeCtrl.options.minuteIncrement)><cui-icon icon=angle-up></cui-icon></div><div class=cui-time-minute-text>{{model || lastValidDate | date:\'mm\'}}</div><div class=cui-time-angle-down ng-attr-title=\"{{ \'CUI_TIME_MINUTE_DECREMENT\' | translate:timeCtrl.options }}\" ng-click=timeCtrl.changeMinute(-timeCtrl.options.minuteIncrement)><cui-icon icon=angle-down></cui-icon></div></div><div class=cui-time-show-seconds ng-if=showSeconds><div class=cui-time-colon><spam>:</spam></div><div class=cui-time-second><div class=cui-time-angle-up ng-attr-title=\"{{ \'CUI_TIME_SECOND_INCREMENT\' | translate:timeCtrl.options }}\" ng-click=timeCtrl.changeSecond(timeCtrl.options.secondIncrement)><cui-icon icon=angle-up></cui-icon></div><div class=cui-time-second-text>{{model || lastValidDate | date:\'ss\'}}</div><div class=cui-time-angle-down ng-attr-title=\"{{ \'CUI_TIME_SECOND_DECREMENT\' | translate:timeCtrl.options }}\" ng-click=timeCtrl.changeSecond(-timeCtrl.options.secondIncrement)><cui-icon icon=angle-down></cui-icon></div></div></div><div class=cui-time-meridian ng-if=showMeridian ng-attr-title=\"{{ \'CUI_TIME_MERIDIAN\' | translate:timeCtrl.options }}\"><span ng-click=timeCtrl.toggleMeridian()>{{meridian}}</span></div></div>");
-$templateCache.put("__cui/tip.html","<div><div ng-include=templateUrl></div></div>");
 $templateCache.put("__cui/tooltip.html","<div class=cui-tooltip><span class=cui-tooltip-text style={{cuiStyle}} ng-click=\"toggleTooltip(\'click\')\" ng-mouseenter=\"toggleTooltip(\'hover\')\" ng-mouseleave=\"toggleTooltip(\'hover\')\" ng-if=text>{{text}}</span><cui-icon class=cui-tooltip-icon style={{cuiStyle}} ng-click=\"toggleTooltip(\'click\')\" ng-mouseenter=\"toggleTooltip(\'hover\')\" ng-mouseleave=\"toggleTooltip(\'hover\')\" ng-if=icon icon={{icon}} size={{size}}></cui-icon><div class=\"cui-tooltip-box {{position}}\" ng-style=positionStyle><div class=arrow></div><div class=cui-tooltip-content ng-transclude></div></div></div>");
+$templateCache.put("__cui/tip.html","<div><div ng-include=templateUrl></div></div>");
 $templateCache.put("__cui/tree.html","<div class=cui-tree><ul class=cui-tree-group><li ng-repeat=\"child in items\"><cui-tree-item items=child></cui-tree-item></li></ul></div>");
 $templateCache.put("__cui/treeItem.html","<a ng-click=toggleVisible() ng-class=\"{\'cui-tree-hide\': !items.children.length}\" class=cui-tree-toggle><cui-icon icon=caret-right ng-class=\"{ \'cui-tree-open\': items.visible,\n            \'cui-tree-invisible\': !items.children.length }\" class=cui-tree-collapse></cui-icon></a><a ng-click=toggleActive() ng-class=\"{\'cui-tree-active\': items.active}\"><cui-icon icon=\"{{ items.icon }}\" ng-if=items.icon class=cui-tree-node-icon></cui-icon>{{ items.label }} {{id}}</a><ul class=cui-tree-group cui-collapse=!items.visible cui-collapse-skip-initial=true><li ng-repeat=\"child in items.children\"><cui-tree-item items=child></cui-tree-item></li></ul>");
 $templateCache.put("__cui/choices.tpl.html","<ul class=\"ui-select-choices ui-select-choices-content cui-select-results\"><li class=ui-select-choices-group ng-class=\"{\'cui-select-result-with-children\': $select.choiceGrouped($group) }\"><div ng-show=$select.choiceGrouped($group) class=\"ui-select-choices-group-label cui-select-result-label\" ng-bind-html=$group.name></div><ul ng-class=\"{\'cui-select-result-sub\': $select.choiceGrouped($group), \'cui-select-result-single\': !$select.choiceGrouped($group) }\"><li class=ui-select-choices-row ng-class=\"{\'cui-select-highlighted\': $select.isActive(this), \'cui-select-disabled\': $select.isDisabled(this)}\"><div class=\"cui-select-result-label ui-select-choices-row-inner\"></div></li></ul></li></ul>");

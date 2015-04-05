@@ -35,28 +35,55 @@
 
         <div class='cui-grid'>
 
+            <div class='cui-unit cui-one-quarter'>
 
-            <cui-pane class='cui-unit cui-one-quarter'
-                      cui-title='Logs' icon='file'>
+                <div class='cui-grid'>
 
-                <div ng-include="'job.html'"></div>
+                    <cui-pane class='cui-unit cui-whole'
+                            cui-title='Logs' icon='file'>
 
-            </cui-pane>
+                        <div ng-include="'job.html'"></div>
+
+                    </cui-pane>
+
+                </div>
+
+            </div>
+
+            <div class='cui-unit cui-three-quarters'>
+
+                <div class='cui-grid'>
+
+                    <cui-pane class='cui-unit cui-one-quarter'
+                            cui-title='Eta' icon='sun'>
+
+                        <div ng-include="'eta.html'"></div>
+
+                    </cui-pane>
 
 
-            <cui-pane class='cui-unit cui-one-quarter'
-                      cui-title='Eta' icon='sun'>
+                    <cui-pane class='cui-unit cui-one-quarter'
+                            cui-title='Links' icon='external-link'>
 
-                <div ng-include="'eta.html'"></div>
+                        <div ng-include="'links.html'"></div>
 
-            </cui-pane>
+                    </cui-pane>
 
-            <cui-pane class='cui-unit cui-one-quarter'
-                      cui-title='Links' icon='external-link'>
+                </div>
 
-                <div ng-include="'links.html'"></div>
 
-            </cui-pane>
+                <div class="cui-grid">
+
+                    <cui-pane class='cui-unit cui-whole'
+                            cui-title='Jobs' icon='sun'>
+
+                        <div ng-include="'jobs.html'"></div>
+
+                    </cui-pane>
+
+                </div>
+
+            </div>
               
         </div>
 

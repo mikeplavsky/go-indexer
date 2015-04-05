@@ -74,17 +74,17 @@ func saveJob(j job) error {
 	json.Unmarshal([]byte(sts), &jSts)
 
 	type savedJob struct {
-		Saved time.Time
+		Created time.Time
 		job
 		Count, Size, Eta interface{}
 	}
 
 	s := savedJob{
-		Saved: time.Now().UTC(),
-		job:   j,
-		Count: jSts["count"],
-		Size:  jSts["size"],
-		Eta:   jSts["eta"],
+		Created: time.Now().UTC(),
+		job:     j,
+		Count:   jSts["count"],
+		Size:    jSts["size"],
+		Eta:     jSts["eta"],
 	}
 
 	_, err := c.Index().

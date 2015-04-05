@@ -1,5 +1,5 @@
 /*!
- * CUI 2.6.0-rc.1
+ * CUI 2.6.0-rc.2
  *
  * © 2015 Dell Inc.
  * ALL RIGHTS RESERVED.
@@ -3150,15 +3150,6 @@ you can use the generic selector below, but it's slower:
   cursor: default;
   text-decoration: none; }
 
-.checked .cui-checkbox, .selected .cui-checkbox {
-  color: #ffffff; }
-  .checked .cui-checkbox input[type='checkbox'] + span:hover, .selected .cui-checkbox input[type='checkbox'] + span:hover {
-    color: #ffffff; }
-  .checked .cui-checkbox input[type='checkbox']:checked + span, .selected .cui-checkbox input[type='checkbox']:checked + span {
-    color: #ffffff; }
-  .checked .cui-checkbox:hover, .selected .cui-checkbox:hover {
-    color: #ffffff; }
-
 /*
  * A partial implementation of the Ruby list functions from Compass:
  * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
@@ -3243,34 +3234,6 @@ cui-combobox .cui-combobox {
     cui-combobox .cui-combobox .cui-menu .cui-menu-item.cui-combo-selected {
       background-color: #0085c3;
       color: #ffffff; }
-
-/*
- * A partial implementation of the Ruby list functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
- */
-/*
- * A partial implementation of the Ruby constants functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
- */
-/*
- * A partial implementation of the Ruby display functions from Compass:
- * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
- */
-.cui-data-grid {
-  min-height: 150px;
-  position: relative; }
-  .cui-data-grid tbody tr:hover {
-    background-color: #9ad3fd; }
-  .cui-data-grid tbody tr.checked, .cui-data-grid tbody tr:nth-of-type(odd).checked {
-    background-color: #57a8e6;
-    color: #ffffff; }
-  .cui-data-grid tbody tr.selected {
-    background-color: #0085c3 !important;
-    color: #ffffff; }
-  .cui-data-grid .no-rows {
-    font-size: 18px;
-    padding: 20px 0;
-    text-align: center; }
 
 /*
  * A partial implementation of the Ruby list functions from Compass:
@@ -3493,6 +3456,34 @@ cui-combobox .cui-combobox {
  * A partial implementation of the Ruby display functions from Compass:
  * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
  */
+.cui-data-grid {
+  min-height: 150px;
+  position: relative; }
+  .cui-data-grid tbody tr:hover {
+    background-color: #9ad3fd; }
+  .cui-data-grid tbody tr.checked, .cui-data-grid tbody tr:nth-of-type(odd).checked {
+    background-color: #57a8e6;
+    color: #ffffff; }
+  .cui-data-grid tbody tr.selected {
+    background-color: #0085c3 !important;
+    color: #ffffff; }
+  .cui-data-grid .no-rows {
+    font-size: 18px;
+    padding: 20px 0;
+    text-align: center; }
+
+/*
+ * A partial implementation of the Ruby list functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
+ */
+/*
+ * A partial implementation of the Ruby constants functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
+ */
+/*
+ * A partial implementation of the Ruby display functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
+ */
 cui-date-picker {
   display: inline-block; }
 
@@ -3636,7 +3627,8 @@ cui-date-picker {
     margin: 0 0 0 13px;
     vertical-align: middle; }
     .cui-masthead .cui-application-title img {
-      vertical-align: middle; }
+      vertical-align: middle;
+      height: 74px; }
     .cui-masthead .cui-application-title .cui-application-subname {
       color: #cccccc;
       padding-left: 12px; }
@@ -3691,11 +3683,13 @@ body.cui-fixed-masthead {
     .cui-masthead .cui-application-title {
       display: block;
       font-size: 1.52em;
-      line-height: 50px;
+      line-height: 48px;
       margin: 0;
       overflow: hidden;
       text-align: center;
       white-space: nowrap; }
+      .cui-masthead .cui-application-title img {
+        height: 48px; }
     .cui-masthead .cui-drawer, .cui-masthead .cui-navigation-drawer {
       display: inline-block;
       line-height: 48px; }
@@ -5312,6 +5306,81 @@ you can use the generic selector below, but it's slower:
  * A partial implementation of the Ruby display functions from Compass:
  * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
  */
+.cui-rich-text-editor {
+  display: inline-block; }
+  .cui-rich-text-editor ul {
+    list-style: disc; }
+  .cui-rich-text-editor ol {
+    list-style: decimal; }
+  .cui-rich-text-editor .cui-editor-toolbar {
+    background: #eeeeee;
+    border: 1px solid #aaaaaa;
+    border-bottom: 0; }
+    .cui-rich-text-editor .cui-editor-toolbar button {
+      border-right: 1px solid #cccccc;
+      font-size: 12px; }
+      .cui-rich-text-editor .cui-editor-toolbar button::last-of-type {
+        border-right: 0; }
+    .cui-rich-text-editor .cui-editor-toolbar i {
+      font-size: 14px;
+      font-style: normal; }
+  .cui-rich-text-editor .editor {
+    border: 1px solid #aaaaaa;
+    padding: 10px; }
+    .cui-rich-text-editor .editor:focus {
+      border-color: #0085c3;
+      box-shadow: inset 0 0 4px white;
+      outline: none; }
+
+#color-picked {
+  border: 2px solid #000000;
+  height: 8px;
+  padding: 5px;
+  width: 8px; }
+  #color-picked:hover .colorslist {
+    display: block; }
+
+.headingmenu {
+  margin-left: -76px;
+  top: 35px; }
+
+.colormenu {
+  margin-left: -175px;
+  min-width: 175px;
+  top: 35px;
+  width: 175px; }
+
+.colorpicker {
+  display: inline-block;
+  padding: 5px; }
+
+.colorslist {
+  background: #ffffff;
+  border: 1px solid #000000;
+  line-height: 0; }
+  .colorslist span {
+    margin: 0;
+    padding: 0; }
+    .colorslist span.coloroption {
+      display: inline-block;
+      height: 20px;
+      margin: 5px;
+      width: 20px; }
+      .colorslist span.coloroption:hover {
+        border: 2px solid rgba(125, 125, 125, 0.8); }
+
+/*
+ * A partial implementation of the Ruby list functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
+ */
+/*
+ * A partial implementation of the Ruby constants functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
+ */
+/*
+ * A partial implementation of the Ruby display functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
+ */
 .cui-spinner {
   -webkit-animation: spin 1.4s infinite linear;
   -moz-animation: spin 1.4s infinite linear;
@@ -5409,68 +5478,68 @@ you can use the generic selector below, but it's slower:
  * A partial implementation of the Ruby display functions from Compass:
  * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
  */
-.cui-rich-text-editor {
-  display: inline-block; }
-  .cui-rich-text-editor ul {
-    list-style: disc; }
-  .cui-rich-text-editor ol {
-    list-style: decimal; }
-  .cui-rich-text-editor .cui-editor-toolbar {
-    background: #eeeeee;
-    border: 1px solid #aaaaaa;
-    border-bottom: 0; }
-    .cui-rich-text-editor .cui-editor-toolbar button {
-      border-right: 1px solid #cccccc;
-      font-size: 12px; }
-      .cui-rich-text-editor .cui-editor-toolbar button::last-of-type {
-        border-right: 0; }
-    .cui-rich-text-editor .cui-editor-toolbar i {
-      font-size: 14px;
-      font-style: normal; }
-  .cui-rich-text-editor .editor {
-    border: 1px solid #aaaaaa;
-    padding: 10px; }
-    .cui-rich-text-editor .editor:focus {
-      border-color: #0085c3;
-      box-shadow: inset 0 0 4px white;
-      outline: none; }
-
-#color-picked {
-  border: 2px solid #000000;
-  height: 8px;
-  padding: 5px;
-  width: 8px; }
-  #color-picked:hover .colorslist {
-    display: block; }
-
-.headingmenu {
-  margin-left: -76px;
-  top: 35px; }
-
-.colormenu {
-  margin-left: -175px;
-  min-width: 175px;
-  top: 35px;
-  width: 175px; }
-
-.colorpicker {
-  display: inline-block;
-  padding: 5px; }
-
-.colorslist {
-  background: #ffffff;
-  border: 1px solid #000000;
-  line-height: 0; }
-  .colorslist span {
-    margin: 0;
-    padding: 0; }
-    .colorslist span.coloroption {
+table.cui-table.cui-table-fixed-header {
+  align-items: stretch;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column; }
+  table.cui-table.cui-table-fixed-header * {
+    -moz-box-sizing: inherit;
+    box-sizing: inherit; }
+  table.cui-table.cui-table-fixed-header thead {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column; }
+  table.cui-table.cui-table-fixed-header tbody {
+    display: inline-block;
+    overflow-y: scroll; }
+  table.cui-table.cui-table-fixed-header thead > tr, table.cui-table.cui-table-fixed-header tbody > tr, table.cui-table.cui-table-fixed-header tfoot > tr {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; }
+  table.cui-table.cui-table-fixed-header thead, table.cui-table.cui-table-fixed-header tfoot {
+    flex-shrink: 0; }
+  table.cui-table.cui-table-fixed-header th, table.cui-table.cui-table-fixed-header tbody td {
+    display: inline-block;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    width: 20%; }
+  table.cui-table.cui-table-fixed-header tfoot {
+    display: inline-block; }
+    table.cui-table.cui-table-fixed-header tfoot td {
       display: inline-block;
-      height: 20px;
-      margin: 5px;
-      width: 20px; }
-      .colorslist span.coloroption:hover {
-        border: 2px solid rgba(125, 125, 125, 0.8); }
+      width: 100%; }
+
+/*
+ * A partial implementation of the Ruby list functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
+ */
+/*
+ * A partial implementation of the Ruby constants functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
+ */
+/*
+ * A partial implementation of the Ruby display functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
+ */
+cui-row-slave {
+  display: block;
+  overflow: hidden; }
+
+[cui-row-master], .cui-grid-details {
+  border-left: 2px solid transparent; }
+
+[cui-row-master].active, .active + .cui-grid-details {
+  border-left: 2px solid #0085c3; }
+
+[cui-row-master] {
+  cursor: pointer; }
+
+table.cui-table > tbody > tr.cui-grid-details > td {
+  padding: 0; }
+  table.cui-table > tbody > tr.cui-grid-details > td .cui-row-slave-wrap {
+    padding: 8px 12px; }
 
 /*
  * A partial implementation of the Ruby list functions from Compass:
@@ -5495,52 +5564,52 @@ th {
   .cui-table table td, .cui-table table th {
     height: 26px;
     padding: 0 10px; }
-.cui-table th {
-  cursor: pointer;
-  font-weight: bold; }
-  .cui-table th .sort-ascent:after, .cui-table th .sort-descent:after {
-    font-family: 'fa-dell';
-    padding-left: 6px; }
-  .cui-table th .sort-ascent:after {
-    content: '\f106'; }
-  .cui-table th .sort-descent:after {
-    content: '\f107'; }
-  .cui-table th:hover {
-    background-color: #9ad3fd; }
-.cui-table tbody {
-  cursor: cell; }
-  .cui-table tbody tr:nth-of-type(odd) {
-    background-color: #eeeeee; }
-  .cui-table tbody tr:hover {
-    background-color: #9ad3fd; }
-  .cui-table tbody tr.selected {
-    background-color: #0085c3;
-    color: #ffffff; }
-.cui-table .pagination {
-  margin-top: 6px;
-  text-align: center; }
-  .cui-table .pagination li {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-color: #e4e4e4;
+  .cui-table table th {
     cursor: pointer;
-    display: inline-block;
-    height: 28px;
-    padding: 5px 10px; }
-    .cui-table .pagination li a {
-      color: #000000;
-      display: block;
-      margin: -5px -10px;
-      padding: 5px 10px;
-      text-decoration: none; }
-    .cui-table .pagination li:hover {
+    font-weight: bold; }
+    .cui-table table th .sort-ascent:after, .cui-table table th .sort-descent:after {
+      font-family: 'fa-dell';
+      padding-left: 6px; }
+    .cui-table table th .sort-ascent:after {
+      content: '\f106'; }
+    .cui-table table th .sort-descent:after {
+      content: '\f107'; }
+    .cui-table table th:hover {
+      background-color: #9ad3fd; }
+  .cui-table table tbody {
+    cursor: cell; }
+    .cui-table table tbody tr:nth-of-type(odd) {
       background-color: #eeeeee; }
-    .cui-table .pagination li.active {
-      background-color: #0085c3; }
-      .cui-table .pagination li.active a {
-        color: #ffffff; }
+    .cui-table table tbody tr:hover {
+      background-color: #9ad3fd; }
+    .cui-table table tbody tr.selected {
+      background-color: #0085c3;
+      color: #ffffff; }
+  .cui-table table .pagination {
+    margin-top: 6px;
+    text-align: center; }
+    .cui-table table .pagination li {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      background-color: #e4e4e4;
+      cursor: pointer;
+      display: inline-block;
+      height: 28px;
+      padding: 5px 10px; }
+      .cui-table table .pagination li a {
+        color: #000000;
+        display: block;
+        margin: -5px -10px;
+        padding: 5px 10px;
+        text-decoration: none; }
+      .cui-table table .pagination li:hover {
+        background-color: #eeeeee; }
+      .cui-table table .pagination li.active {
+        background-color: #0085c3; }
+        .cui-table table .pagination li.active a {
+          color: #ffffff; }
 .cui-table .smart-table-global-search {
   padding-bottom: 10px; }
   .cui-table .smart-table-global-search input {
@@ -5552,36 +5621,55 @@ th {
     .cui-table .smart-table-global-search input:focus {
       outline: none; }
 
-/*
- * A partial implementation of the Ruby list functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
- */
-/*
- * A partial implementation of the Ruby constants functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
- */
-/*
- * A partial implementation of the Ruby display functions from Compass:
- * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
- */
-.cui-tabset {
-  height: 100%;
-  position: relative; }
-  .cui-tabset .cui-tabs {
-    border-bottom: 1px solid #888888;
-    margin: 0 0 8px;
-    padding: 0; }
-  .cui-tabset .cui-horizontal-list .cui-tab:last-child {
-    margin-right: 0; }
-  .cui-tabset .cui-vertical-list .cui-tab {
-    margin-bottom: 8px;
-    padding: 2px 14px; }
-    .cui-tabset .cui-vertical-list .cui-tab:hover {
-      border-right: 2px solid #0085c3;
-      padding-right: 12px; }
-  .cui-tabset .cui-vertical-list + .cui-tab-container {
+table.cui-table > thead > tr > th {
+  border-bottom: 1px solid #aaaaaa;
+  text-align: left; }
+  table.cui-table > thead > tr > th.st-sort-descent:before {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg); }
+table.cui-table > thead > tr > th.st-sort-ascent:before, table.cui-table > thead > tr > th.st-sort-descent:before {
+  content: '\f0de';
+  display: inline-block;
+  font-family: 'fa-dell';
+  margin-right: 5px; }
+table.cui-table > thead > tr > th, table.cui-table > tbody > tr > td {
+  overflow: hidden;
+  padding: 8px 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+table.cui-table > tbody .cui-row-even, table.cui-table.cui-table-striped > tbody > tr:nth-of-type(even) {
+  background-color: #eeeeee; }
+table.cui-table > tbody > tr.cui-selected-row, table.cui-table.cui-table-striped > tbody > tr.cui-selected-row {
+  background-color: #0085c3;
+  color: #ffffff; }
+table.cui-table .pagination {
+  margin-top: 6px;
+  text-align: center; }
+  table.cui-table .pagination li {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #e4e4e4;
+    cursor: pointer;
     display: inline-block;
-    vertical-align: top; }
+    height: 28px;
+    padding: 5px 10px; }
+    table.cui-table .pagination li a {
+      color: #000000;
+      display: block;
+      margin: -5px -10px;
+      padding: 5px 10px;
+      text-decoration: none; }
+    table.cui-table .pagination li:hover {
+      background-color: #eeeeee; }
+    table.cui-table .pagination li.active {
+      background-color: #0085c3; }
+      table.cui-table .pagination li.active a {
+        color: #ffffff; }
 
 /*
  * A partial implementation of the Ruby list functions from Compass:
@@ -5629,6 +5717,82 @@ th {
       color: #cccccc; }
     .cui-textarea[disabled]::-webkit-input-placeholder {
       color: #cccccc; }
+
+/*
+ * A partial implementation of the Ruby list functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
+ */
+/*
+ * A partial implementation of the Ruby constants functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
+ */
+/*
+ * A partial implementation of the Ruby display functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
+ */
+.cui-tabset {
+  height: 100%;
+  position: relative; }
+  .cui-tabset .cui-tabs {
+    border-bottom: 1px solid #888888;
+    margin: 0 0 8px;
+    padding: 0; }
+  .cui-tabset .cui-horizontal-list .cui-tab:last-child {
+    margin-right: 0; }
+  .cui-tabset .cui-vertical-list .cui-tab {
+    margin-bottom: 8px;
+    padding: 2px 14px; }
+    .cui-tabset .cui-vertical-list .cui-tab:hover {
+      border-right: 2px solid #0085c3;
+      padding-right: 12px; }
+  .cui-tabset .cui-vertical-list + .cui-tab-container {
+    display: inline-block;
+    vertical-align: top; }
+
+/*
+ * A partial implementation of the Ruby list functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
+ */
+/*
+ * A partial implementation of the Ruby constants functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
+ */
+/*
+ * A partial implementation of the Ruby display functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
+ */
+.cui-time {
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+  .cui-time .cui-time-angle-up, .cui-time .cui-time-angle-down {
+    color: #0085c3;
+    cursor: pointer;
+    font-size: 2em;
+    height: 1.5em;
+    line-height: 1.5em;
+    width: 1.5em; }
+    .cui-time .cui-time-angle-up:hover, .cui-time .cui-time-angle-down:hover {
+      color: #000000; }
+  .cui-time .cui-time-text {
+    font-size: 2em; }
+  .cui-time .cui-time-show-seconds {
+    display: inline-block; }
+  .cui-time .cui-time-hour, .cui-time .cui-time-colon, .cui-time .cui-time-minute, .cui-time .cui-time-second, .cui-time .cui-time-meridian {
+    display: inline-block;
+    height: 7em; }
+  .cui-time .cui-time-meridian {
+    line-height: 7em;
+    vertical-align: top; }
+    .cui-time .cui-time-meridian > span {
+      cursor: pointer;
+      font-size: 1.25em;
+      padding: 0.5em; }
+  .cui-time .cui-time-colon {
+    line-height: 7em;
+    vertical-align: top; }
 
 /*
  * A partial implementation of the Ruby list functions from Compass:
@@ -5748,51 +5912,6 @@ th {
   .cui-textbox[type="number"]::-webkit-inner-spin-button, .cui-textbox[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0; }
-
-/*
- * A partial implementation of the Ruby list functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
- */
-/*
- * A partial implementation of the Ruby constants functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
- */
-/*
- * A partial implementation of the Ruby display functions from Compass:
- * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
- */
-.cui-time {
-  text-align: center;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none; }
-  .cui-time .cui-time-angle-up, .cui-time .cui-time-angle-down {
-    color: #0085c3;
-    cursor: pointer;
-    font-size: 2em;
-    height: 1.5em;
-    line-height: 1.5em;
-    width: 1.5em; }
-    .cui-time .cui-time-angle-up:hover, .cui-time .cui-time-angle-down:hover {
-      color: #000000; }
-  .cui-time .cui-time-text {
-    font-size: 2em; }
-  .cui-time .cui-time-show-seconds {
-    display: inline-block; }
-  .cui-time .cui-time-hour, .cui-time .cui-time-colon, .cui-time .cui-time-minute, .cui-time .cui-time-second, .cui-time .cui-time-meridian {
-    display: inline-block;
-    height: 7em; }
-  .cui-time .cui-time-meridian {
-    line-height: 7em;
-    vertical-align: top; }
-    .cui-time .cui-time-meridian > span {
-      cursor: pointer;
-      font-size: 1.25em;
-      padding: 0.5em; }
-  .cui-time .cui-time-colon {
-    line-height: 7em;
-    vertical-align: top; }
 
 /*
  * A partial implementation of the Ruby list functions from Compass:
@@ -7357,219 +7476,6 @@ a[href].cui-select-search-choice-close {
  * A partial implementation of the Ruby display functions from Compass:
  * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
  */
-cui-master-detail {
-  display: block;
-  position: relative; }
-  cui-master-detail.cui-collapse-detail cui-master-view {
-    width: calc(100% - 40px); }
-  cui-master-detail:not(.cui-collapse-detail) cui-master-view {
-    width: calc(70% - 10px); }
-  cui-master-detail.cui-collapse-detail cui-detail-view {
-    width: 30px; }
-    cui-master-detail.cui-collapse-detail cui-detail-view .cui-detail-content {
-      display: none; }
-    cui-master-detail.cui-collapse-detail cui-detail-view .cui-detail-header {
-      font-size: 14px;
-      line-height: 30px;
-      position: absolute;
-      top: 30px;
-      -webkit-transform: rotate(90deg);
-      -moz-transform: rotate(90deg);
-      -ms-transform: rotate(90deg);
-      -o-transform: rotate(90deg);
-      transform: rotate(90deg); }
-      cui-master-detail.cui-collapse-detail cui-detail-view .cui-detail-header .cui-detail-light {
-        color: #6b6b6b; }
-  cui-master-detail:not(.cui-collapse-detail) cui-detail-view {
-    width: 30%; }
-    cui-master-detail:not(.cui-collapse-detail) cui-detail-view .cui-collapse-detail-button {
-      -webkit-transform: rotate(180deg);
-      -moz-transform: rotate(180deg);
-      -ms-transform: rotate(180deg);
-      -o-transform: rotate(180deg);
-      transform: rotate(180deg); }
-    cui-master-detail:not(.cui-collapse-detail) cui-detail-view .cui-detail-content {
-      margin: 0 10px 10px; }
-    cui-master-detail:not(.cui-collapse-detail) cui-detail-view .cui-detail-header {
-      line-height: 30px;
-      overflow: hidden;
-      padding-left: 10px; }
-
-cui-master-view {
-  display: inline-block;
-  margin-right: 10px;
-  transition: width 250ms ease-in-out; }
-  cui-master-view.vertical {
-    width: 100%; }
-  cui-master-view.horizontal {
-    float: left; }
-
-cui-detail-view {
-  background-color: #f2f2f2;
-  float: right;
-  height: 100%;
-  position: absolute;
-  transition: width 250ms ease-in-out; }
-  cui-detail-view .cui-collapse-detail-button {
-    color: #0085c3;
-    cursor: pointer;
-    float: right;
-    font-family: 'fa-dell';
-    font-size: 20px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    -webkit-transition: -webkit-transform 250ms;
-    -webkit-transition-delay: ease-in-out;
-    -moz-transition: -moz-transform 250ms ease-in-out;
-    -o-transition: -o-transform 250ms ease-in-out;
-    transition: transform 250ms ease-in-out;
-    width: 30px; }
-    cui-detail-view .cui-collapse-detail-button:before {
-      content: '\f104'; }
-  cui-detail-view .cui-detail-header {
-    text-overflow: ellipsis;
-    -webkit-transform-origin: 15px 50%;
-    -moz-transform-origin: 15px 50%;
-    -ms-transform-origin: 15px 50%;
-    -o-transform-origin: 15px 50%;
-    transform-origin: 15px 50%;
-    white-space: nowrap; }
-  cui-detail-view table.cui-detail-table {
-    width: 100%; }
-    cui-detail-view table.cui-detail-table tr {
-      border-bottom: 1px solid #dddddd;
-      height: 25px; }
-
-/*
- * A partial implementation of the Ruby list functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
- */
-/*
- * A partial implementation of the Ruby constants functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
- */
-/*
- * A partial implementation of the Ruby display functions from Compass:
- * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
- */
-cui-wizard {
-  display: block; }
-
-.cui-wizard {
-  height: 100%;
-  width: 100%; }
-  .cui-wizard .cui-wizard-step-buttons, .cui-wizard .cui-wizard-content {
-    display: inline-block; }
-  .cui-wizard .cui-wizard-step-buttons {
-    height: 100%;
-    overflow: auto;
-    vertical-align: top;
-    width: 170px; }
-    .cui-wizard .cui-wizard-step-buttons .cui-wizard-angle {
-      left: 0;
-      line-height: 30px;
-      position: absolute;
-      text-align: center;
-      top: 0;
-      width: 20px; }
-    .cui-wizard .cui-wizard-step-buttons ul {
-      list-style: none;
-      margin: 0;
-      padding: 0; }
-      .cui-wizard .cui-wizard-step-buttons ul li {
-        cursor: pointer;
-        height: 30px;
-        line-height: 30px;
-        position: relative; }
-        .cui-wizard .cui-wizard-step-buttons ul li:hover {
-          background-color: #9ad3fd; }
-        .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-check {
-          color: #7ab800; }
-        .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-x {
-          color: #ce1126; }
-        .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-check, .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-x {
-          position: absolute;
-          right: 8px;
-          top: 0; }
-        .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-step-title {
-          display: block;
-          left: 20px;
-          overflow: hidden;
-          position: absolute;
-          right: 20px;
-          text-overflow: ellipsis;
-          top: 0;
-          white-space: nowrap; }
-        .cui-wizard .cui-wizard-step-buttons ul li.cui-wizard-active {
-          background-color: #0085c3;
-          color: #ffffff; }
-          .cui-wizard .cui-wizard-step-buttons ul li.cui-wizard-active:hover {
-            background-color: #0085c3; }
-        .cui-wizard .cui-wizard-step-buttons ul li.cui-wizard-disabled {
-          color: #cccccc;
-          cursor: not-allowed; }
-          .cui-wizard .cui-wizard-step-buttons ul li.cui-wizard-disabled:hover {
-            background-color: #ffffff; }
-  .cui-wizard .cui-wizard-content {
-    border-left: 1px solid #cccccc;
-    height: 100%;
-    padding-bottom: 43px;
-    padding-left: 10px;
-    position: relative;
-    width: calc(100% - 170px); }
-    .cui-wizard .cui-wizard-content .cui-wizard-transclude {
-      height: 100%;
-      overflow: auto; }
-    .cui-wizard .cui-wizard-content .cui-wizard-navigation {
-      bottom: 0;
-      height: 33px;
-      left: 0;
-      margin-top: 10px;
-      position: absolute;
-      right: 0; }
-      .cui-wizard .cui-wizard-content .cui-wizard-navigation .cui-wizard-step-count {
-        float: left;
-        line-height: 33px;
-        margin-left: 10px; }
-      .cui-wizard .cui-wizard-content .cui-wizard-navigation .cui-wizard-nav-buttons {
-        float: right; }
-        .cui-wizard .cui-wizard-content .cui-wizard-navigation .cui-wizard-nav-buttons .cui-wizard-button-divider {
-          border-left: 1px solid #cccccc;
-          display: inline-block;
-          height: 32px;
-          margin: 0 5px 0 10px;
-          vertical-align: middle; }
-        .cui-wizard .cui-wizard-content .cui-wizard-navigation .cui-wizard-nav-buttons .cui-wizard-nav-button {
-          margin-left: 5px; }
-
-.cui-modal:not(.cui-wizard-modal-wrapper) .cui-wizard {
-  height: 500px; }
-
-.cui-modal.cui-wizard-modal-wrapper {
-  height: 560px;
-  overflow: hidden; }
-  .cui-modal.cui-wizard-modal-wrapper .cui-wizard {
-    bottom: 30px;
-    height: auto;
-    left: 30px;
-    position: absolute;
-    right: 30px;
-    top: 30px;
-    width: auto; }
-
-/*
- * A partial implementation of the Ruby list functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
- */
-/*
- * A partial implementation of the Ruby constants functions from Compass:
- * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
- */
-/*
- * A partial implementation of the Ruby display functions from Compass:
- * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
- */
 .cui-start-screen {
   overflow: auto;
   position: absolute;
@@ -7773,6 +7679,219 @@ cui-wizard {
     line-height: 50px; }
   .cui-start-screen .cui-start-screen-push {
     height: 50px; } }
+
+/*
+ * A partial implementation of the Ruby list functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
+ */
+/*
+ * A partial implementation of the Ruby constants functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
+ */
+/*
+ * A partial implementation of the Ruby display functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
+ */
+cui-master-detail {
+  display: block;
+  position: relative; }
+  cui-master-detail.cui-collapse-detail cui-master-view {
+    width: calc(100% - 40px); }
+  cui-master-detail:not(.cui-collapse-detail) cui-master-view {
+    width: calc(70% - 10px); }
+  cui-master-detail.cui-collapse-detail cui-detail-view {
+    width: 30px; }
+    cui-master-detail.cui-collapse-detail cui-detail-view .cui-detail-content {
+      display: none; }
+    cui-master-detail.cui-collapse-detail cui-detail-view .cui-detail-header {
+      font-size: 14px;
+      line-height: 30px;
+      position: absolute;
+      top: 30px;
+      -webkit-transform: rotate(90deg);
+      -moz-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      -o-transform: rotate(90deg);
+      transform: rotate(90deg); }
+      cui-master-detail.cui-collapse-detail cui-detail-view .cui-detail-header .cui-detail-light {
+        color: #6b6b6b; }
+  cui-master-detail:not(.cui-collapse-detail) cui-detail-view {
+    width: 30%; }
+    cui-master-detail:not(.cui-collapse-detail) cui-detail-view .cui-collapse-detail-button {
+      -webkit-transform: rotate(180deg);
+      -moz-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+      -o-transform: rotate(180deg);
+      transform: rotate(180deg); }
+    cui-master-detail:not(.cui-collapse-detail) cui-detail-view .cui-detail-content {
+      margin: 0 10px 10px; }
+    cui-master-detail:not(.cui-collapse-detail) cui-detail-view .cui-detail-header {
+      line-height: 30px;
+      overflow: hidden;
+      padding-left: 10px; }
+
+cui-master-view {
+  display: inline-block;
+  margin-right: 10px;
+  transition: width 250ms ease-in-out; }
+  cui-master-view.vertical {
+    width: 100%; }
+  cui-master-view.horizontal {
+    float: left; }
+
+cui-detail-view {
+  background-color: #f2f2f2;
+  float: right;
+  height: 100%;
+  position: absolute;
+  transition: width 250ms ease-in-out; }
+  cui-detail-view .cui-collapse-detail-button {
+    color: #0085c3;
+    cursor: pointer;
+    float: right;
+    font-family: 'fa-dell';
+    font-size: 20px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    -webkit-transition: -webkit-transform 250ms;
+    -webkit-transition-delay: ease-in-out;
+    -moz-transition: -moz-transform 250ms ease-in-out;
+    -o-transition: -o-transform 250ms ease-in-out;
+    transition: transform 250ms ease-in-out;
+    width: 30px; }
+    cui-detail-view .cui-collapse-detail-button:before {
+      content: '\f104'; }
+  cui-detail-view .cui-detail-header {
+    text-overflow: ellipsis;
+    -webkit-transform-origin: 15px 50%;
+    -moz-transform-origin: 15px 50%;
+    -ms-transform-origin: 15px 50%;
+    -o-transform-origin: 15px 50%;
+    transform-origin: 15px 50%;
+    white-space: nowrap; }
+  cui-detail-view table.cui-detail-table {
+    width: 100%; }
+    cui-detail-view table.cui-detail-table tr {
+      border-bottom: 1px solid #dddddd;
+      height: 25px; }
+
+/*
+ * A partial implementation of the Ruby list functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
+ */
+/*
+ * A partial implementation of the Ruby constants functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/constants.rb
+ */
+/*
+ * A partial implementation of the Ruby display functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/core/lib/compass/core/sass_extensions/functions/display.rb
+ */
+cui-wizard {
+  display: block; }
+
+.cui-wizard {
+  height: 100%;
+  width: 100%; }
+  .cui-wizard .cui-wizard-step-buttons, .cui-wizard .cui-wizard-content {
+    display: inline-block; }
+  .cui-wizard .cui-wizard-step-buttons {
+    height: 100%;
+    overflow: auto;
+    vertical-align: top;
+    width: 170px; }
+    .cui-wizard .cui-wizard-step-buttons .cui-wizard-angle {
+      left: 0;
+      line-height: 30px;
+      position: absolute;
+      text-align: center;
+      top: 0;
+      width: 20px; }
+    .cui-wizard .cui-wizard-step-buttons ul {
+      list-style: none;
+      margin: 0;
+      padding: 0; }
+      .cui-wizard .cui-wizard-step-buttons ul li {
+        cursor: pointer;
+        height: 30px;
+        line-height: 30px;
+        position: relative; }
+        .cui-wizard .cui-wizard-step-buttons ul li:hover {
+          background-color: #9ad3fd; }
+        .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-check {
+          color: #7ab800; }
+        .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-x {
+          color: #ce1126; }
+        .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-check, .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-x {
+          position: absolute;
+          right: 8px;
+          top: 0; }
+        .cui-wizard .cui-wizard-step-buttons ul li .cui-wizard-step-title {
+          display: block;
+          left: 20px;
+          overflow: hidden;
+          position: absolute;
+          right: 20px;
+          text-overflow: ellipsis;
+          top: 0;
+          white-space: nowrap; }
+        .cui-wizard .cui-wizard-step-buttons ul li.cui-wizard-active {
+          background-color: #0085c3;
+          color: #ffffff; }
+          .cui-wizard .cui-wizard-step-buttons ul li.cui-wizard-active:hover {
+            background-color: #0085c3; }
+        .cui-wizard .cui-wizard-step-buttons ul li.cui-wizard-disabled {
+          color: #cccccc;
+          cursor: not-allowed; }
+          .cui-wizard .cui-wizard-step-buttons ul li.cui-wizard-disabled:hover {
+            background-color: #ffffff; }
+  .cui-wizard .cui-wizard-content {
+    border-left: 1px solid #cccccc;
+    height: 100%;
+    padding-bottom: 43px;
+    padding-left: 10px;
+    position: relative;
+    width: calc(100% - 170px); }
+    .cui-wizard .cui-wizard-content .cui-wizard-transclude {
+      height: 100%;
+      overflow: auto; }
+    .cui-wizard .cui-wizard-content .cui-wizard-navigation {
+      bottom: 0;
+      height: 33px;
+      left: 0;
+      margin-top: 10px;
+      position: absolute;
+      right: 0; }
+      .cui-wizard .cui-wizard-content .cui-wizard-navigation .cui-wizard-step-count {
+        float: left;
+        line-height: 33px;
+        margin-left: 10px; }
+      .cui-wizard .cui-wizard-content .cui-wizard-navigation .cui-wizard-nav-buttons {
+        float: right; }
+        .cui-wizard .cui-wizard-content .cui-wizard-navigation .cui-wizard-nav-buttons .cui-wizard-button-divider {
+          border-left: 1px solid #cccccc;
+          display: inline-block;
+          height: 32px;
+          margin: 0 5px 0 10px;
+          vertical-align: middle; }
+        .cui-wizard .cui-wizard-content .cui-wizard-navigation .cui-wizard-nav-buttons .cui-wizard-nav-button {
+          margin-left: 5px; }
+
+.cui-modal:not(.cui-wizard-modal-wrapper) .cui-wizard {
+  height: 500px; }
+
+.cui-modal.cui-wizard-modal-wrapper {
+  height: 560px;
+  overflow: hidden; }
+  .cui-modal.cui-wizard-modal-wrapper .cui-wizard {
+    bottom: 30px;
+    height: auto;
+    left: 30px;
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    width: auto; }
 
 /*
  * A partial implementation of the Ruby list functions from Compass:
