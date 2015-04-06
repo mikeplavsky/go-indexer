@@ -136,8 +136,7 @@ func getJobs() (int, string) {
 
 	out, err := conn.Search().
 		Index("jobs").
-		Debug(debug).
-		Pretty(debug).
+		Size(PageSize).
 		Do()
 
 	if err != nil {

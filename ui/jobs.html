@@ -2,7 +2,7 @@
 
 <table st-table="jobs" class="cui-table">
     <thead>
-        <th st-sort="Created">Started</th>
+        <th>Started</th>
         <th>Customer</th>
         <th>From</th>
         <th>To</th>
@@ -11,7 +11,7 @@
         <th>Eta</th>
     </thead>
     <tbody>
-        <tr ng-repeat="job in jobsCollection">
+        <tr ng-repeat="job in jobsCollection | orderBy:'-Created'">
             <td>{{job.Created | date:'medium'}}</td>
             <td>{{job.Customer | limitTo: 8}}</td>
             <td>{{job.From | date}}</td>
