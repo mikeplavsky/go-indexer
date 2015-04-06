@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"runtime"
 
+	"go-indexer/go-send/sender"
+
 	"github.com/dustin/go-humanize"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/binding"
@@ -76,7 +78,7 @@ func main() {
 	num := runtime.NumCPU()
 	runtime.GOMAXPROCS(num)
 
-	//sender.Init()
+	sender.Init()
 
 	m := newServer()
 	m.Run()
