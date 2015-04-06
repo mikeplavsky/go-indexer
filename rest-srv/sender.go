@@ -40,7 +40,7 @@ func (q) qNum() int {
 }
 
 func sendJob(j job) {
-	//sendJobImpl(j, q{})
+	sendJobImpl(j, q{})
 }
 
 func saveJob(j job) error {
