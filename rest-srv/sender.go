@@ -40,12 +40,7 @@ func (q) qNum() int {
 }
 
 func sendJob(j job) {
-
-	log.Println("Sending", j)
-
-	go saveJob(j)
 	//sendJobImpl(j, q{})
-
 }
 
 func saveJob(j job) error {
@@ -96,6 +91,8 @@ func saveJob(j job) error {
 	if err != nil {
 		return err
 	}
+
+	c.Refresh(idx).Do()
 
 	return nil
 

@@ -36,8 +36,12 @@ func getJob(job job) (int, string) {
 }
 
 func startJob(job job) (int, string) {
+
 	go sendJob(job)
+	saveJob(job)
+
 	return http.StatusOK, "started"
+
 }
 
 //todo: show error stacktrace in debug localhost, show empty 500 in production

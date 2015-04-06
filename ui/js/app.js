@@ -126,7 +126,7 @@ angular.module('myApp', ['cui'])
                     .then(function (res) {
 
                         $scope.refreshEta();
-                        $interval($scope.refreshJobs, 10000, 1)
+                        $scope.refreshJobs();
 
                     },
                     function (err) {
