@@ -16,16 +16,19 @@ type event struct {
 	num  int
 }
 
-// Parse is parser interface used in bulk request generation
-type Parse func(
-	path, // file you parse
-	line string,
-	num int, // line number
-) (res map[string]interface{}, err error)
+type Parser interface {
+	Next(line string) bool
+
+	Parse(path,
+		line string,
+		num int) (
+		res map[string]interface{},
+		err error)
+}
 
 func worker(
 	path string,
-	parse Parse,
+	parser Parser,
 	in <-chan event,
 	out chan<- string,
 	done chan<- bool) {
@@ -44,7 +47,7 @@ func worker(
 				return
 			}
 
-			obj, err := parse(
+			obj, err := parser.Parse(
 				path,
 				e.line,
 				e.num)
@@ -78,7 +81,7 @@ func worker(
 func Convert(
 	path string,
 	r io.Reader,
-	parse Parse,
+	parser Parser,
 	out chan<- string) {
 
 	num := runtime.GOMAXPROCS(-1)
@@ -89,7 +92,7 @@ func Convert(
 	for i := 0; i < num; i++ {
 		go worker(
 			path,
-			parse,
+			parser,
 			in,
 			out,
 			done)

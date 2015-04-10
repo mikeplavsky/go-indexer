@@ -14,7 +14,13 @@ import (
 
 var S3_PATH string
 
-func parse(
+type l struct{}
+
+func (l) Next(string) bool {
+	return true
+}
+
+func (l) Parse(
 	path,
 	i string,
 	num int) (map[string]interface{}, error) {
@@ -62,7 +68,7 @@ func main() {
 	go converter.Convert(
 		S3_PATH,
 		os.Stdin,
-		parse,
+		l{},
 		out)
 
 	for v := range out {

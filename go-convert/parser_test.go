@@ -11,7 +11,9 @@ import (
 
 func TestError(t *testing.T) {
 
-	_, err := parse("testing", "", 0)
+        l := l{}
+
+	_, err := l.Parse("testing", "", 0)
 	assert.NotNil(t, err, "parsing does not return error")
 
 }
@@ -64,7 +66,7 @@ func callConvert(in string) []string {
 	r := strings.NewReader(in)
 
 	out := make(chan string)
-	go converter.Convert("testing", r, parse, out)
+	go converter.Convert("testing", r, l{}, out)
 
 	res := []string{}
 	for v := range out {

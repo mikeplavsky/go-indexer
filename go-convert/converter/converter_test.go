@@ -12,11 +12,11 @@ import (
 
 func callConvert(
 	in string,
-	parse Parse) []string {
+	parser Parser) []string {
 	r := strings.NewReader(in)
 
 	out := make(chan string)
-	go Convert("testing", r, parse, out)
+	go Convert("testing", r, parser, out)
 
 	res := []string{}
 	for v := range out {
