@@ -73,7 +73,13 @@ func parseLine(
 	return dataContract, nil
 }
 
-func parse(
+type s3l struct{}
+
+func (s3l) Next(string) bool {
+	return true
+}
+
+func (s3l) Parse(
 	path,
 	i string,
 	num int) (map[string]interface{}, error) {
@@ -91,7 +97,7 @@ func main() {
 	go converter.Convert(
 		"",
 		os.Stdin,
-		parse,
+		s3l{},
 		out)
 
 	for v := range out {

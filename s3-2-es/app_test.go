@@ -49,7 +49,10 @@ func TestParseTimeWithError(t *testing.T) {
 
 func TestParseLine(t *testing.T) {
 
-	res, err := parse("dummy", "1010760	buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip", 0)
+	res, err := s3l{}.Parse(
+		"dummy",
+		"1010760	buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip",
+		0)
 
 	assert.Equal(t, nil, err, fmt.Sprintf("they should be equal. Error: %s", err))
 	assert.Equal(t, "1010760", res["size"])
@@ -72,7 +75,7 @@ func TestParseLineWithError(t *testing.T) {
 	}
 
 	for _, testCase := range cases {
-		res, err := parse("dummy", testCase, 0)
+		res, err := s3l{}.Parse("dummy", testCase, 0)
 		assert.NotNil(t, err, fmt.Sprintf("expected error, but received %s", res))
 	}
 }

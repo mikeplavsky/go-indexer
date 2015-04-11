@@ -11,10 +11,34 @@ import (
 
 func TestError(t *testing.T) {
 
-        l := l{}
+	l := l{}
 
 	_, err := l.Parse("testing", "", 0)
 	assert.NotNil(t, err, "parsing does not return error")
+
+}
+
+func TestNext(t *testing.T) {
+
+	tests := []struct {
+		line string
+		next bool
+	}{
+		{"2014 00:15", true},
+		{"2015 10:15", true},
+		{" System ", false},
+		{"at System", false},
+		{"[inner] at", false},
+	}
+
+	for _, v := range tests {
+
+		assert.Equal(t,
+			v.next,
+			l{}.Next(v.line),
+			v.line)
+
+	}
 
 }
 

@@ -101,17 +101,37 @@ func Convert(
 	scanner := bufio.NewScanner(r)
 
 	l := 1
+	msg := ""
 
 	for scanner.Scan() {
 
-		in <- event{
-			scanner.Text(),
-			l,
+		line := scanner.Text()
+
+		if len(msg) == 0 {
+
+			msg = line
+			continue
 		}
 
-		l++
+		if !parser.Next(line) {
+
+			msg += "\n"
+			msg += line
+
+		} else {
+
+			in <- event{
+				msg,
+				l}
+			l++
+			msg = line
+		}
 
 	}
+
+	in <- event{
+		msg,
+		l}
 
 	close(in)
 

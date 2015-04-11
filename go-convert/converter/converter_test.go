@@ -33,6 +33,113 @@ func callConvert(
 
 }
 
+type l struct {
+	n func(string) bool
+	p func(path,
+		line string,
+		num int) (
+		res map[string]interface{},
+		err error)
+}
+
+func (l l) Next(line string) bool {
+
+	if l.n != nil {
+		return l.n(line)
+	}
+
+	return true
+}
+
+func (l l) Parse(path,
+	line string,
+	num int) (
+	map[string]interface{},
+	error) {
+	return l.p(path, line, num)
+}
+
+func TestNextLine(t *testing.T) {
+
+	var parseStub = func(
+		path,
+		line string,
+		num int) (map[string]interface{}, error) {
+
+		res := map[string]interface{}{
+			"path": path,
+			"line": line,
+			"num":  num,
+		}
+
+		return res, nil
+
+	}
+
+	var next = func(l string) bool {
+		return strings.HasPrefix(l, "20")
+	}
+
+	out := callConvert(
+		"2015 one\ntwo\n2015 three\nfour\nat\n2015 five",
+		l{p: parseStub, n: next})
+
+	t.Log(out)
+	assert.Equal(t, 6, len(out))
+
+	// index line between parsed lines is inserted
+	outLineNums := []int{
+		1,
+		3,
+		5}
+
+	inFile := map[float64]string{
+		//line number -> line content
+		1: "2015 one\ntwo",
+		2: "2015 three\nfour\nat",
+		3: "2015 five",
+	}
+
+	isParsed := map[float64]bool{}
+
+	fileIDs := []string{}
+
+	for _, outLineNum := range outLineNums {
+
+		outLine := out[outLineNum]
+		t.Log(outLine)
+
+		var out map[string]interface{}
+
+		err := json.Unmarshal([]byte(outLine), &out)
+		assert.Nil(t, err, "Unable to parse JSON: "+outLine)
+
+		assert.Equal(t, "testing", out["path"], "Wrong parsing")
+
+		n := out["num"].(float64)
+		assert.Equal(t, inFile[n], out["line"], "Wrong parsing")
+
+		fileIDs = append(fileIDs, out["fileId"].(string))
+		isParsed[n] = true
+
+	}
+
+	for _, fileID := range fileIDs {
+		assert.NotEmpty(t, fileID)
+		assert.Equal(t, fileIDs[0], fileID,
+			"lines from the same file should have the same fileID")
+	}
+
+	for lineNum := range inFile {
+		if !isParsed[lineNum] {
+			t.Errorf(
+				"Line %v has not been parsed",
+				lineNum)
+		}
+	}
+
+}
+
 func TestValue(t *testing.T) {
 
 	var parseStub = func(
@@ -50,7 +157,7 @@ func TestValue(t *testing.T) {
 
 	}
 
-	out := callConvert("one\ntwo\nthree", parseStub)
+	out := callConvert("one\ntwo\nthree", l{p: parseStub})
 
 	// index line between parsed lines is inserted
 	outLineNums := []int{
@@ -68,11 +175,14 @@ func TestValue(t *testing.T) {
 	isParsed := map[float64]bool{}
 
 	fileIDs := []string{}
+
 	for _, outLineNum := range outLineNums {
+
 		outLine := out[outLineNum]
 		t.Log(outLine)
 
 		var out map[string]interface{}
+
 		err := json.Unmarshal([]byte(outLine), &out)
 		assert.Nil(t, err, "Unable to parse JSON: "+outLine)
 
@@ -83,6 +193,7 @@ func TestValue(t *testing.T) {
 
 		fileIDs = append(fileIDs, out["fileId"].(string))
 		isParsed[n] = true
+
 	}
 
 	for _, fileID := range fileIDs {
@@ -110,7 +221,8 @@ func TestNextIndex(t *testing.T) {
 		return nil, nil
 	}
 
-	out := callConvert("one\ntwo\nthree", parseDummy)
+	out := callConvert(
+		"one\ntwo\nthree", l{p: parseDummy})
 
 	lineIds := []string{}
 	for _, outLineNum := range []int{0, 2, 4} {
@@ -157,7 +269,8 @@ func TestParsingError(t *testing.T) {
 
 	}
 
-	out := callConvert("one\ntwo\nthree", parseStub)
+	out := callConvert(
+		"one\ntwo\nthree", l{p: parseStub})
 
 	// (3 total - 1 failed) * (1 index line + 1 content line)
 	assert.Equal(t, 4, len(out), "Wrong length")
