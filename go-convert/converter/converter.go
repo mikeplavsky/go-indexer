@@ -101,6 +101,8 @@ func Convert(
 	scanner := bufio.NewScanner(r)
 
 	l := 1
+	msgL := 1
+
 	msg := ""
 
 	for scanner.Scan() {
@@ -110,6 +112,7 @@ func Convert(
 		if len(msg) == 0 {
 
 			msg = line
+			l++
 			continue
 		}
 
@@ -122,16 +125,18 @@ func Convert(
 
 			in <- event{
 				msg,
-				l}
-			l++
+				msgL}
+
 			msg = line
+			msgL = l
 		}
+		l++
 
 	}
 
 	in <- event{
 		msg,
-		l}
+		msgL}
 
 	close(in)
 

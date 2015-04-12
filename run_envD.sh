@@ -1,3 +1,5 @@
+docker rm -f go-env
+
 docker run -ti \
 -e ES_INDEX=test0  \
 -e ES_PORT=8080  \

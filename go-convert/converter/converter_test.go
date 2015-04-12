@@ -81,7 +81,7 @@ func TestNextLine(t *testing.T) {
 	}
 
 	out := callConvert(
-		"2015 one\ntwo\n2015 three\nfour\nat\n2015 five",
+		"2015 one\ntwo\n\n2015 three\nfour\nat\n2015 five\n next",
 		l{p: parseStub, n: next})
 
 	t.Log(out)
@@ -95,9 +95,9 @@ func TestNextLine(t *testing.T) {
 
 	inFile := map[float64]string{
 		//line number -> line content
-		1: "2015 one\ntwo",
-		2: "2015 three\nfour\nat",
-		3: "2015 five",
+		1: "2015 one\ntwo\n",
+		4: "2015 three\nfour\nat",
+		7: "2015 five\n next",
 	}
 
 	isParsed := map[float64]bool{}
@@ -117,7 +117,7 @@ func TestNextLine(t *testing.T) {
 		assert.Equal(t, "testing", out["path"], "Wrong parsing")
 
 		n := out["num"].(float64)
-		assert.Equal(t, inFile[n], out["line"], "Wrong parsing")
+		assert.Equal(t, inFile[n], out["line"], "Wrong parsing at %v", n)
 
 		fileIDs = append(fileIDs, out["fileId"].(string))
 		isParsed[n] = true
