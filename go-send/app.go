@@ -14,15 +14,14 @@ import (
 	"go-indexer/go-send/sender"
 )
 
-func createQueue(qn string) {
+func createQueue(qn string) string {
 
 	for {
 
 		log.Println("Creating queue:", qn)
 
 		sqs := sender.GetSqs()
-
-		_, err := sqs.CreateQueue(qn)
+		q, err := sqs.CreateQueue(qn)
 
 		if err != nil {
 
@@ -32,7 +31,8 @@ func createQueue(qn string) {
 			continue
 		}
 
-		return
+		res, _ := q.GetQueueAttributes("QueueArn")
+		return res.Attributes[0].Value
 
 	}
 
