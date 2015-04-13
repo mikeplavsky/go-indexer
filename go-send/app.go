@@ -14,14 +14,16 @@ import (
 	"go-indexer/go-send/sender"
 )
 
-func createQueue(qn string) string {
+func createQueue(qn string,
+	attrs map[string]string) string {
 
 	for {
 
 		log.Println("Creating queue:", qn)
 
 		sqs := sender.GetSqs()
-		q, err := sqs.CreateQueue(qn)
+		q, err := sqs.CreateQueueWithAttributes(
+			qn, attrs)
 
 		if err != nil {
 
@@ -32,8 +34,41 @@ func createQueue(qn string) string {
 		}
 
 		res, _ := q.GetQueueAttributes("QueueArn")
-		return res.Attributes[0].Value
+		arn := res.Attributes[0].Value
 
+		log.Println(arn)
+
+		return arn
+
+	}
+
+}
+
+func createQueues() {
+
+	qn := os.Getenv("ES_QUEUE")
+	arn := createQueue(qn+"_dl", map[string]string{})
+
+	n := runtime.NumCPU()
+
+	rd := map[string]string{
+
+		"maxReceiveCount":     "5",
+		"deadLetterTargetArn": arn,
+	}
+
+	res, _ := json.Marshal(rd)
+
+	attrs := map[string]string{
+
+		"VisibilityTimeout": "30",
+		"RedrivePolicy":     string(res),
+	}
+
+	for i := 0; i < n; i++ {
+		createQueue(
+			qn+strconv.Itoa(i),
+			attrs)
 	}
 
 }
@@ -45,22 +80,13 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "go-send"
 
-	qn := os.Getenv("ES_QUEUE")
-
 	cmds := []cli.Command{
 		{
 			Name:      "create",
 			ShortName: "c",
 			Usage:     "creates the queue",
 			Action: func(c *cli.Context) {
-
-				n := runtime.NumCPU()
-
-				for i := 0; i < n; i++ {
-					createQueue(
-						qn + strconv.Itoa(i))
-				}
-
+				createQueues()
 			},
 		},
 		{
