@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"log"
 	"os"
 	"runtime"
@@ -13,6 +14,8 @@ import (
 
 	"go-indexer/go-send/sender"
 )
+
+var ES_QUEUE string
 
 func createQueue(qn string,
 	attrs map[string]string) string {
@@ -46,8 +49,8 @@ func createQueue(qn string,
 
 func createQueues() {
 
-	qn := os.Getenv("ES_QUEUE")
-	arn := createQueue(qn+"_dl", map[string]string{})
+	arn := createQueue(ES_QUEUE+"_dl",
+		map[string]string{})
 
 	n := runtime.NumCPU()
 
@@ -67,7 +70,7 @@ func createQueues() {
 
 	for i := 0; i < n; i++ {
 		createQueue(
-			qn+strconv.Itoa(i),
+			ES_QUEUE+strconv.Itoa(i),
 			attrs)
 	}
 
@@ -75,6 +78,7 @@ func createQueues() {
 
 func main() {
 
+	ES_QUEUE = os.Getenv("ES_QUEUE")
 	sqs := sender.GetSqs()
 
 	app := cli.NewApp()
@@ -95,7 +99,7 @@ func main() {
 			Usage:     "sends messages to the queue",
 			Action: func(c *cli.Context) {
 
-				q, err := sqs.GetQueue(qn)
+				q, err := sqs.GetQueue(ES_QUEUE)
 
 				if err != nil {
 					log.Println(err)
