@@ -6,6 +6,6 @@ let ES_STACK_NUM=ES_STACK_NUM-1
 for i in $(seq 0 $ES_STACK_NUM);
 do
 
-docker rm loader$i
+docker rm -f loader$i
 
 done

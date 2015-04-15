@@ -10,7 +10,7 @@ curl -XPUT localhost:$ES_PORT/$ES_INDEX --data-binary @index.json > /dev/null
 THROTTLING_LINES_PER_UPLOAD=100000
 rm -rf ./x*
 
-unzip -p $ES_FILE | go-convert | split -d -l $THROTTLING_LINES_PER_UPLOAD
+go-zip | go-convert | split -d -l $THROTTLING_LINES_PER_UPLOAD
 
 echo "Posting data"
 
