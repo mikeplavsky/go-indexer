@@ -1,9 +1,6 @@
 FROM mikeplavsky/docker-golang
 
-RUN apt-get update -y && \
-    apt-get install unzip -y 
-
-ENV UPDATED 29.03.2015.1
+ENV UPDATED 15.04.2015.1
 
 COPY . /go/src/go-indexer/
 WORKDIR /go/src/go-indexer
