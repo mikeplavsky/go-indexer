@@ -142,7 +142,7 @@ angular.module('myApp', ['cui'])
     })
     .controller('AboutBoxCtrl', function ($scope, cuiAboutBox) {
         var aboutBox = cuiAboutBox({
-            applicationName: 'Logs Indexer v0.2.6'
+            applicationName: 'Logs Indexer v0.2.7'
         });
         $scope.showAboutBox = aboutBox.modal.show;
     });
