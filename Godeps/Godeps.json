@@ -1,0 +1,103 @@
+{
+	"ImportPath": "go-indexer",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/cenkalti/backoff",
+			"Rev": "9831e1e25c874e0a0601b6dc43641071414eec7a"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-98-g30b361b",
+			"Rev": "30b361bf66a60174a9589458afbf494478bafd00"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/inject",
+			"Comment": "v1.0-rc1-10-g33e0aa1",
+			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
+		},
+		{
+			"ImportPath": "github.com/dustin/go-humanize",
+			"Rev": "00897f070f09f194c26d65afae734ba4c32404e8"
+		},
+		{
+			"ImportPath": "github.com/feyeleanor/raw",
+			"Rev": "724aedf6e1a5d8971aafec384b6bde3d5608fba4"
+		},
+		{
+			"ImportPath": "github.com/feyeleanor/sets",
+			"Rev": "6c54cb57ea406ff6354256a4847e37298194478f"
+		},
+		{
+			"ImportPath": "github.com/feyeleanor/slices",
+			"Rev": "bb44bb2e4817fe71ba7082d351fd582e7d40e3ea"
+		},
+		{
+			"ImportPath": "github.com/go-martini/martini",
+			"Comment": "v1.0-124-gd398859",
+			"Rev": "d39885924ac22dcafaa9fd452a3af1261107799d"
+		},
+		{
+			"ImportPath": "github.com/goamz/goamz/aws",
+			"Rev": "ad637a587dd8314770a1084481dd7b5d4fa1232f"
+		},
+		{
+			"ImportPath": "github.com/goamz/goamz/cloudwatch",
+			"Rev": "ad637a587dd8314770a1084481dd7b5d4fa1232f"
+		},
+		{
+			"ImportPath": "github.com/goamz/goamz/ec2",
+			"Rev": "ad637a587dd8314770a1084481dd7b5d4fa1232f"
+		},
+		{
+			"ImportPath": "github.com/goamz/goamz/s3",
+			"Rev": "ad637a587dd8314770a1084481dd7b5d4fa1232f"
+		},
+		{
+			"ImportPath": "github.com/goamz/goamz/sqs",
+			"Rev": "ad637a587dd8314770a1084481dd7b5d4fa1232f"
+		},
+		{
+			"ImportPath": "github.com/golang/glog",
+			"Rev": "44145f04b68cf362d9c4df2182967c2275eaefed"
+		},
+		{
+			"ImportPath": "github.com/martini-contrib/binding",
+			"Rev": "1928ed2850e7d65507ea4198d935597e43612c7d"
+		},
+		{
+			"ImportPath": "github.com/mitchellh/goamz/aws",
+			"Rev": "caaaea8b30ee15616494ee68abd5d8ebbbef05cf"
+		},
+		{
+			"ImportPath": "github.com/mitchellh/goamz/s3",
+			"Rev": "caaaea8b30ee15616494ee68abd5d8ebbbef05cf"
+		},
+		{
+			"ImportPath": "github.com/olivere/elastic/uritemplates",
+			"Comment": "v1-43-g49d77b4",
+			"Rev": "49d77b4f8e7a5053b60b8c37ca5e2e42b05a2c05"
+		},
+		{
+			"ImportPath": "github.com/rubyist/circuitbreaker",
+			"Comment": "v2.1.2",
+			"Rev": "e454f25d0fdde0963da915ccbc11b649dd50e645"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Rev": "e4ec8152c15fc46bd5056ce65997a07c7d415325"
+		},
+		{
+			"ImportPath": "github.com/vaughan0/go-ini",
+			"Rev": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1"
+		},
+		{
+			"ImportPath": "gopkg.in/olivere/elastic.v1",
+			"Comment": "v1.0.1",
+			"Rev": "65a54b2f4d7706edacb93f923d204af7f1696a2a"
+		}
+	]
+}
