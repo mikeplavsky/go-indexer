@@ -1,6 +1,8 @@
 #!/bin/bash
 
-ES_QUEUE="i-794345ae_dl"
+
+InstanceId=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+ES_QUEUE=$InstanceId"_dl"
 
 go-checker
 
