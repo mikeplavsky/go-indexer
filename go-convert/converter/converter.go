@@ -59,6 +59,10 @@ func worker(
 			idx := [2]string{}
 			lineID := id + strconv.Itoa(e.num)
 
+			if obj["_id"] != nil {
+				lineID = obj["_id"].(string)
+			}
+
 			idx[0] = fmt.Sprintf(
 				`{"index": {"_type": "log","_id":"%v"}}`,
 				lineID)
