@@ -67,7 +67,7 @@ func worker(
 				`{"index": {"_type": "log","_id":"%v"}}`,
 				lineID)
 
-			if obj != nil {
+			if obj != nil && obj["fileId"] == nil {
 				obj["fileId"] = id
 			}
 
