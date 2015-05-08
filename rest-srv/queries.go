@@ -76,7 +76,13 @@ func getFilteredQuery(j job) elastic.FilteredQuery {
 		From(j.From).
 		To(j.To)
 
-	filteredQuery = filteredQuery.Filter(dateFilter)
+	notIndexed := elastic.NewBoolFilter()
+	notIndexed = notIndexed.MustNot(
+		elastic.NewTermFilter("indexed", true))
+
+	filteredQuery = filteredQuery.
+		Filter(dateFilter).
+		Filter(notIndexed)
 
 	return filteredQuery
 }

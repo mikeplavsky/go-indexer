@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
 	"go-indexer/go-convert/converter"
+	"io"
 	"os"
 	"regexp"
 	"runtime"
@@ -63,8 +65,18 @@ func parseLine(
 		return nil, err
 	}
 
+	path := "https://s3.amazonaws.com/" + uri
+
+	h := md5.New()
+	io.WriteString(h, path)
+
+	id := fmt.Sprintf("%x", h.Sum(nil))
+
 	dataContract := map[string]interface{}{
-		"uri":        "https://s3.amazonaws.com/" + uri,
+
+		"_id":        id,
+		"fileId":     id,
+		"uri":        path,
 		"size":       size,
 		"customer":   ps[1],
 		"@timestamp": timestamp,

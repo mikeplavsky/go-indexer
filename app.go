@@ -1,9 +1,11 @@
 package main
 
 import (
+	"crypto/md5"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -158,6 +160,13 @@ func index(i awsIdx) error {
 		path)
 
 	os.Setenv("S3_PATH", S3_PATH)
+
+	h := md5.New()
+	io.WriteString(h, S3_PATH)
+
+	S3_FILE_ID := fmt.Sprintf("%x", h.Sum(nil))
+
+	os.Setenv("S3_FILE_ID", S3_FILE_ID)
 
 	f, err := ioutil.TempFile(
 		"",

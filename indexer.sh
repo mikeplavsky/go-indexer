@@ -20,3 +20,5 @@ do
 	curl -S -XPOST localhost:$ES_PORT/$ES_INDEX/_bulk --data-binary @$f > /dev/null;
 done
 
+curl -XPOST localhost:$ES_PORT/s3data/log/$S3_FILE_ID/_update  -d '{"doc": {"indexed":true}}' 
+
