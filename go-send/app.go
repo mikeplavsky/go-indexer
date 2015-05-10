@@ -61,9 +61,9 @@ type Statement struct {
 }
 
 type Policy struct {
-	Version   string      `json:"Version"`
-	Id        string      `json:Id`
-	Statement []Statement `json:"Statement"`
+	Version   string
+	Id        string
+	Statement []Statement
 }
 
 var c = Condition{
