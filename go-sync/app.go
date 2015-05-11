@@ -6,9 +6,18 @@ import (
 	"log"
 )
 
+type Object struct {
+	Key  string
+	Size int64
+}
+
+type Bucket struct {
+	Name string
+}
+
 type S3 struct {
-	Bucket map[string]interface{} `json:"bucket"`
-	Object map[string]interface{} `json:"object"`
+	Bucket Bucket `json:"bucket"`
+	Object Object `json:"object"`
 }
 
 type Record struct {
@@ -49,5 +58,7 @@ func main() {
 	}
 
 	log.Println(rs)
+
+	sqs.RemoveMessage(res)
 
 }
