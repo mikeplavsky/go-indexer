@@ -52,8 +52,10 @@ func ParseLine(
 
 	ps := strings.Split(uri, "/")
 
-	if len(ps) < 3 {
-		return nil, fmt.Errorf("uri should contain a bucket and a customer")
+	if len(ps) < 5 {
+		return nil,
+			fmt.Errorf(
+				"uri should contain bucket, customer, machine, agent, file")
 	}
 
 	timestamp, err := parseTime(ps[len(ps)-1])
@@ -76,6 +78,9 @@ func ParseLine(
 		"uri":        path,
 		"size":       size,
 		"customer":   ps[1],
+		"machine":    ps[2],
+		"agent":      ps[3],
+		"file":       ps[4],
 		"@timestamp": timestamp,
 	}
 

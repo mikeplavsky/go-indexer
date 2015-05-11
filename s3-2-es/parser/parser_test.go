@@ -50,7 +50,7 @@ func TestParseTimeWithError(t *testing.T) {
 func TestParseLine(t *testing.T) {
 
 	res, err := ParseLine(
-		"1010760	buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip",)
+		"1010760	buck-et/C-UST-OM-ER/F O L D/ E R/Log file_20150112_135921.zip")
 
 	assert.Equal(t, nil, err, fmt.Sprintf("they should be equal. Error: %s", err))
 	assert.Equal(t, "1010760", res["size"])
