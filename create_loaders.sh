@@ -18,6 +18,6 @@ docker create \
 -e ES_PORT=$port \
 -e ES_QUEUE=$ES_QUEUE$i \
 -e ES_INDEXER=./indexer.sh \
---net=host --name=loader$i go_indexer 
+--restart=always --net=host --name=loader$i go_indexer 
 
 done

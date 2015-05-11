@@ -8,4 +8,4 @@ docker run \
 -e ES_QUEUE=$ES_QUEUE"_sns"
 --name go-sync \
 --net=host \
-go_indexer go-sync
+--restart=always go_indexer go-sync

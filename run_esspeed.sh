@@ -7,4 +7,4 @@ docker run -d \
 --name esspeed \
 --net=host \
 -w /go/src/go-indexer/esspeed \
-go_indexer esspeed
+--restart=always go_indexer esspeed
