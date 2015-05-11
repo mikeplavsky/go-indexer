@@ -1,9 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"go-indexer/go-sync/sqs"
+	"go-indexer/s3-2-es/parser"
 	"log"
+	"net/http"
 )
 
 type Object struct {
@@ -32,33 +36,88 @@ type Event struct {
 	Message string
 }
 
-func main() {
+func createEsDoc(obj map[string]interface{}) {
 
-	sqs := sqs.Sqs{}
-	res, err := sqs.GetMessage()
+	data, err := json.Marshal(obj)
 
 	if err != nil {
-		log.Fatalln(err)
+
+		log.Println(err)
+		return
+
 	}
 
-	raw := res.Body
+	path := fmt.Sprintf(
+		"http://localhost:8080/s3data/log/%v/_create",
+		obj["_id"])
 
-	var msg Event
-	err = json.Unmarshal([]byte(raw), &msg)
+	_, err = http.Post(path,
+		"application/json",
+		bytes.NewBuffer(data))
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
+	}
+
+}
+
+func parseMessage(raw string) (
+	map[string]interface{},
+	error) {
+
+	var msg Event
+	err := json.Unmarshal([]byte(raw), &msg)
+
+	if err != nil {
+		return nil, err
 	}
 
 	var rs Message
 	err = json.Unmarshal([]byte(msg.Message), &rs)
 
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
-	log.Println(rs)
+	r := rs.Records[0]
 
-	sqs.RemoveMessage(res)
+	l := fmt.Sprintf("%v\t%v/%v",
+		r.S3.Object.Size,
+		r.S3.Bucket.Name,
+		r.S3.Object.Key)
 
+	return parser.ParseLine(l)
+
+}
+
+func run() {
+
+	for {
+
+		sqs := sqs.Sqs{}
+		res, err := sqs.GetMessage()
+
+		if err != nil {
+
+			log.Println(err)
+			continue
+
+		}
+
+		obj, err := parseMessage(res.Body)
+
+		if err != nil {
+			log.Println(err)
+		} else {
+			createEsDoc(obj)
+		}
+
+		sqs.RemoveMessage(res)
+
+	}
+
+}
+
+func main() {
+	run()
 }
