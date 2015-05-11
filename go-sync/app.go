@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"go-indexer/go-sync/sqs"
 	"go-indexer/s3-2-es/parser"
@@ -48,13 +49,15 @@ func createEsDoc(obj map[string]interface{}) error {
 		"http://localhost:8080/s3data/log/%v/_create",
 		obj["_id"])
 
-	_, err = http.Post(path,
+	res, err := http.Post(path,
 		"application/json",
 		bytes.NewBuffer(data))
 
 	if err != nil {
 		return err
 	}
+
+	log.Println(res)
 
 	return nil
 
@@ -76,6 +79,10 @@ func parseMessage(raw string) (
 
 	if err != nil {
 		return nil, err
+	}
+
+	if len(rs.Records) == 0 {
+		return nil, errors.New("wrong event")
 	}
 
 	r := rs.Records[0]
