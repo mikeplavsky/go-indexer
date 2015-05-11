@@ -53,6 +53,10 @@
 			"Rev": "ad637a587dd8314770a1084481dd7b5d4fa1232f"
 		},
 		{
+			"ImportPath": "github.com/goamz/goamz/exp/sns",
+			"Rev": "ad637a587dd8314770a1084481dd7b5d4fa1232f"
+		},
+		{
 			"ImportPath": "github.com/goamz/goamz/s3",
 			"Rev": "ad637a587dd8314770a1084481dd7b5d4fa1232f"
 		},
