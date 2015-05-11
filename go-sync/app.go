@@ -36,15 +36,12 @@ type Event struct {
 	Message string
 }
 
-func createEsDoc(obj map[string]interface{}) {
+func createEsDoc(obj map[string]interface{}) error {
 
 	data, err := json.Marshal(obj)
 
 	if err != nil {
-
-		log.Println(err)
-		return
-
+		return err
 	}
 
 	path := fmt.Sprintf(
@@ -56,8 +53,10 @@ func createEsDoc(obj map[string]interface{}) {
 		bytes.NewBuffer(data))
 
 	if err != nil {
-		log.Println(err)
+		return err
 	}
+
+	return nil
 
 }
 
@@ -109,7 +108,14 @@ func run() {
 		if err != nil {
 			log.Println(err)
 		} else {
-			createEsDoc(obj)
+
+			err := createEsDoc(obj)
+
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+
 		}
 
 		sqs.RemoveMessage(res)
