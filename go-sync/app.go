@@ -133,6 +133,8 @@ func run() {
 
 func main() {
 
+	go sqs.AuthGen()
+
 	for i := 0; i < 100; i += 1 {
 		go run()
 	}

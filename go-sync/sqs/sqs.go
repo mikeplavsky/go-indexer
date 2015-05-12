@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mitchellh/goamz/aws"
+	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/sqs"
 )
 
@@ -20,7 +20,7 @@ var auth = make(chan aws.Auth)
 
 func AuthGen() {
 	for {
-		res, _ := aws.GetAuth("", "")
+		res, _ := aws.GetAuth("", "", "", time.Time{})
 		auth <- res
 	}
 }
