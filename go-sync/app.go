@@ -1,13 +1,11 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"go-indexer/go-sync/sqs"
 	"log"
-	"net/http"
 )
 
 type Object struct {
@@ -34,32 +32,6 @@ type Message struct {
 
 type Event struct {
 	Message string
-}
-
-func createEsDoc(obj map[string]interface{}) error {
-
-	data, err := json.Marshal(obj)
-
-	if err != nil {
-		return err
-	}
-
-	path := fmt.Sprintf(
-		"http://localhost:8080/s3data/log/%v/_create",
-		obj["_id"])
-
-	res, err := http.Post(path,
-		"application/json",
-		bytes.NewBuffer(data))
-
-	if err != nil {
-		return err
-	}
-
-	log.Println(res)
-
-	return nil
-
 }
 
 func parseMessage(raw string) (
@@ -97,28 +69,15 @@ func parseMessage(raw string) (
 
 func run() {
 
-	buf := []string{}
-
 	for {
 
 		s := sqs.Sqs{}
 		res, err := s.GetMessage()
 
-		if _, ok := err.(sqs.ErrNoMessages); ok {
-
-			if len(buf) == 0 {
-				continue
-			}
-
-			buf = []string{}
-			continue
-
-		}
-
 		if err != nil {
 
 			log.Println(err)
-			continue
+			return
 
 		}
 
@@ -127,7 +86,7 @@ func run() {
 		if err != nil {
 			log.Println(err)
 		} else {
-			buf = append(buf, obj)
+			fmt.Println(obj)
 		}
 
 		s.RemoveMessage(res)
@@ -137,11 +96,5 @@ func run() {
 }
 
 func main() {
-
-	go sqs.AuthGen()
-	go run()
-
-	w := make(<-chan bool)
-	<-w
-
+	run()
 }
