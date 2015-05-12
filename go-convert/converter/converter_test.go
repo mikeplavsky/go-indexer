@@ -234,9 +234,9 @@ func TestNextIndex(t *testing.T) {
 		err := json.Unmarshal([]byte(line), &idx)
 
 		assert.Nil(t, err, "Unable to parse JSON: "+line)
-		assert.Equal(t, "log", idx["index"]["_type"], "wrong index type")
-		assert.NotEmpty(t, idx["index"]["_id"])
-		lineIds = append(lineIds, idx["index"]["_id"])
+		assert.Equal(t, "log", idx["create"]["_type"], "wrong index type")
+		assert.NotEmpty(t, idx["create"]["_id"])
+		lineIds = append(lineIds, idx["create"]["_id"])
 	}
 
 	AssertAllValuesAreUnique(t, lineIds)
