@@ -1,7 +1,6 @@
 package sqs
 
 import (
-	"errors"
 	"os"
 	"time"
 
@@ -16,6 +15,10 @@ type SqsA interface {
 
 type Sqs struct{}
 
+type ErrNoMessages struct{}
+
+func (ErrNoMessages) Error() string { return "no messages" }
+
 var auth = make(chan aws.Auth)
 
 func AuthGen() {
@@ -27,7 +30,7 @@ func AuthGen() {
 
 func getQueue() (*sqs.Queue, error) {
 
-	sqs := sqs.New(<- auth, aws.USEast)
+	sqs := sqs.New(<-auth, aws.USEast)
 
 	ES_QUEUE := os.Getenv("ES_QUEUE")
 	return sqs.GetQueue(ES_QUEUE)
@@ -53,7 +56,7 @@ func (Sqs) GetMessage() (*sqs.Message, error) {
 	}
 
 	if len(res.Messages) == 0 {
-		return nil, errors.New("No messages")
+		return nil, ErrNoMessages{}
 	}
 
 	return &res.Messages[0], nil

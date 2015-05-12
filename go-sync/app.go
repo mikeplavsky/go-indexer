@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"go-indexer/go-sync/sqs"
-	"go-indexer/s3-2-es/parser"
 	"log"
 	"net/http"
 )
@@ -64,25 +63,25 @@ func createEsDoc(obj map[string]interface{}) error {
 }
 
 func parseMessage(raw string) (
-	map[string]interface{},
+	string,
 	error) {
 
 	var msg Event
 	err := json.Unmarshal([]byte(raw), &msg)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	var rs Message
 	err = json.Unmarshal([]byte(msg.Message), &rs)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if len(rs.Records) == 0 {
-		return nil, errors.New("wrong event")
+		return "", errors.New("wrong event")
 	}
 
 	r := rs.Records[0]
@@ -92,16 +91,29 @@ func parseMessage(raw string) (
 		r.S3.Bucket.Name,
 		r.S3.Object.Key)
 
-	return parser.ParseLine(l)
+	return l, nil
 
 }
 
 func run() {
 
+	buf := []string{}
+
 	for {
 
-		sqs := sqs.Sqs{}
-		res, err := sqs.GetMessage()
+		s := sqs.Sqs{}
+		res, err := s.GetMessage()
+
+		if _, ok := err.(sqs.ErrNoMessages); ok {
+
+			if len(buf) == 0 {
+				continue
+			}
+
+			buf = []string{}
+			continue
+
+		}
 
 		if err != nil {
 
@@ -115,17 +127,10 @@ func run() {
 		if err != nil {
 			log.Println(err)
 		} else {
-
-			err := createEsDoc(obj)
-
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-
+			buf = append(buf, obj)
 		}
 
-		sqs.RemoveMessage(res)
+		s.RemoveMessage(res)
 
 	}
 
@@ -134,10 +139,7 @@ func run() {
 func main() {
 
 	go sqs.AuthGen()
-
-	for i := 0; i < 100; i += 1 {
-		go run()
-	}
+	go run()
 
 	w := make(<-chan bool)
 	<-w
