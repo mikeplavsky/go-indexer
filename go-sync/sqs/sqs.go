@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/goamz/goamz/aws"
+	"github.com/mitchellh/goamz/aws"
 	"github.com/goamz/goamz/sqs"
 )
 
@@ -16,19 +16,18 @@ type SqsA interface {
 
 type Sqs struct{}
 
-func getAuth() (aws.Auth, error) {
-	return aws.GetAuth("", "", "", time.Time{})
+var auth = make(chan aws.Auth)
+
+func AuthGen() {
+	for {
+		res, _ := aws.GetAuth("", "")
+		auth <- res
+	}
 }
 
 func getQueue() (*sqs.Queue, error) {
 
-	auth, err := getAuth()
-
-	if err != nil {
-		return nil, err
-	}
-
-	sqs := sqs.New(auth, aws.USEast)
+	sqs := sqs.New(<- auth, aws.USEast)
 
 	ES_QUEUE := os.Getenv("ES_QUEUE")
 	return sqs.GetQueue(ES_QUEUE)
