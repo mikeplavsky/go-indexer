@@ -132,5 +132,12 @@ func run() {
 }
 
 func main() {
-	run()
+
+	for i := 0; i < 100; i += 1 {
+		go run()
+	}
+
+	w := make(<-chan bool)
+	<-w
+
 }
