@@ -19,18 +19,19 @@ type ErrNoMessages struct{}
 
 func (ErrNoMessages) Error() string { return "no messages" }
 
-var auth = make(chan aws.Auth)
-
-func AuthGen() {
-	for {
-		res, _ := aws.GetAuth("", "", "", time.Time{})
-		auth <- res
-	}
+func getAuth() (aws.Auth, error) {
+	return aws.GetAuth("", "", "", time.Time{})
 }
 
 func getQueue() (*sqs.Queue, error) {
 
-	sqs := sqs.New(<-auth, aws.USEast)
+	auth, err := getAuth()
+
+	if err != nil {
+		return nil, err
+	}
+
+	sqs := sqs.New(auth, aws.USEast)
 
 	ES_QUEUE := os.Getenv("ES_QUEUE")
 	return sqs.GetQueue(ES_QUEUE)

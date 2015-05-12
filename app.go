@@ -177,8 +177,6 @@ func nextIdx() <-chan int {
 
 func run() {
 
-	go sqs.AuthGen()
-
 	setVars()
 	i := nextIdx()
 

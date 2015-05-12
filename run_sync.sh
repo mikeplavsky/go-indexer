@@ -6,4 +6,5 @@ docker run -d \
 -e ES_QUEUE=$ES_QUEUE"_sns" \
 --name go-sync \
 --net=host \
---restart=always go_indexer go-sync
+-w /go/src/go-indexer/go-sync \
+--restart=always go_indexer ./run.sh 
