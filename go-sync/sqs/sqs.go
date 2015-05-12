@@ -44,7 +44,7 @@ func (Sqs) GetMessage() (*sqs.Message, error) {
 	}
 
 	ps := map[string]string{
-		"WaitTimeSeconds":     "10",
+		"WaitTimeSeconds":     "20",
 		"MaxNumberOfMessages": "1"}
 
 	res, err := q.ReceiveMessageWithParameters(ps)
