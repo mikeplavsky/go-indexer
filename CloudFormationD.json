@@ -77,11 +77,6 @@
             "PropagateAtLaunch": "true"
           },
           {
-            "Key": "protection",
-            "Value": "1",
-            "PropagateAtLaunch": "true"
-          },
-          {
             "Key": "Name",
             "Value": {
               "Ref": "AWS::StackName"
@@ -160,64 +155,64 @@
           }
         }
       }
-    },
-    "Outputs": {
-      "KibanaURL": {
-        "Value": {
-          "Fn::Join": [
-            "",
-            [
-              "https://",
-              {
-                "Ref": "AWS::StackName"
-              },
-              ".sa4sp.com/kibana"
-            ]
+    }
+  },
+  "Outputs": {
+    "KibanaURL": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "AWS::StackName"
+            },
+            ".sa4sp.com/kibana"
           ]
-        }
-      },
-      "DashboardURL": {
-        "Value": {
-          "Fn::Join": [
-            "",
-            [
-              "https://",
-              {
-                "Ref": "AWS::StackName"
-              },
-              ".sa4sp.com/"
-            ]
-          ]
-        }
-      },
-      "SSH": {
-        "Value": {
-          "Fn::Join": [
-            "",
-            [
-              "ssh ec2-user@",
-              {
-                "Ref": "AWS::StackName"
-              },
-              ".sa4sp.com -v -i ~/ESKeyPair.pem"
-            ]
-          ]
-        }
-      },
-      "Instance": {
-        "Value": {
-          "Fn::Join": [
-            "",
-            [
-              "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:instanceTypeFilter=all-instance-types;instanceState=running;tag:aws:cloudformation:stack-id=",
-              {
-                "Ref": "AWS::StackName"
-              }
-            ]
-          ]
-        },
-        "Description": "May be empty if AutoScalingGroup has not yet created instance"
+        ]
       }
+    },
+    "DashboardURL": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "AWS::StackName"
+            },
+            ".sa4sp.com/"
+          ]
+        ]
+      }
+    },
+    "SSH": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "ssh ec2-user@",
+            {
+              "Ref": "AWS::StackName"
+            },
+            ".sa4sp.com -v -i ~/ESKeyPair.pem"
+          ]
+        ]
+      }
+    },
+    "Instance": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:instanceTypeFilter=all-instance-types;instanceState=running;tag:aws:cloudformation:stack-id=",
+            {
+              "Ref": "AWS::StackName"
+            }
+          ]
+        ]
+      },
+      "Description": "May be empty if AutoScalingGroup has not yet created instance"
     }
   }
 }
