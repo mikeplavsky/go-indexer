@@ -47,9 +47,65 @@ func createQueue(qn string,
 
 }
 
+type Condition struct {
+	StringLike map[string]string
+}
+
+type Statement struct {
+	Sid       string
+	Effect    string
+	Principal string
+	Action    string
+	Resource  string
+	Condition Condition
+}
+
+type Policy struct {
+	Version   string
+	Id        string
+	Statement []Statement
+}
+
+var c = Condition{
+	StringLike: map[string]string{
+		"aws:SourceArn": "arn:aws:sns:*:*:dmp-log-analysis-sns"}}
+
+var pa = Policy{
+	Version: "2012-10-17",
+	Id:      "S3_SNS_SQS",
+	Statement: []Statement{{
+		Sid:       "S3_SNS_SQS_SID",
+		Effect:    "Allow",
+		Principal: "*",
+		Action:    "sqs:SendMessage",
+		Resource:  "arn:aws:sqs:*:*:*",
+		Condition: c}}}
+
 func createQueues() {
 
-	arn := createQueue(ES_QUEUE+"_dl",
+	paS, _ := json.Marshal(pa)
+
+	p := map[string]string{
+		"Policy": string(paS)}
+
+	log.Println(p)
+
+	arn := createQueue(ES_QUEUE+"_sns",
+		p)
+
+	sns := sender.GetSns()
+
+	topic := "arn:aws:sns:us-east-1:128732327734:dmp-log-analysis-sns"
+	_, err := sns.Subscribe(
+		arn,
+		"sqs",
+		topic)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	arn = createQueue(ES_QUEUE+"_dl",
 		map[string]string{})
 
 	n := runtime.NumCPU()

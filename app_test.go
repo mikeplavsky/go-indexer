@@ -41,7 +41,7 @@ func (i ti) getLog(b string,
 	return nil, errors.New("getLog not implemented")
 }
 
-func (i ti) getMessage() (*sqs.Message, error) {
+func (i ti) GetMessage() (*sqs.Message, error) {
 
 	if i.gm != nil {
 		return i.gm()
@@ -50,7 +50,7 @@ func (i ti) getMessage() (*sqs.Message, error) {
 	return nil, errors.New("getMessage not implemented")
 }
 
-func (i ti) removeMessage(m *sqs.Message) error {
+func (i ti) RemoveMessage(m *sqs.Message) error {
 
 	if i.rm != nil {
 		return i.rm(m)

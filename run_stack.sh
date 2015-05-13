@@ -15,3 +15,5 @@ ES_QUEUE=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 ./run_nginx.sh
 
 ./start_loaders.sh
+
+./run_sync.sh

@@ -10,8 +10,16 @@ import (
 	"time"
 
 	"github.com/goamz/goamz/aws"
+	"github.com/goamz/goamz/exp/sns"
 	"github.com/goamz/goamz/sqs"
 )
+
+func GetSns() *sns.SNS {
+
+	auth, _ := aws.GetAuth("", "", "", time.Time{})
+	return sns.New(auth, aws.USEast)
+
+}
 
 func GetSqs() *sqs.SQS {
 

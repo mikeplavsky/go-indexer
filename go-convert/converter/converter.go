@@ -64,7 +64,7 @@ func worker(
 			}
 
 			idx[0] = fmt.Sprintf(
-				`{"index": {"_type": "log","_id":"%v"}}`,
+				`{"create": {"_type": "log","_id":"%v"}}`,
 				lineID)
 
 			if obj != nil && obj["fileId"] == nil {

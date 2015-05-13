@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/md5"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -13,9 +12,10 @@ import (
 	"strconv"
 	"time"
 
+	"go-indexer/go-sync/sqs"
+
 	"github.com/goamz/goamz/aws"
 	"github.com/goamz/goamz/s3"
-	"github.com/goamz/goamz/sqs"
 )
 
 var (
@@ -29,8 +29,7 @@ var (
 var queueMaxWaitTimeSeconds = 10
 
 type awsIdx interface {
-	getMessage() (*sqs.Message, error)
-	removeMessage(*sqs.Message) error
+	sqs.SqsA
 
 	getLog(bucket string,
 		path string) ([]byte, error)
@@ -38,7 +37,9 @@ type awsIdx interface {
 	exec(string) ([]byte, error)
 }
 
-type idx struct{}
+type idx struct {
+	sqs.Sqs
+}
 
 func getAuth() (aws.Auth, error) {
 	return aws.GetAuth("", "", "", time.Time{})
@@ -48,19 +49,6 @@ func (idx) exec(c string) ([]byte, error) {
 
 	cvrt := exec.Command(c)
 	return cvrt.CombinedOutput()
-
-}
-
-func (idx) removeMessage(msg *sqs.Message) error {
-
-	q, err := getQueue()
-
-	if err != nil {
-		return err
-	}
-
-	_, err = q.DeleteMessage(msg)
-	return err
 
 }
 
@@ -89,48 +77,9 @@ func (idx) getLog(bucket, path string) ([]byte, error) {
 
 }
 
-func getQueue() (*sqs.Queue, error) {
-
-	auth, err := getAuth()
-
-	if err != nil {
-		return nil, err
-	}
-
-	sqs := sqs.New(auth, aws.USEast)
-	return sqs.GetQueue(ES_QUEUE)
-
-}
-
-func (idx) getMessage() (*sqs.Message, error) {
-
-	q, err := getQueue()
-
-	if err != nil {
-		return nil, err
-	}
-
-	ps := map[string]string{
-		"WaitTimeSeconds":     strconv.Itoa(queueMaxWaitTimeSeconds),
-		"MaxNumberOfMessages": "1"}
-
-	res, err := q.ReceiveMessageWithParameters(ps)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if len(res.Messages) == 0 {
-		return nil, errors.New("No messages")
-	}
-
-	return &res.Messages[0], nil
-
-}
-
 func index(i awsIdx) error {
 
-	res, err := i.getMessage()
+	res, err := i.GetMessage()
 
 	if err != nil {
 		return err
@@ -191,7 +140,7 @@ func index(i awsIdx) error {
 		return err
 	}
 
-	return i.removeMessage(res)
+	return i.RemoveMessage(res)
 }
 
 func setVars() {
