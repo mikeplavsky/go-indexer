@@ -59,15 +59,6 @@
             ]
           }
         },
-        "NotificationConfiguration": {
-          "TopicARN": "arn:aws:sns:us-east-1:128732327734:maxim",
-          "NotificationTypes": [
-            "autoscaling:EC2_INSTANCE_LAUNCH",
-            "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
-            "autoscaling:EC2_INSTANCE_TERMINATE",
-            "autoscaling:EC2_INSTANCE_TERMINATE_ERROR"
-          ]
-        },
         "Tags": [
           {
             "Key": "team",
