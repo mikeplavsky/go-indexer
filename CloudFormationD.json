@@ -22,9 +22,7 @@
     "Indexer": {
       "Type": "AWS::EC2::Instance",
       "Properties": {
-        "AvailabilityZones": [
-          "us-east-1c"
-        ],
+        "AvailabilityZone": "us-east-1c",
         "KeyName": {
           "Ref": "KeyPair"
         },
