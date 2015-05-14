@@ -3,7 +3,7 @@
     {
       "Action": "UPSERT",
       "ResourceRecordSet": {
-        "Name": "$AWS_STACK_NAME",
+        "Name": "$AWS_STACK_NAME.sa4sp.com",
         "Type": "A",
         "TTL" : 60,
         "ResourceRecords": [
