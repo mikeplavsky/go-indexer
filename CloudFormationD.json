@@ -28,7 +28,7 @@
         },
         "ImageId": "ami-2e536746",
         "SecurityGroups": [
-          "sg-f8ebb992"
+          "launch-wizard-1"
         ],
         "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
         "InstanceType": {
