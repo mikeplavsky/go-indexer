@@ -48,6 +48,7 @@
                   "Ref": "AWS::StackName"
                 },
                 "\n",
+                "env \n",
                 "./route53.sh\n",
                 "./prep_indexer.sh\n",
                 "./run_stack.sh\n"
