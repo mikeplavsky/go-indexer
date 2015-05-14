@@ -62,15 +62,13 @@
         "Tags": [
           {
             "Key": "team",
-            "Value": "logman",
-            "PropagateAtLaunch": "true"
+            "Value": "logman"
           },
           {
             "Key": "Name",
             "Value": {
               "Ref": "AWS::StackName"
-            },
-            "PropagateAtLaunch": "true"
+            }
           }
         ]
       },
