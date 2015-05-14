@@ -40,19 +40,16 @@
               "",
               [
                 "#!/bin/sh\n",
-                "/opt/aws/bin/cfn-init -v -c provision -s ",
-                {
-                  "Ref": "AWS::StackName"
-                },
-                "  -r LaunchConfig ",
-                "  --region ",
-                {
-                  "Ref": "AWS::Region"
-                },
-                "\n",
                 "aws s3 cp s3://logmanagement/go-indexer.zip /tmp/\n",
                 "unzip /tmp/go-indexer.zip -d /etc/go-indexer/\n",
                 "cd /etc/go-indexer/\n",
+                "export AWS_STACK_NAME=",
+                {
+                  "Ref": "AWS::StackName"
+                },
+                "\n",
+                "env \n",
+                "./route53.sh\n",
                 "./prep_indexer.sh\n",
                 "./run_stack.sh\n"
               ]
@@ -71,76 +68,6 @@
             }
           }
         ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Init": {
-          "configSets": {
-            "provision": [
-              "register-hostname"
-            ]
-          },
-          "register-hostname": {
-            "files": {
-              "/tmp/route53.json": {
-                "content": {
-                  "Changes": [
-                    {
-                      "Action": "UPSERT",
-                      "ResourceRecordSet": {
-                        "Name": {
-                          "Fn::Join": [
-                            "",
-                            [
-                              {
-                                "Ref": "AWS::StackName"
-                              },
-                              ".sa4sp.com."
-                            ]
-                          ]
-                        },
-                        "Type": "A",
-                        "TTL": 60,
-                        "ResourceRecords": [
-                          {
-                            "Value": "$PUBLIC_IP"
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                },
-                "mode": "000755",
-                "owner": "root",
-                "group": "root"
-              }
-            },
-            "commands": {
-              "0001_subs-template": {
-                "command": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "PUBLIC_IP=$(curl http://169.254.169.254/latest/meta-data/public-ipv4) && sed -i \"s/\\$PUBLIC_IP/$PUBLIC_IP/g\" /tmp/route53.json && sed -i \"s/\\\"60\\\"/60/g\" /tmp/route53.json"
-                    ]
-                  ]
-                }
-              },
-              "0002_submit-zone-update-request": {
-                "ignoreErrors": true,
-                "command": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "aws route53 change-resource-record-sets",
-                      " --hosted-zone-id Z2XLKK5Y4BC9Z1",
-                      " --change-batch file:///tmp/route53.json --region us-east-1"
-                    ]
-                  ]
-                }
-              }
-            }
-          }
-        }
       }
     }
   },
