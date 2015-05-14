@@ -1,0 +1,17 @@
+{
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "$AWS_STACK_NAME",
+        "Type": "A",
+        "TTL" : 60,
+        "ResourceRecords": [
+          {
+            "Value": $PUBLIC_IP
+          }
+        ]
+      }
+    }
+  ]
+}
