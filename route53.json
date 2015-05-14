@@ -8,7 +8,7 @@
         "TTL" : 60,
         "ResourceRecords": [
           {
-            "Value": $PUBLIC_IP
+            "Value": "$PUBLIC_IP"
           }
         ]
       }
