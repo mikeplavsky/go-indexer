@@ -30,7 +30,7 @@
         "SecurityGroups": [
           "launch-wizard-1"
         ],
-        "IamInstanceProfile": "arn:aws:iam::128732327734:instance-profile/DMP_Infrastructure",
+        "IamInstanceProfile": "DMP_Infrastructure",
         "InstanceType": {
           "Ref": "InstanceType"
         },
