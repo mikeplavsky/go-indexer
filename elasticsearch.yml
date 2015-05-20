@@ -1,0 +1,11 @@
+bootstrap:
+  mlockall: true
+cluster:
+  name: ${ES_CLUSTER_NAME}
+path:
+  data: /data/data
+  logs: /data/log
+  plugins: /data/plugins
+  work: /data/work
+
+indices.fielddata.cache.size: 30%
