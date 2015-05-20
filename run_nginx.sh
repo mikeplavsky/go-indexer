@@ -1,3 +1,5 @@
+docker rm -f nginx
+
 docker create  \
 -v $(pwd)/ui:/data/www \
 -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro \
