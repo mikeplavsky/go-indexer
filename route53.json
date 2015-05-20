@@ -12,6 +12,19 @@
           }
         ]
       }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "notebook.$AWS_STACK_NAME.sa4sp.com",
+        "Type": "A",
+        "TTL" : 60,
+        "ResourceRecords": [
+          {
+            "Value": "$PUBLIC_IP"
+          }
+        ]
+      }
     }
   ]
 }
