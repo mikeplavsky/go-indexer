@@ -1,6 +1,9 @@
 ES_STACK_NUM=$(cat /proc/cpuinfo | grep processor | wc -l)
 ES_QUEUE=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 
+./prep_indexer.sh
+./route53.sh
+
 ./create_queues.sh
 
 ./create_stack.sh
@@ -17,3 +20,4 @@ ES_QUEUE=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 ./start_loaders.sh
 
 ./run_sync.sh
+./run_ipython.sh

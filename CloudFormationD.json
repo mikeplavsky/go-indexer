@@ -26,7 +26,7 @@
         "KeyName": {
           "Ref": "KeyPair"
         },
-        "ImageId": "ami-2e536746",
+        "ImageId": "ami-d2445fba",
         "SecurityGroups": [
           "launch-wizard-1"
         ],
@@ -49,8 +49,6 @@
                 },
                 "\n",
                 "env \n",
-                "./route53.sh\n",
-                "./prep_indexer.sh\n",
                 "./run_stack.sh\n"
               ]
             ]
@@ -92,6 +90,20 @@
           "",
           [
             "https://",
+            {
+              "Ref": "AWS::StackName"
+            },
+            ".sa4sp.com/"
+          ]
+        ]
+      }
+    },
+    "NotebookURL": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://notebook.",
             {
               "Ref": "AWS::StackName"
             },
