@@ -52,6 +52,8 @@ Steps to run:
     - git clone git@github.com:GitQuest/go-indexer.git
     - cd go-indexer/
     - ./prep_env.sh
+    
+- export AWS_STACK_NAME=<name of your instance>
 
 - Run
     
@@ -59,7 +61,8 @@ Steps to run:
      
 - Use App :)
 
-    - Go to https://IP
+    - Go to https://$AWS_STACK_NAME.sa4sp for main app
+    - Go to https://notebook.$AWS_STACK_NAME.sa4sp for IPython notebook
 
 - In Kibana there are two index patterns:
     
