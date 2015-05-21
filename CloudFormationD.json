@@ -98,6 +98,20 @@
         ]
       }
     },
+    "NotebookURL": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://notebook.",
+            {
+              "Ref": "AWS::StackName"
+            },
+            ".sa4sp.com/"
+          ]
+        ]
+      }
+    },
     "SSH": {
       "Value": {
         "Fn::Join": [
