@@ -1,3 +1,5 @@
 *.swo
 *.swp
 *.out
+nginx.conf
+route53_i.json
