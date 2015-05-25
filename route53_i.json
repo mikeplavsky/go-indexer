@@ -1,0 +1,30 @@
+{
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "mp.sa4sp.com",
+        "Type": "A",
+        "TTL" : 60,
+        "ResourceRecords": [
+          {
+            "Value": "54.162.198.166"
+          }
+        ]
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "notebook.mp.sa4sp.com",
+        "Type": "A",
+        "TTL" : 60,
+        "ResourceRecords": [
+          {
+            "Value": "54.162.198.166"
+          }
+        ]
+      }
+    }
+  ]
+}
