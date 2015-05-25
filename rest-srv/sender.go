@@ -104,8 +104,6 @@ func sendJobImpl(job job, q queue) error {
 	take := PageSize
 	total := int64(take)
 
-	var w sync.WaitGroup
-
 	for int64(skip) < total {
 
 		out, err := getFiles(job, skip, take)
@@ -120,6 +118,7 @@ func sendJobImpl(job job, q queue) error {
 		log.Println(total, skip)
 
 		i := 0
+		var w sync.WaitGroup
 
 		for _, hit := range out.Hits {
 
@@ -144,9 +143,10 @@ func sendJobImpl(job job, q queue) error {
 			i = (i + 1) % q.qNum()
 
 		}
+
+		w.Wait()
 	}
 
-	w.Wait()
 	return nil
 
 }
