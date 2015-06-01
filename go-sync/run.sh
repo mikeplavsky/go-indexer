@@ -4,11 +4,14 @@ THROTTLING_LINES_PER_UPLOAD=100000
 ES_INDEX=s3data
 S3_BUCKET=dmp-log-analysis/$AWS_CUSTOMER
 
+go-sync
+exit
+
 while :
 	do
 
 	echo "Generating bulk requests"
-	go-sync | grep S3_BUCKET | s3-2-es > /tmp/all-requests
+	go-sync | grep $S3_BUCKET | s3-2-es > /tmp/all-requests
 
 	rm -rf ./x*
 	split -d -l $THROTTLING_LINES_PER_UPLOAD /tmp/all-requests
