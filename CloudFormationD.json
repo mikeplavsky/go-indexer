@@ -12,6 +12,10 @@
       ],
       "ConstraintDescription": "must be a valid EC2 instance type."
     },
+    "Customer": {
+      "Description": "Optionally Customer GUID, can be empty",
+      "Type": "String"
+    },
     "KeyPair": {
       "Description": "EC2 Key Pair for starting instance",
       "Type": "AWS::EC2::KeyPair::KeyName",
@@ -48,6 +52,11 @@
                   "Ref": "AWS::StackName"
                 },
                 "\n",
+                "export AWS_CUSTOMER=",
+                {
+                  "Ref": "Customer"
+                },
+                "\n"
                 "env \n",
                 "./run_stack.sh\n"
               ]
