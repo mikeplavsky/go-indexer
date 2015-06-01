@@ -56,7 +56,7 @@
                 {
                   "Ref": "Customer"
                 },
-                "\n"
+                "\n",
                 "env \n",
                 "./run_stack.sh\n"
               ]
