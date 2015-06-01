@@ -4,9 +4,6 @@ THROTTLING_LINES_PER_UPLOAD=100000
 ES_INDEX=s3data
 S3_BUCKET=dmp-log-analysis/$AWS_CUSTOMER
 
-go-sync
-exit
-
 while :
 	do
 

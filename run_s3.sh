@@ -8,6 +8,7 @@ docker rm s3-2-es
 docker run \
 -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
 -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+-e AWS_CUSTOMER=$AWS_CUSTOMER \
 --name s3-2-es \
 --net=host \
 -v $(pwd)/s3-2-es/run.sh:/go/src/go-indexer/s3-2-es/run.sh:ro \
