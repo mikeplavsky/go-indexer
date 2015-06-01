@@ -1,7 +1,7 @@
 #!/bin/sh
 
 THROTTLING_LINES_PER_UPLOAD=100000
-S3_BUCKET=dmp-log-analysis/
+S3_BUCKET=dmp-log-analysis/$AWS_CUSTOMER
 ES_INDEX=s3data
 
 echo "Generating bulk requests"
