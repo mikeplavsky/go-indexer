@@ -1,5 +1,6 @@
 docker rm -f fit
 
-docker build -t fit .
-
-docker run -d --net=host -p 3680:3680 -v $(pwd)/:/data -e COMMAND=$1 fit
+docker run -d \
+--net=host \
+-v $(pwd)/FitNesseRoot/LogMan:/FitNesseRoot/LogMan \
+--name fit mikeplavsky/docker-waferslim

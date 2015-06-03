@@ -4,7 +4,7 @@
 !define slim.timeout {300}
 !path ./fixtures
 
-!define COMMAND_PATTERN {python -m waferslim.server -i 0.0.0.0 --syspath %p -v  }
+!define COMMAND_PATTERN {python3.4 -m waferslim.server -i 0.0.0.0 --syspath %p -v  }
 
 !define API_HOST {!-https://localhost-!}
 !define ES_URL (${API_HOST}!-/es-!)
