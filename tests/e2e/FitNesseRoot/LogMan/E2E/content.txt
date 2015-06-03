@@ -1,12 +1,13 @@
 !define TEST_SYSTEM {slim}
 !define SLIM_HOST {localhost}
+!define SLIM_PORT {9000}
 !define SLIM_VERSION {0.1}
 !define slim.timeout {300}
 !path ./fixtures
 
 !define COMMAND_PATTERN {python -m waferslim.server -i 0.0.0.0 --syspath %p -v  }
 
-!define API_HOST {!-https://localhost-!}
+!define API_HOST {!-http://localhost-!}
 !define ES_URL (${API_HOST}!-/es-!)
 !define SERVICE_URL (${API_HOST}!-/api-!)
 
