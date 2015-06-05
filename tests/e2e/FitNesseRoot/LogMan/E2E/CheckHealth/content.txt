@@ -2,10 +2,23 @@ First docker should be stopped by: sudo service docker stop
 Then it must be run: sudo docker -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -d &
 Described here http://docs.docker.com/articles/basics/#bind-docker-to-another-hostport-or-a-unix-socket
 
-!|script|	RestTools|
-|set host url	|http://localhost:2375|
+!|script     |RestTools            |
+|set host url|http://localhost:2375|
 
-|query:http result as table	|/v1.18/containers/json|
-|Names|
-|[u'/fit']|
-|[u'/nginx']|
+|subset query:http result as table       |/v1.18/containers/json|
+|Names                                   |Status               |
+|[u'/fit']                               |                      |
+|[u'/nginx']                             |                      |
+|[u'/es0', u'/ipython/es', u'/kibana/es']|                      |
+|[u'/es1']                               |                      |
+|[u'/es2']                               |                      |
+|[u'/es3']                               |                      |
+|[u'/loader0']                           |                      |
+|[u'/loader1']                           |                      |
+|[u'/loader2']                           |                      |
+|[u'/loader3']                           |                      |
+|[u'/go-sync']                           |                      |
+|[u'/rest-srv']                          |                      |
+|[u'/esspeed']                           |                      |
+|[u'/kibana']                            |                      |
+|[u'/ipython']                           |                      |
