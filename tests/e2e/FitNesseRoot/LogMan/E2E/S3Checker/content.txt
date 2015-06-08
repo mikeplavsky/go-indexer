@@ -1,0 +1,7 @@
+|import|
+|s3|
+
+|query:S3 Buckets|
+|Name            |
+|One             |
+|Two             |
