@@ -1,0 +1,17 @@
+2015-03-30	15:10:17.4374	Px8D8	TxF	A93	C2	M14723	Trace	MAPI: Synchronization root folder name -'インフォメーション ストアの先頭'	
+2015-03-30	15:10:17.4530	Px8D8	TxF	A93	C2	M14723	Trace	MAPI: GetFolderHierarchyChanges end	
+2015-03-30	15:10:17.4530	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  Total changed folders found: 1	
+2015-03-30	15:10:17.4530	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  SetFolderHierarchyChanges begin	
+2015-03-30	15:10:17.5311	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  Ready to set properties on folder - 'Top of Information Store', Count - '3'.	
+2015-03-30	15:10:17.5936	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  Properties have been assigned on folder 'Top of Information Store'.	
+2015-03-30	15:10:17.5936	Px8D8	TxF	A93	C2	M14723	Trace	There are no permissions to assign on folder 'Top of Information Store'	
+2015-03-30	15:10:17.5936	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  SetFolderHierarchyChanges end	
+2015-03-30	15:10:17.6405	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  SyncFolderHierarchy end	
+2015-03-30	15:10:17.6561	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  EnumFolders begin	
+2015-03-30	15:10:17.7655	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  ---- Processing folder: Common Views	
+2015-03-30	15:10:17.7811	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  GetWellKnownFoldersIds begin	
+2015-03-30	15:10:17.8592	Px8D8	Tx18	A93	C2	M2	Info	Ews Connection. Url: 'https://outlook.daiichisankyo.com/EWS/Exchange.asmx' Username: 'svc_qmm' Domain: 'd-maas' Mailbox: 'Migtest_user004@daiichisankyo.co.jp' PreferredCulture: 'en-SG'	
+2015-03-30	15:10:17.9686	Px8D8	TxF	A93	C2	M14723	Trace	EWS:  GetWellKnownFoldersIds end	
+2015-03-30	15:10:18.0624	Px8D8	Tx18	A93	C2	M2	Trace	EWS:  Connect end	
+2015-03-30	15:10:18.0624	Px8D8	Tx18	A93	C2	M2	Trace	Exec SQL: GET_MAILBOX_STAGE @COLL_ID = '2', @MAILBOX_ID = '2',	
+2015-03-30	15:10:18.0780	Px8D8	Tx18	A93	C2	M2	Trace	Start sync OneWay	
