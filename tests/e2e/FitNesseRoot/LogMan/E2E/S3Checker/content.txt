@@ -6,4 +6,12 @@
 |dmp-log-analysis       |
 |logmanagement          |
 
-|script|upload logs  |10|
+-!|script|logs|10|
+|clean s3 up|
+
+|query:S3 Logs|dmp-log-analysis|!-CustomerA-!|
+|Path                                        |
+
+-!|script|logs|10|
+|upload logs to s3|
+

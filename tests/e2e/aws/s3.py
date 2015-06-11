@@ -1,5 +1,7 @@
 from waferslim.converters import converter_for,convert_arg
+
 import boto
+from boto.s3.key import Key
 
 class S3Buckets(object):
     
@@ -13,7 +15,7 @@ class S3Buckets(object):
         converter = converter_for(list)
         return converter.to_string(res)
 
-class S3Folder(object):
+class S3Logs(object):
 
     def __init__(self, bucket, prefix):
 
@@ -23,9 +25,14 @@ class S3Folder(object):
     def query(self):
         
 	s3 = boto.connect_s3()
+	b = s3.get_bucket(self.bucket)
 
+	res = [[['Path',x.key]] for x in b.list(self.prefix)]
 
-class UploadLogs(object):
+        converter = converter_for(list)
+	return converter.to_string(res)
+
+class Logs(object):
 
     @convert_arg(to_type=int)
     def __init__(self, num):
@@ -44,12 +51,7 @@ class UploadLogs(object):
 
         [b.delete_key(k) for k in self.keys]   
     
-    def upload_logs_to_s3(self,num):
-
-        keys = [
-            "CustomerA/MachineB/Agent%s/MAgE_20150331_023936.zip" % i 
-            for i in range(0,10)
-        ]
+    def upload_logs_to_s3(self):
 
         s3 = boto.connect_s3()
         b = s3.get_bucket('dmp-log-analysis')
