@@ -1,4 +1,4 @@
-!define CUSTOMER !-Customer12-!
+!define CUSTOMER !-Customer22-!
 
 |import|
 |s3    |
