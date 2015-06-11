@@ -60,7 +60,14 @@ class Logs(object):
 
             f1 = Key(b,k)
             f1.set_contents_from_filename(
-                'MAgE_20150331_023936.log'
+                '/data/MAgE_20150331_023936.log'
             );
+
+    def logs_on_s3(self):
+
+       s3 = boto.connect_s3()
+       b = s3.get_bucket('dmp-log-analysis')
+
+       return len([k for k in b.list('CustomerA')])
     
 

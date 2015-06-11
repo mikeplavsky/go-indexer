@@ -4,6 +4,4 @@
 *.out
 nginx.conf
 route53_i.json
-notebook/__pycache__
-notebook/.ipynb_checkpoints
-notebook/mp.key
+notebook
