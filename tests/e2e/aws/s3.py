@@ -34,29 +34,27 @@ class S3Logs(object):
 
 class Logs(object):
 
-    @convert_arg(to_type=int)
-    def __init__(self, num):
-
-        self.keys = [
-            "CustomerA/MachineB/Agent%s/MAgE_20150331_023936.zip" % i 
-            for i in range(0,num)
-        ]
-
-        print self.keys
+    def __init__(self, customer):
+        self.customer = customer
 
     def clean_s3_up(self):
 
         s3 = boto.connect_s3()
         b = s3.get_bucket('dmp-log-analysis')
-
-        [b.delete_key(k) for k in self.keys]   
+	
+	keys = [x.key for x in b.list(self.customer)]
+        
+        [b.delete_key(k) for k in keys]   
     
-    def upload_logs_to_s3(self):
+    @convert_arg(to_type=int)
+    def upload_logs_to_s3(self, num):
 
         s3 = boto.connect_s3()
         b = s3.get_bucket('dmp-log-analysis')
 
-        for k in self.keys:
+        for i in range(0,num):
+            
+            k = self.customer + "/MachineB/Agent%s/MAgE_20150331_023936.zip" % i
 
             f1 = Key(b,k)
             f1.set_contents_from_filename(
@@ -68,6 +66,6 @@ class Logs(object):
        s3 = boto.connect_s3()
        b = s3.get_bucket('dmp-log-analysis')
 
-       return len([k for k in b.list('CustomerA')])
+       return len([k for k in b.list(self.customer)])
     
 
