@@ -1,4 +1,4 @@
-!define CUSTOMER !-Customer0-!
+!define CUSTOMER !-Customer12-!
 
 |import|
 |s3    |
@@ -21,7 +21,7 @@
 
 |subset query:S3 Logs  |dmp-log-analysis  |${CUSTOMER} |
 |Path                                                  |
-|!-CustomerA/MachineB/Agent0/MAgE_20150331_023936.zip-!|
-|!-CustomerA/MachineB/Agent1/MAgE_20150331_023936.zip-!|
-|!-CustomerA/MachineB/Agent2/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}!-/MachineB/Agent0/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}!-/MachineB/Agent1/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}!-/MachineB/Agent2/MAgE_20150331_023936.zip-!|
 
