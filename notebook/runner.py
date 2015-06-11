@@ -19,17 +19,3 @@ def upload_logs_to_S3():
         f1.set_contents_from_filename(
             'MAgE_20150331_023936.log'
         );
-        
-def ssh():
-    
-    import spur 
-
-    s = spur.SshShell(
-        hostname="localhost",
-        username="ec2-user",
-        private_key_file="mp.key",
-        missing_host_key=spur.ssh.MissingHostKey.accept
-    );
-
-    res = s.run(['docker','ps'])
-    res.output.splitlines()

@@ -1,7 +1,9 @@
 |import|
-|s3|
+|s3    |
 
-|query:S3 Buckets|
-|Name            |
-|One             |
-|Two             |
+|subset query:S3 Buckets|
+|Name                   |
+|dmp-log-analysis       |
+|logmanagement          |
+
+|script|upload logs  |10|
