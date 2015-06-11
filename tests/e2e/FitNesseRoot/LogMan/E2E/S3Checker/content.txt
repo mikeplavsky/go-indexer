@@ -8,6 +8,7 @@
 
 -!|script|logs|10|
 |clean s3 up|
+|check|logs on s3|0|
 
 |query:S3 Logs|dmp-log-analysis|!-CustomerA-!|
 |Path                                        |
