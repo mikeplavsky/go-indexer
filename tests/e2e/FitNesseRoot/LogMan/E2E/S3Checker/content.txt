@@ -1,4 +1,4 @@
-!define CUSTOMER !-Customer22-!
+!define CUSTOMER !-Customer32-!
 
 |import|
 |s3    |
@@ -14,6 +14,9 @@
 
 |query:S3 Logs|dmp-log-analysis|${CUSTOMER}|
 |Path                                      |
+
+|script|ssh|
+|check|stop go sync|true|
 
 |script|logs      |${CUSTOMER}|
 |upload|10        |logs to s3 |

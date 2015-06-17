@@ -3,6 +3,37 @@ from waferslim.converters import converter_for,convert_arg
 import boto
 from boto.s3.key import Key
 
+class Ssh(object):
+
+    def __init__(self):
+
+	import spur
+
+        self.ssh = spur.SshShell(
+	    hostname='localhost',
+	    username='ec2-user',
+	    private_key_file='mp.pem',
+	    missing_host_key=spur.ssh.MissingHostKey.accept
+	)
+
+    def stop_go_sync(self):
+        
+	try:
+
+	    self.ssh.run([
+	        'docker',
+	        'rm',
+	        '-f',
+	        'go-indexer'])
+
+	except Exception as e:
+
+	    print e
+	    return e
+
+	return True
+
+
 class S3Buckets(object):
     
     def query(self):
