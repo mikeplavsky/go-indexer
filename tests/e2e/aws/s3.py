@@ -12,11 +12,27 @@ class Ssh(object):
         self.ssh = spur.SshShell(
 	    hostname='localhost',
 	    username='ec2-user',
-	    private_key_file='mp.pem',
+	    private_key_file='/data/mp.pem',
 	    missing_host_key=spur.ssh.MissingHostKey.accept
 	)
 
-    def stop_go_sync(self):
+    def delete(self, url):
+        
+	try:
+
+	   self.ssh.run([
+	       'curl',
+	       '-XDELETE',
+	       url
+	   ])
+
+	except Exception as e:
+	   return e
+
+	return True   
+
+
+    def remove_container(self, name):
         
 	try:
 
@@ -24,14 +40,26 @@ class Ssh(object):
 	        'docker',
 	        'rm',
 	        '-f',
-	        'go-indexer'])
+	         name])
 
 	except Exception as e:
-
-	    print e
 	    return e
 
 	return True
+
+    def run_script(self,name):
+
+        try:
+
+	   self.ssh.run([
+	       name
+	   ],
+	   cwd='/home/ec2-user/go-indexer/')
+
+	except Exception as e:
+	   return e
+
+        return True	   
 
 
 class S3Buckets(object):

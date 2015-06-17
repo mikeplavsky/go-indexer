@@ -1,4 +1,4 @@
-!define CUSTOMER !-Customer32-!
+!define CUSTOMER !-Customer-!
 
 |import|
 |s3    |
@@ -15,16 +15,20 @@
 |query:S3 Logs|dmp-log-analysis|${CUSTOMER}|
 |Path                                      |
 
-|script|ssh|
-|check|stop go sync|true|
+|script|ssh                                        |
+|check |remove|go-sync              |container|true|
+|check |delete|localhost:8080/s3data|true          |
 
 |script|logs      |${CUSTOMER}|
 |upload|10        |logs to s3 |
 |check |logs on s3|10         |
 
-|subset query:S3 Logs  |dmp-log-analysis  |${CUSTOMER} |
-|Path                                                  |
+|subset query:S3 Logs   |dmp-log-analysis  |${CUSTOMER}  |
+|Path                                                    |
 |${CUSTOMER}!-/MachineB/Agent0/MAgE_20150331_023936.zip-!|
 |${CUSTOMER}!-/MachineB/Agent1/MAgE_20150331_023936.zip-!|
 |${CUSTOMER}!-/MachineB/Agent2/MAgE_20150331_023936.zip-!|
 
+|script|ssh                          |
+|check |run|./run_s3.sh  |script|true|
+|check |run|./run_sync.sh|script|true|
