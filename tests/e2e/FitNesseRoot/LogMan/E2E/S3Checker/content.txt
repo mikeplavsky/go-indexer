@@ -18,6 +18,7 @@
 |script|ssh                                        |
 |check |remove|go-sync              |container|true|
 |check |delete|localhost:8080/s3data|true          |
+|check |get   |localhost:8080/s3data|=~/IndexMissingException/|
 
 |script|logs      |${CUSTOMER}|
 |upload|10        |logs to s3 |
@@ -31,4 +32,12 @@
 
 |script|ssh                          |
 |check |run|./run_s3.sh  |script|true|
+
+!include S3Data
+
+|script|ssh                          |
 |check |run|./run_sync.sh|script|true|
+
+
+
+

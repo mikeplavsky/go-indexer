@@ -16,6 +16,21 @@ class Ssh(object):
 	    missing_host_key=spur.ssh.MissingHostKey.accept
 	)
 
+    def get(self, url):
+        
+	try:
+
+	   res = self.ssh.run([
+	       'curl',
+	       '-XGET',
+	       url
+	   ])
+
+	except Exception as e:
+	   return e
+
+	return res.output   
+
     def delete(self, url):
         
 	try:
@@ -51,7 +66,7 @@ class Ssh(object):
 
         try:
 
-	   self.ssh.run([
+	   res = self.ssh.run([
 	       name
 	   ],
 	   cwd='/home/ec2-user/go-indexer/')
@@ -59,6 +74,7 @@ class Ssh(object):
 	except Exception as e:
 	   return e
 
+        print(res.output)
         return True	   
 
 

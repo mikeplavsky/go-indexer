@@ -1,0 +1,26 @@
+!|script     |RestTools            |
+|set host url|http://localhost:8080|
+
+!|script|RestTools                                                               |
+|url    |/s3data/_count?q=customer:Customer|response attribute|count|has value|10|
+
+|query:http result as table|/s3data/_count|
+|count                                    |
+|>1                                       |
+
+|query:http result as table|/s3data/_count?q=customer:Customer|
+|count                                                        |
+|10                                                           |
+
+|query:http result as table|/s3data/_search?q=customer:Customer&sort=agent                                                                          |
+|customer                  |agent |machine     |size|uri                                                                                            |
+|Customer                  |Agent0|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent0/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent1|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent1/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent2|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent2/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent3|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent3/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent4|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent4/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent5|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent5/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent6|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent6/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent7|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent7/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent8|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent8/MAgE_20150331_023936.zip-!|
+|Customer                  |Agent9|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/Customer/MachineB/Agent9/MAgE_20150331_023936.zip-!|
