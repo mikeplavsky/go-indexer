@@ -1,5 +1,5 @@
 |scenario|url|path  |response attribute|attr     |has value|val                                    |
-|wait    |1  |second|25                |times url|@path    |response attribute|@attr|has value|@val|
+|wait    |5  |second|25                |times url|@path    |response attribute|@attr|has value|@val|
 
 |scenario|url |path  |response attribute|attr     |has value|val               |for  |sec      |seconds|times|times|
 |wait    |@sec|second|@times            |times url|@path    |response attribute|@attr|has value|@val               |

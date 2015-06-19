@@ -1,0 +1,79 @@
+!*> Import fixtures
+
+|import|
+|s3    |
+
+*!
+
+!*> Cleaning S3, stopping go-sync
+
+!define CUSTOMER !-Customer-!
+
+|script|ssh                                        |
+|check |remove|go-sync              |container|true|
+|check |delete|localhost:8080/s3data|true          |
+
+|script|logs      |${CUSTOMER}|
+|clean s3 up                  |
+|check |logs on s3|0          |
+
+*!
+
+'''Given Customer Logs on S3'''
+
+!define LOGS_NUMBER !-20-!
+
+!define CUSTOMER !-Customer-!
+!include -c Pages.S3LogsUpload
+!define CUSTOMER !-Customer1-!
+!include -c Pages.S3LogsUpload
+!define CUSTOMER !-Customer2-!
+!include -c Pages.S3LogsUpload
+
+'''When running first sync from S3 to ES'''
+
+|script|ssh                        |
+|check |run|./run_s3.sh|script|true|
+
+'''Then should get all the customers in ES'''
+
+!define CUSTOMER !-Customer-!
+!include -c Pages.S3DataCheck
+!define CUSTOMER !-Customer1-!
+!include -c Pages.S3DataCheck
+!define CUSTOMER !-Customer2-!
+!include -c Pages.S3DataCheck
+
+'''Given New Customers on S3'''
+
+!define CUSTOMER !-Customer3-!
+!include -c Pages.S3LogsUpload
+!define CUSTOMER !-Customer4-!
+!include -c Pages.S3LogsUpload
+!define CUSTOMER !-Customer5-!
+!include -c Pages.S3LogsUpload
+
+'''When running sync from S3 to ES'''
+
+|script|ssh                          |
+|check |run|./run_sync.sh|script|true|
+
+'''Should get all the new customers in ES'''
+
+!define CUSTOMER !-Customer3-!
+!include -c Pages.S3DataCheck
+!define CUSTOMER !-Customer4-!
+!include -c Pages.S3DataCheck
+!define CUSTOMER !-Customer5-!
+!include -c Pages.S3DataCheck
+
+'''When adding new logs for existing customer'''
+
+!define CUSTOMER !-Customer4-!
+!define LOGS_NUMBER !-35-!
+
+!include -c Pages.S3LogsUpload
+
+'''Should sync all new logs to ES from S3'''
+
+!include -c Pages.S3DataCheck

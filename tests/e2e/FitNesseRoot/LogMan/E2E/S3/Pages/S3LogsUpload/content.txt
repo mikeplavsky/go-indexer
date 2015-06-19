@@ -1,0 +1,12 @@
+|import|
+|s3    |
+
+|script|logs          |${CUSTOMER}   |
+|upload|${LOGS_NUMBER}|logs to s3    |
+|check |logs on s3    |${LOGS_NUMBER}|
+
+|subset query:S3 Logs   |dmp-log-analysis  |${CUSTOMER}  |
+|Path                                                    |
+|${CUSTOMER}!-/MachineB/Agent0/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}!-/MachineB/Agent1/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}!-/MachineB/Agent2/MAgE_20150331_023936.zip-!|
