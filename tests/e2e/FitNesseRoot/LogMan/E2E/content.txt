@@ -11,4 +11,4 @@
 !define ES_URL (${API_HOST}!-/es-!)
 !define SERVICE_URL (${API_HOST}!-/api-!)
 
-!contents -R2 -g -p -f -h
+!contents -R -g -p -f -h
