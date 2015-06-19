@@ -1,8 +1,8 @@
 !|script     |RestTools            |
 |set host url|http://localhost:8080|
 
-!|script|RestTools                                                                  |
-|url    |/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|10|
+!|script|RestTools                                                                              |
+|url    |/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
 
 |query:http result as table|/s3data/_count|
 |count                                    |
@@ -10,17 +10,17 @@
 
 |query:http result as table|/s3data/_count?q=customer:${CUSTOMER}|
 |count                                                           |
-|10                                                              |
+|${LOGS_NUMBER}                                                  |
 
-|query:http result as table|/s3data/_search?q=customer:${CUSTOMER}&sort=agent                                                                          |
-|customer                  |agent |machine     |size|uri                                                                                               |
-|${CUSTOMER}               |Agent0|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent0/MAgE_20150331_023936.zip-!   |
-|${CUSTOMER}               |Agent1|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent1/MAgE_20150331_023936.zip-!|
-|${CUSTOMER}               |Agent2|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent2/MAgE_20150331_023936.zip-!|
-|${CUSTOMER}               |Agent3|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent3/MAgE_20150331_023936.zip-!|
-|${CUSTOMER}               |Agent4|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent4/MAgE_20150331_023936.zip-!|
-|${CUSTOMER}               |Agent5|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent5/MAgE_20150331_023936.zip-!|
-|${CUSTOMER}               |Agent6|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent6/MAgE_20150331_023936.zip-!|
-|${CUSTOMER}               |Agent7|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent7/MAgE_20150331_023936.zip-!|
-|${CUSTOMER}               |Agent8|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent8/MAgE_20150331_023936.zip-!|
-|${CUSTOMER}               |Agent9|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent9/MAgE_20150331_023936.zip-!|
+|subset query:http result as table|/s3data/_search?q=customer:${CUSTOMER}&sort=agent&size=${LOGS_NUMBER}                                                          |
+|customer                         |agent |machine     |size|uri                                                                                                   |
+|${CUSTOMER}                      |Agent0|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent0/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent1|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent1/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent2|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent2/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent3|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent3/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent4|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent4/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent5|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent5/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent6|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent6/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent7|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent7/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent8|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent8/MAgE_20150331_023936.zip-!|
+|${CUSTOMER}                      |Agent9|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent9/MAgE_20150331_023936.zip-!|
