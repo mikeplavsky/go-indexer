@@ -1,9 +1,6 @@
 |import|
 |s3    |
 
-|query:S3 Logs|dmp-log-analysis|${CUSTOMER}|
-|Path                                      |
-
 |script|logs          |${CUSTOMER}   |
 |upload|${LOGS_NUMBER}|logs to s3    |
 |check |logs on s3    |${LOGS_NUMBER}|

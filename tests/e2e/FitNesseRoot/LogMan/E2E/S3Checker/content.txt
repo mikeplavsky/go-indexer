@@ -66,3 +66,14 @@
 !include -c >S3DataCheck
 !define CUSTOMER !-Customer5-!
 !include -c >S3DataCheck
+
+'''When adding new logs for existing customer'''
+
+!define CUSTOMER !-Customer4-!
+!define LOGS_NUMBER !-35-!
+
+!include -c >S3LogsUpload
+
+'''Should sync all new logs to ES from S3'''
+
+!include -c >S3DataCheck
