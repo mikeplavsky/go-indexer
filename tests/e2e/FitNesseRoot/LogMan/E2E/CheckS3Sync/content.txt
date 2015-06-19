@@ -1,5 +1,0 @@
-!|script     |RestTools            |
-|set host url|http://localhost:8080|
-
-|script|!-RestTools-!|
-|DELETE|/s3data|

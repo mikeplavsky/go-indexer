@@ -8,7 +8,6 @@
 |script|ssh                                                   |
 |check |remove|go-sync              |container      |true     |
 |check |delete|localhost:8080/s3data|true                     |
-|check |get   |localhost:8080/s3data|=~/IndexMissingException/|
 
 !include -c >S3LogsUpload
 
@@ -17,9 +16,14 @@
 
 !include -c >S3DataCheck
 
+!define CUSTOMER !-Customer1-!
+
+!include -c >S3LogsUpload
+
 |script|ssh                          |
 |check |run|./run_sync.sh|script|true|
 
+!include -c >S3DataCheck
 
 
 
