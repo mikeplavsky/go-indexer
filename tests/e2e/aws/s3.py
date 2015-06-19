@@ -77,6 +77,23 @@ class Ssh(object):
         print(res.output)
         return True	   
 
+    def run_script_for(self,name,customer):
+
+        try:
+
+	   res = self.ssh.run([
+	       name
+	   ],
+           update_env=dict(
+               AWS_CUSTOMER=customer
+           ),
+	   cwd='/home/ec2-user/go-indexer/')
+
+	except Exception as e:
+	   return e
+
+        print(res.output)
+        return True	   
 
 class S3Buckets(object):
     
