@@ -22,14 +22,13 @@
 '''Given Customer Logs'''
 
 !define LOGS_NUMBER !-20-!
+!define CUSTOMER !-Customer_Netflix-!
 
-!define CUSTOMER !-Customer1-!
 !include -c Pages.S3LogsUpload
 
 |script|ssh                                      |
-|check |run|./run_s3.sh|script for|Customer1|true|
+|check |run|./run_s3.sh|script for|${CUSTOMER}|true|
 
-!define CUSTOMER !-Customer1-!
 !include -c Pages.S3DataCheck
 
 

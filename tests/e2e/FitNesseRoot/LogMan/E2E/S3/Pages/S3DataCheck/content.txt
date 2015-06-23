@@ -1,7 +1,7 @@
 !|script     |RestTools            |
 |set host url|http://localhost:8080|
 
-!|script|RestTools                                                                              |
+!|script     |RestTools            |
 |url    |/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
 
 |query:http result as table|/s3data/_count|
@@ -39,7 +39,6 @@
 |query:http result as table|!-http://localhost:3000/job?customer=-!${CUSTOMER}!-&from=2015-03-26&to=2015-04-02-!|
 |count                                                                                                          |
 |${LOGS_NUMBER}                                                                                                 |
-
 
 
 
