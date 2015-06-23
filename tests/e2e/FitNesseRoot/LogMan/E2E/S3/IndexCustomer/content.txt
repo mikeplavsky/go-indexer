@@ -1,0 +1,35 @@
+!*> Import fixtures
+
+|import|
+|s3    |
+
+*!
+
+!*> Cleaning S3, stopping go-sync
+
+!define CUSTOMER !-Customer-!
+
+|script|ssh                                   |
+|show  |remove|go-sync              |container|
+|check |delete|localhost:8080/s3data|true     |
+
+|script|logs      |${CUSTOMER}|
+|clean s3 up                  |
+|check |logs on s3|0          |
+
+*!
+
+'''Given Customer Logs'''
+
+!define LOGS_NUMBER !-20-!
+
+!define CUSTOMER !-Customer1-!
+!include -c Pages.S3LogsUpload
+
+|script|ssh                                      |
+|check |run|./run_s3.sh|script for|Customer1|true|
+
+!define CUSTOMER !-Customer1-!
+!include -c Pages.S3DataCheck
+
+

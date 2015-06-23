@@ -44,6 +44,9 @@
 !define CUSTOMER !-Customer2-!
 !include -c Pages.S3DataCheck
 
+|script|ssh                                                                |
+|check |get|localhost:3000/customers|=~/"Customer","Customer1","Customer2"/|
+
 '''Given New Customers on S3'''
 
 !define CUSTOMER !-Customer3-!

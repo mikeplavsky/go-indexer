@@ -24,3 +24,27 @@
 |${CUSTOMER}                      |Agent7|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent7/MAgE_20150331_023936.zip-!|
 |${CUSTOMER}                      |Agent8|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent8/MAgE_20150331_023936.zip-!|
 |${CUSTOMER}                      |Agent9|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent9/MAgE_20150331_023936.zip-!|
+
+!*> Import fixtures
+
+|import|
+|s3    |
+
+*!
+
+|script|ssh                                           |
+|check |get|localhost:3000/customers|=~/"${CUSTOMER}"/|
+
+!|script     |RestTools            |
+|set host url|http://localhost:3000|
+
+|query:http result as table|/job?customer=Customer1&from=2015-03-26&to=2015-04-02|
+|count                                                                           |
+|20                                                                              |
+
+
+
+
+
+
+
