@@ -9,9 +9,9 @@
 
 !define CUSTOMER !-Customer-!
 
-|script|ssh                                        |
-|check |remove|go-sync              |container|true|
-|check |delete|localhost:8080/s3data|true          |
+|script|ssh                                   |
+|show  |remove|go-sync              |container|
+|check |delete|localhost:8080/s3data|true     |
 
 |script|logs      |${CUSTOMER}|
 |clean s3 up                  |
