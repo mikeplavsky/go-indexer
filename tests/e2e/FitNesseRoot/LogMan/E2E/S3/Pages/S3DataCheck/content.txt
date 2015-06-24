@@ -1,8 +1,20 @@
 !|script     |RestTools            |
 |set host url|http://localhost:8080|
 
-!|script     |RestTools            |
-|url    |/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+!|script|RestTools                                                                                                              |
+|check  |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|true|
 
 |query:http result as table|/s3data/_count|
 |count                                    |
