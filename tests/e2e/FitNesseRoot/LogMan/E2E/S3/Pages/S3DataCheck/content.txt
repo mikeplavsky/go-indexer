@@ -1,8 +1,20 @@
 !|script     |RestTools            |
 |set host url|http://localhost:8080|
 
-!|script|RestTools                                                                              |
-|url    |/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+!|script|RestTools                                                                                                              |
+|check  |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|true|
 
 |query:http result as table|/s3data/_count|
 |count                                    |
@@ -24,3 +36,24 @@
 |${CUSTOMER}                      |Agent7|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent7/MAgE_20150331_023936.zip-!|
 |${CUSTOMER}                      |Agent8|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent8/MAgE_20150331_023936.zip-!|
 |${CUSTOMER}                      |Agent9|!-MachineB-!|1852|!-https://s3.amazonaws.com/dmp-log-analysis/-!${CUSTOMER}!-/MachineB/Agent9/MAgE_20150331_023936.zip-!|
+
+!*> Import fixtures
+
+|import|
+|s3    |
+
+*!
+
+|script|ssh                                           |
+|check |get|localhost:3000/customers|=~/"${CUSTOMER}"/|
+
+
+|query:http result as table|!-http://localhost:3000/job?customer=-!${CUSTOMER}!-&from=2015-03-26&to=2015-04-02-!|
+|count                                                                                                          |
+|${LOGS_NUMBER}                                                                                                 |
+
+
+
+
+
+

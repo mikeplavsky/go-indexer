@@ -9,9 +9,9 @@
 
 !define CUSTOMER !-Customer-!
 
-|script|ssh                                        |
-|check |remove|go-sync              |container|true|
-|check |delete|localhost:8080/s3data|true          |
+|script|ssh                                   |
+|show  |remove|go-sync              |container|
+|check |delete|localhost:8080/s3data|true     |
 
 |script|logs      |${CUSTOMER}|
 |clean s3 up                  |
@@ -43,6 +43,9 @@
 !include -c Pages.S3DataCheck
 !define CUSTOMER !-Customer2-!
 !include -c Pages.S3DataCheck
+
+|script|ssh                                                                |
+|check |get|localhost:3000/customers|=~/"Customer","Customer1","Customer2"/|
 
 '''Given New Customers on S3'''
 
