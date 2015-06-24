@@ -1,0 +1,9 @@
+!|script     |RestTools            |
+|set host url|http://localhost:8080|
+
+!|script|RestTools                                                                                                         |
+|show   |wait|10|second|1|times url|/s3data/_count?q=customer:${CUSTOMER}|response attribute|count|has value|${LOGS_NUMBER}|
+
+|query:http result as table|/s3data/_count?q=customer:${CUSTOMER}|
+|count                                                           |
+|>=0                                                             |
