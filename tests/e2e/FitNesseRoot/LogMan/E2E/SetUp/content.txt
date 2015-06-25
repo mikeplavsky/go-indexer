@@ -2,6 +2,24 @@
 |import    |
 |http_calls|
 
-!|script|!-RestTools-!|
-|set host url||
+|import|
+|s3    |
+
+!|script     |!-RestTools-!|
+|set host url|             |
+*!
+
+!*> Cleaning S3, ES, stopping go-sync
+
+!define CUSTOMER !-Customer-!
+
+|script|ssh                                   |
+|show  |remove|go-sync              |container|
+|check |delete|localhost:8080/s3data|true     |
+|check |delete|localhost:8080/test* |true     |
+
+|script|logs      |${CUSTOMER}|
+|clean s3 up                  |
+|check |logs on s3|0          |
+
 *!
