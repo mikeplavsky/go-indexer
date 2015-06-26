@@ -95,6 +95,40 @@ class Ssh(object):
         print(res.output)
         return True	   
 
+class DeadLetterQueue(object):
+
+    def __init__(self,instance_id):
+        
+	self.instance_id = instance_id
+
+	import boto
+	sqs = boto.connect_sqs()
+
+	self.queue = sqs.get_queue(
+	    self.instance_id + "_dl") 
+
+    def get_count(self):
+	return self.queue.count() 
+
+    @convert_arg(to_type=int)
+    def wait_seconds_till_count_increments_on(self, seconds, prev_count, num):
+
+	count = self.queue.count()
+
+	print count
+	print prev_count
+	print count < prev_count
+
+	if count < prev_count + num:
+
+	   import time
+	   time.sleep(seconds)
+
+	   return prev_count
+	
+	return count 
+
+
 class S3Buckets(object):
     
     def query(self):
