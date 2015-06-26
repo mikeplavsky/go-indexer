@@ -1,0 +1,122 @@
+!*> Import fixtures
+
+|import|
+|s3    |
+
+*!
+
+!*> Cleaning S3, stopping go-sync
+
+!define CUSTOMER !-Customer-!
+
+|script|ssh                                   |
+|show  |remove|go-sync              |container|
+|check |delete|localhost:8080/s3data|true     |
+
+|script|logs      |${CUSTOMER}|
+|clean s3 up                  |
+|check |logs on s3|0          |
+
+*!
+
+'''Given Customer Unzipped Logs on S3'''
+
+!define LOGS_NUMBER !-20-!
+!define CUSTOMER !-Customer_Netflix-!
+
+!include -c Pages.S3LogsUpload
+
+|script|ssh                                        |
+|check |run|./run_s3.sh|script for|${CUSTOMER}|true|
+
+!include -c Pages.S3DataCheck
+
+'''When Indexing Job is created'''
+
+!|script|RestTools                                                                                              |
+|check  |GET|!-http://localhost:3000/job/create?customer=-!${CUSTOMER}!-&from=2015-03-26&to=2015-04-03-!|started|
+
+'''Then all logs should get to Dead Letter Queue'''
+
+!|script|Rest Tools                                                 |
+|$ID=   |GET|!-http://169.254.169.254/latest/meta-data/instance-id-!|
+
+!|script|Dead Letter Queue|$ID|
+|$COUNT=|get count            |
+
+!*> Wait 150 seconds of retries
+
+10s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+20s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+30s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+40s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+50s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+60s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+70s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+80s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+90s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+100s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+110s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+120s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+130s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+140s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+150s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+160s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+170s
+!|script|Dead Letter Queue|$ID                                          |
+|show   |wait             |10|seconds till count|$COUNT|increments on|20|
+
+*!
+
+!|script|Dead Letter Queue|$ID                                                  |
+|check  |wait             |10|seconds till count|$COUNT|increments on|20|>$COUNT|
+
+

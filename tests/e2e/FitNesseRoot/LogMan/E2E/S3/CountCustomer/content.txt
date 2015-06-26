@@ -31,4 +31,21 @@
 
 !include -c Pages.S3DataCheck
 
+'''Then UI returns number of available for indexing Logs'''
+
+|query:http result as table|!-http://localhost:3000/job?customer=-!${CUSTOMER}!-&from=2015-03-26&to=2015-04-03-!|
+|count                                                           |
+|20|
+
+'''Or Zero if there is nothing'''
+
+|query:http result as table|!-http://localhost:3000/job?customer=-!${CUSTOMER}!-&from=2015-04-01&to=2015-04-03-!|
+|count                                                           |
+|0|
+
+
+
+
+
+
 

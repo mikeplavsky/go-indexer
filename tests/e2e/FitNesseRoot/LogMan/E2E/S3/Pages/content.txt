@@ -1,5 +1,5 @@
 !define CUSTOMER !-Customer1-!
-!define LOGS_NUMBER !-15-!
+!define LOGS_NUMBER !-20-!
 
 !contents -R2 -g -p -f -h
 

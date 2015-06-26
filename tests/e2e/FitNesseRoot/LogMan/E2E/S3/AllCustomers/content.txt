@@ -1,24 +1,3 @@
-!*> Import fixtures
-
-|import|
-|s3    |
-
-*!
-
-!*> Cleaning S3, stopping go-sync
-
-!define CUSTOMER !-Customer-!
-
-|script|ssh                                   |
-|show  |remove|go-sync              |container|
-|check |delete|localhost:8080/s3data|true     |
-
-|script|logs      |${CUSTOMER}|
-|clean s3 up                  |
-|check |logs on s3|0          |
-
-*!
-
 '''Given Customer Logs on S3'''
 
 !define LOGS_NUMBER !-20-!
