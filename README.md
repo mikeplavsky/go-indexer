@@ -53,7 +53,8 @@ Steps to run:
     - cd go-indexer/
     - ./prep_env.sh
     
-- export AWS_STACK_NAME=<name of your instance>
+- export ```AWS_STACK_NAME=<name of your instance>```
+- optionally export ```AWS_CUSTOMER=<customer guid>``` If you do it, only this customer logs will be available
 
 - Run
     
@@ -64,7 +65,7 @@ Steps to run:
     - Go to https://$AWS_STACK_NAME.sa4sp for main app
     - Go to https://notebook.$AWS_STACK_NAME.sa4sp for IPython notebook
 
-- In Kibana there are two index patterns:
+- In Kibana there are two indexes available:
     
     - s3data This one is where S3 was synced 
     - test* This is where all logs are. 
