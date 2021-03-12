@@ -1,10 +1,6 @@
 # go-indexer
 Docker container for indexing of zipped log files from AWS S3
 
-### How to start the application
-
-Manual: https://commons.quest.com/thread/32697
-
 ### How to choose your right instance type. 
 
 Criteria:
