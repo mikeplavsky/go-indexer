@@ -45,7 +45,7 @@ Steps to run:
 
 - Prepare Images
 
-    - git clone git@github.com:GitQuest/go-indexer.git
+    - git clone git@github.com/go-indexer.git
     - cd go-indexer/
     - ./prep_env.sh
     
